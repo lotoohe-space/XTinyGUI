@@ -91,22 +91,23 @@ void WindowsHeadPaint(void * hObject){
 	HLIST cutPostionList;
 	hWinHead = hObject;
 	if (!hWinHead) { return; }
-	if (hWinHead->headWidge.isVisable) {
-		DrawSetArea(hWinHead);//计算得到当前绘图区域
-		//计算得到剪裁区域
-		cutPostionList=RectCutAddRectList(hWinHead->widgetList->next);
-		DrawCutRect(hWinHead, 
-			&(hWinHead->headWidge.rect));
-		RectCutSplitRectList(cutPostionList);
+	if (!hWinHead->headWidge.isVisable) { return; }
+	if (!isGUINeedCut(hWinHead)) { return; }
+	DrawSetArea(hWinHead);//计算得到当前绘图区域
+	//计算得到剪裁区域
+	cutPostionList=RectCutAddRectList(hWinHead->widgetList->next);
+	DrawCutRect(hWinHead, 
+		&(hWinHead->headWidge.rect));
+	RectCutSplitRectList(cutPostionList);
 
-		_StartScanU(hWinHead->widgetList) {//开始扫描
-			cutPostionList = RectCutAddRectList(tempItem->next);//加入遮盖的剪切矩形
-			_PToHWidgeBaseType(val)->paintFun(_PToHWidgeBaseType(val));//绘制并计算绘图区域
-			RectCutSplitRectList(cutPostionList);//去掉遮盖的剪切矩形
-			DrawResetArea(hWinHead);//恢复绘图区域
-		}
-		_EndScanU()	//结束扫描
+	_StartScanU(hWinHead->widgetList) {//开始扫描
+		cutPostionList = RectCutAddRectList(tempItem->next);//加入遮盖的剪切矩形
+		_PToHWidgeBaseType(val)->paintFun(_PToHWidgeBaseType(val));//绘制并计算绘图区域
+		RectCutSplitRectList(cutPostionList);//去掉遮盖的剪切矩形
+		DrawResetArea(hWinHead);//恢复绘图区域
 	}
+	_EndScanU()	//结束扫描
+	
 
 }
 int8 WindowsHeadsCallBack(void *hObject, HMSGE hMsg) {

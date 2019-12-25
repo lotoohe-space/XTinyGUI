@@ -10,7 +10,7 @@
 #define MAX(a,b) ((a)>(b)?(a):(b))
 #define MIN(a,b) ((a)<(b)?(a):(b))
 
-int8 isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2);
+extern int8 _inline isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2);
 
 	
 //某个范围内内的垂直线是否与下方的横线相交
@@ -39,7 +39,7 @@ uint32 TStrlen(char *str);
 //矩形复制函数
 #define XRECT_COPY(a,b) TMemcpy((a), (b), sizeof(XRECT))
 
-BOOL  GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res);
+extern BOOL  _inline GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res);
 
 
 

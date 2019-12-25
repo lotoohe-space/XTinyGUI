@@ -43,6 +43,7 @@ void TextWidegePaint(void * hObject) {
 	HTEXT_WIDGE hTextWidge;
 	hTextWidge = hObject;
 	if (!hObject) { return; }
+	if (!isGUINeedCut(hTextWidge)) { return; }
 
 	DrawSetArea(hTextWidge);
 	//DrawCutRect(hTextWidge,

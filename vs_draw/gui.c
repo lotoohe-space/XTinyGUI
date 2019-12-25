@@ -135,53 +135,53 @@ HXDESKTOP GUIInit(void) {
 void setMovingWin(HWIN hWin) {
 	hXDesktop->winMoving = hWin;
 }
-/**/
-BOOL isGUINeedCut(HWIN hWin) {
-	if (hWin == NULL) { return TRUE; }
+/*当前的窗口是否需要剪裁*/
+BOOL isGUINeedCut(HXRECT hXRECT) {
+	if (hXRECT == NULL) { return TRUE; }
 	
 	if (hXDesktop->winMoving == hXDesktop->topWin) {
 		if (hXDesktop->winMoving == NULL) {
 			return TRUE;
 		}
-		if (hWin == hXDesktop->winMoving) {
+		if (hXRECT == &(hXDesktop->winMoving->winWidge.rect)) {
 			return TRUE;
 		}
 		return _IsDrawCheckArea(hXDesktop->winMoving->winWidge.rect.x - hXDesktop->winMoving->dx
 			, hXDesktop->winMoving->winWidge.rect.y - hXDesktop->winMoving->dy
 			, hXDesktop->winMoving->winWidge.rect.w
 			, hXDesktop->winMoving->winWidge.rect.h
-			, hWin->winWidge.rect.x
-			, hWin->winWidge.rect.y
-			, hWin->winWidge.rect.w
-			, hWin->winWidge.rect.h
+			, hXRECT->x
+			, hXRECT->y
+			, hXRECT->w
+			, hXRECT->h
 		);
 	}
 	 if(hXDesktop->winMoving != NULL) {
-		if (hWin == hXDesktop->winMoving) {
+		if (hXRECT == hXDesktop->winMoving) {
 			return TRUE;
 		}
 		return _IsDrawCheckArea(hXDesktop->winMoving->winWidge.rect.x - hXDesktop->winMoving->dx
 			, hXDesktop->winMoving->winWidge.rect.y - hXDesktop->winMoving->dy
 			, hXDesktop->winMoving->winWidge.rect.w
 			, hXDesktop->winMoving->winWidge.rect.h
-			, hWin->winWidge.rect.x
-			, hWin->winWidge.rect.y
-			, hWin->winWidge.rect.w
-			, hWin->winWidge.rect.h
+			, hXRECT->x
+			, hXRECT->y
+			, hXRECT->w
+			, hXRECT->h
 		);
 	}
 	if(hXDesktop->topWin != NULL){
-		if (hWin == hXDesktop->topWin) {
+		if (hXRECT == hXDesktop->topWin) {
 			return TRUE;
 		}
 		return _IsDrawCheckArea(hXDesktop->topWin->winWidge.rect.x - hXDesktop->topWin->dx
 			, hXDesktop->topWin->winWidge.rect.y - hXDesktop->topWin->dy
 			, hXDesktop->topWin->winWidge.rect.w
 			, hXDesktop->topWin->winWidge.rect.h
-			, hWin->winWidge.rect.x
-			, hWin->winWidge.rect.y
-			, hWin->winWidge.rect.w
-			, hWin->winWidge.rect.h
+			, hXRECT->x
+			, hXRECT->y
+			, hXRECT->w
+			, hXRECT->h
 		);
 	}
 

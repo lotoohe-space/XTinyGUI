@@ -23,20 +23,7 @@ uint32 TStrlen(char *str) {
 /**
 	* 判断两矩形是否相交
 	*/
-int8 isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
-	//XRECT temp;
-	//XRECT rRect;
-	//temp.x = x2;
-	//temp.y = y2;
-	//temp.w = w2;
-	//temp.h = h2;
-	//_GetOverLapRect(x1,y1,w1,h1, (&temp));
-	//if (rRect.w == 0) {
-	//	return FALSE;
-	//}
-	//else {
-	//	return TRUE;
-	//}
+int8 _inline isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
 	// 矩形A位于矩形B的右侧
 	if (x1 >= x2 && x1 >= x2 + w2) {
 		return 0;
@@ -51,12 +38,11 @@ int8 isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, 
 		return 0;	
 	}
 	// 不相交都不满足，那就是相交了
-	return 1;
-		
+	return 1;	
 }
 
 //获得两个矩形的重叠部分
-BOOL  GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res) {
+BOOL  _inline GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res) {
 	//	assert(r1 != NULL && r2 != NULL && res!=NULL);
 
 	res->x = MAX(r1->x, r2->x);

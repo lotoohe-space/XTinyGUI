@@ -43,6 +43,7 @@ void ButtonWidgePaint(void *hObject) {
 	XRECT xRECT;
 	hXButton = hObject;
 	if (!hObject) { return; }
+	if (!isGUINeedCut(hXButton)) { return; }
 	DrawSetArea(hXButton);
 	//uintColor tempColor = hXButton->buttonWidge.pencil.DrawColor;
 	//hXButton->buttonWidge.pencil.DrawColor = RGB565(0,0,0);
