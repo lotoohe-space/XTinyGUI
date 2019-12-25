@@ -96,9 +96,9 @@ HXRECT RectCutFind(void) {
 	XPOINT pointEnd;
 	HLIST tempRectCutlist;
 
-	int temp_w = 0;
-	int val = bgRect.y + bgRect.h;
-	int val1 = bgRect.y + bgRect.h;
+	uint16 temp_w = 0;
+	uint16 val = bgRect.y + bgRect.h;
+	//int val1 = bgRect.y + bgRect.h;
 	//fill_rect(startPoint.x, startPoint. y, 5, 5, rand()%65535);
 	pointEnd.x = bgRect.w + bgRect.x;
 	pointEnd.y = bgRect.y + bgRect.h;
