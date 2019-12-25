@@ -194,7 +194,7 @@ extern  XRECT drawArea;
 void GUIExec(void) {
 	if (drawArea.x != -1) {
  		if (hXDesktop->topWin!=NULL
-			&&memcmp(&drawArea, &(hXDesktop->topWin->winWidge.rect),sizeof(XRECT)) ==0
+			&& memcmp(&drawArea, &(hXDesktop->topWin->winWidge.rect),sizeof(XRECT)) ==0
 			) {
 			hXDesktop->topWin->winWidge.paintFun(hXDesktop->topWin);
 		}

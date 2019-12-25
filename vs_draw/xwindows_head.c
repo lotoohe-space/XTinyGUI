@@ -92,7 +92,7 @@ void WindowsHeadPaint(void * hObject){
 	hWinHead = hObject;
 	if (!hWinHead) { return; }
 	if (!hWinHead->headWidge.isVisable) { return; }
-	if (!isGUINeedCut(hWinHead)) { return; }
+	//if (!isGUINeedCut(hWinHead)) { return; }
 	DrawSetArea(hWinHead);//计算得到当前绘图区域
 	//计算得到剪裁区域
 	cutPostionList=RectCutAddRectList(hWinHead->widgetList->next);

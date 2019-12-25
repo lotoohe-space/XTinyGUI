@@ -51,7 +51,7 @@ PUBLIC void WidgePaint(void *hObject) {
 	hWidgeBase = hObject;
 	if (!hObject) { return; }
 	if (hWidgeBase->isVisable == 0) { return; }
-	if (!isGUINeedCut(hWidgeBase)) { return; }
+	//if (!isGUINeedCut(hWidgeBase)) { return; }
 
 	DrawSetArea(hWidgeBase);
 
