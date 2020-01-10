@@ -31,7 +31,14 @@ HXBUTTON ButtonWidgeCreate(char *text,int16 x, int16 y, int16 w, int16 h) {
 	hXButton->buttonWidge.isVisable = TRUE;
 
 	hXButton->text = text;
+	hXButton->viewClickCallBack = NULL;
+
+
 	return hXButton;
+}
+void WidgeSetClickBack(HXBUTTON hObject, ViewClickCallBack viewClickCallBack) {
+	if (!hObject) { return; }
+	hObject->viewClickCallBack = viewClickCallBack;
 }
 void ButtonWidgeMoveTo(HXBUTTON hObject, int16 x, int16 y) {
 	if (!hObject) { return; }
@@ -44,109 +51,125 @@ void ButtonWidgePaint(void *hObject) {
 	hXButton = hObject;
 	if (!hObject) { return; }
 	if (!isGUINeedCut(hXButton)) { return; }
+
 	DrawSetArea(hXButton);
-	//uintColor tempColor = hXButton->buttonWidge.pencil.DrawColor;
-	//hXButton->buttonWidge.pencil.DrawColor = RGB565(0,0,0);
 
-	//xRECT.x = hXButton->buttonWidge.rect.x;
+	uintColor tempColor = hXButton->buttonWidge.pencil.DrawColor;
+	hXButton->buttonWidge.pencil.DrawColor = RGB565(88,88,88);
+
+	//xRECT.x = hXButton->buttonWidge.rect.x ;
 	//xRECT.y = hXButton->buttonWidge.rect.y;
-	//xRECT.w = hXButton->buttonWidge.rect.w;
-	//xRECT.h = 1;
-	//DrawCutRect(hXButton, &xRECT);
-
-	//xRECT.x = hXButton->buttonWidge.rect.x;
-	//xRECT.y = hXButton->buttonWidge.rect.y + hXButton->buttonWidge.rect.h - 1;
-	//xRECT.w = hXButton->buttonWidge.rect.w;
-	//xRECT.h = 1;
-	//DrawCutRect(hXButton, &xRECT);
-
-	//xRECT.x = hXButton->buttonWidge.rect.x;
-	//xRECT.y = hXButton->buttonWidge.rect.y;
-	//xRECT.w = 1;
-	//xRECT.h = hXButton->buttonWidge.rect.h;
-	//DrawCutRect(hXButton, &xRECT);
-
-	//xRECT.x = hXButton->buttonWidge.rect.x + hXButton->buttonWidge.rect.w - 1;
-	//xRECT.y = hXButton->buttonWidge.rect.y;
-	//xRECT.w = 1;
+	//xRECT.w = hXButton->buttonWidge.rect.w / 2;
 	//xRECT.h = hXButton->buttonWidge.rect.h;
 	//DrawCutRect(hXButton,&xRECT);
 
-	//if (_GetBtnStatus(hXButton)) {
-	//	hXButton->buttonWidge.pencil.DrawColor = RGB565(255, 255, 255);
-	//} else {
-	//	hXButton->buttonWidge.pencil.DrawColor = RGB565(0, 0, 0);
-	//}
-
-
-	//xRECT.x = hXButton->buttonWidge.rect.x + hXButton->buttonWidge.rect.w - 2;
-	//xRECT.y = hXButton->buttonWidge.rect.y + 1;
-	//xRECT.w = 1;
-	//xRECT.h = hXButton->buttonWidge.rect.h - 2;
-	//DrawCutRect(hXButton,&xRECT);
-
-	//xRECT.x = hXButton->buttonWidge.rect.x + 1;
-	//xRECT.y = hXButton->buttonWidge.rect.y + hXButton->buttonWidge.rect.h - 2;
-	//xRECT.w = hXButton->buttonWidge.rect.w - 2;
-	//xRECT.h = 1;
+	//hXButton->buttonWidge.pencil.DrawColor = RGB565(33, 33, 33);
+	//xRECT.x = hXButton->buttonWidge.rect.x+ hXButton->buttonWidge.rect.w / 2;
+	//xRECT.y = hXButton->buttonWidge.rect.y;
+	//xRECT.w = hXButton->buttonWidge.rect.w / 2+1;
+	//xRECT.h = hXButton->buttonWidge.rect.h;
 	//DrawCutRect(hXButton, &xRECT);
 
-	//hXButton->buttonWidge.pencil.DrawColor = RGB565(255, 255, 255);
 
-	//xRECT.x = hXButton->buttonWidge.rect.x + 1;
-	//xRECT.y = hXButton->buttonWidge.rect.y + 1;
-	//xRECT.w = hXButton->buttonWidge.rect.w - 2;
-	//xRECT.h = 1;
-	//DrawCutRect(hXButton,&xRECT);
+	xRECT.x = hXButton->buttonWidge.rect.x;
+	xRECT.y = hXButton->buttonWidge.rect.y;
+	xRECT.w = hXButton->buttonWidge.rect.w;
+	xRECT.h = 1;
+	DrawCutRect(hXButton, &xRECT);
 
-	//xRECT.x = hXButton->buttonWidge.rect.x + 1;
-	//xRECT.y = hXButton->buttonWidge.rect.y + 1;
-	//xRECT.w = 1;
-	//xRECT.h = hXButton->buttonWidge.rect.h - 2;
+	xRECT.x = hXButton->buttonWidge.rect.x;
+	xRECT.y = hXButton->buttonWidge.rect.y + hXButton->buttonWidge.rect.h - 1;
+	xRECT.w = hXButton->buttonWidge.rect.w;
+	xRECT.h = 1;
+	DrawCutRect(hXButton, &xRECT);
+
+	xRECT.x = hXButton->buttonWidge.rect.x;
+	xRECT.y = hXButton->buttonWidge.rect.y;
+	xRECT.w = 1;
+	xRECT.h = hXButton->buttonWidge.rect.h;
+	DrawCutRect(hXButton, &xRECT);
+
+	xRECT.x = hXButton->buttonWidge.rect.x + hXButton->buttonWidge.rect.w - 1;
+	xRECT.y = hXButton->buttonWidge.rect.y;
+	xRECT.w = 1;
+	xRECT.h = hXButton->buttonWidge.rect.h;
+	DrawCutRect(hXButton,&xRECT);
+
+	if (_GetBtnStatus(hXButton)) {
+		hXButton->buttonWidge.pencil.DrawColor = RGB565(255, 255, 255);
+	} else {
+		hXButton->buttonWidge.pencil.DrawColor = RGB565(0, 0, 0);
+	}
+
+
+	xRECT.x = hXButton->buttonWidge.rect.x + hXButton->buttonWidge.rect.w - 2;
+	xRECT.y = hXButton->buttonWidge.rect.y + 1;
+	xRECT.w = 1;
+	xRECT.h = hXButton->buttonWidge.rect.h - 2;
+	DrawCutRect(hXButton,&xRECT);
+
+	xRECT.x = hXButton->buttonWidge.rect.x + 1;
+	xRECT.y = hXButton->buttonWidge.rect.y + hXButton->buttonWidge.rect.h - 2;
+	xRECT.w = hXButton->buttonWidge.rect.w - 2;
+	xRECT.h = 1;
+	DrawCutRect(hXButton, &xRECT);
+
+	hXButton->buttonWidge.pencil.DrawColor = RGB565(255, 255, 255);
+
+	xRECT.x = hXButton->buttonWidge.rect.x + 1;
+	xRECT.y = hXButton->buttonWidge.rect.y + 1;
+	xRECT.w = hXButton->buttonWidge.rect.w - 2;
+	xRECT.h = 1;
+	DrawCutRect(hXButton,&xRECT);
+
+	xRECT.x = hXButton->buttonWidge.rect.x + 1;
+	xRECT.y = hXButton->buttonWidge.rect.y + 1;
+	xRECT.w = 1;
+	xRECT.h = hXButton->buttonWidge.rect.h - 2;
+	DrawCutRect(hXButton, &xRECT);
+
+	hXButton->buttonWidge.pencil.DrawColor = tempColor;
+
+	xRECT.x = hXButton->buttonWidge.rect.x + 2;
+	xRECT.y = hXButton->buttonWidge.rect.y + 2;
+	xRECT.w = hXButton->buttonWidge.rect.w - 4;
+	xRECT.h = hXButton->buttonWidge.rect.h - 4;
+	DrawCutRect(hXButton, &xRECT);
 	//DrawCutRect(hXButton, &xRECT);
 
-	//hXButton->buttonWidge.pencil.DrawColor = tempColor;
-
-	//xRECT.x = hXButton->buttonWidge.rect.x + 2;
-	//xRECT.y = hXButton->buttonWidge.rect.y + 2;
-	//xRECT.w = hXButton->buttonWidge.rect.w - 4;
-	//xRECT.h = hXButton->buttonWidge.rect.h - 4;
-	//DrawCutRect(hXButton, &xRECT);
-	//DrawCutRect(hXButton, &xRECT);
-
-	//tempColor = hXButton->buttonWidge.pencil.DrawColor;
-	//
-	//hXButton->buttonWidge.pencil.DrawBkColor = tempColor;
+	tempColor = hXButton->buttonWidge.pencil.DrawColor;
+	
+	hXButton->buttonWidge.pencil.DrawBkColor = tempColor;
 
 	if (!_GetBtnStatus(hXButton)) {
 		hXButton->buttonWidge.pencil.DrawColor = _DefaultButtonUpColor;
-		DrawCutRect(hXButton,hXButton);
-		//xRECT.x = hXButton->buttonWidge.rect.x + 2;
-		//xRECT.y = hXButton->buttonWidge.rect.y + 2;
-		//xRECT.w = hXButton->buttonWidge.rect.w - 2;
-		//xRECT.h = hXButton->buttonWidge.rect.h - 2;
+		//DrawCutRect(hXButton,hXButton);
+		xRECT.x = hXButton->buttonWidge.rect.x + 2;
+		xRECT.y = hXButton->buttonWidge.rect.y + 2;
+		xRECT.w = hXButton->buttonWidge.rect.w - 4;
+		xRECT.h = hXButton->buttonWidge.rect.h - 4;
 		hXButton->buttonWidge.pencil.DrawBkColor = _DefaultButtonUpColor;
 		hXButton->buttonWidge.pencil.DrawColor = _DefaultButtonFontColor;
 		DrawCutString(hXButton, 
 			hXButton->hFont,
-			hXButton,
+			&xRECT,
 			hXButton->text);
 	}
 	else {
 		hXButton->buttonWidge.pencil.DrawColor = _DefaultButtonDownColor;
-		DrawCutRect(hXButton, hXButton);
-		/*xRECT.x = hXButton->buttonWidge.rect.x + 3;
+		//DrawCutRect(hXButton, hXButton);
+		xRECT.x = hXButton->buttonWidge.rect.x + 3;
 		xRECT.y = hXButton->buttonWidge.rect.y + 3;
-		xRECT.w = hXButton->buttonWidge.rect.w - 3;
-		xRECT.h = hXButton->buttonWidge.rect.h - 3;*/
+		xRECT.w = hXButton->buttonWidge.rect.w - 4;
+		xRECT.h = hXButton->buttonWidge.rect.h - 4;
 		hXButton->buttonWidge.pencil.DrawBkColor = _DefaultButtonDownColor;
 		hXButton->buttonWidge.pencil.DrawColor = _DefaultButtonFontColor;
 		DrawCutString(hXButton, 
 			hXButton->hFont,
-			hXButton,
+			&xRECT,
 			hXButton->text);
 	}
-	//hXButton->buttonWidge.pencil.DrawColor = tempColor;
+	hXButton->buttonWidge.pencil.DrawColor = tempColor;
 }
 int8 ButtonWidgeCallBack(void *hObject, HMSGE hMsg) {
 	HXBUTTON hXButton = hObject;
@@ -156,12 +179,18 @@ int8 ButtonWidgeCallBack(void *hObject, HMSGE hMsg) {
 			switch (hMsg->msgID) {
 			case MSG_TOUCH_MOVE:
 			case MSG_TOUCH_PRESS:
+				if (hXButton->viewClickCallBack != NULL) {
+					hXButton->viewClickCallBack(hXButton, _GetBtnStatus(hXButton));
+				}
 				hXButton->buttonWidge.pencil.DrawColor = hXButton->downColor;
 				_SetBtnPress(hXButton);
 				WindowsInvaildRect(hXButton->buttonWidge.parentHWIN, hXButton);
-				break;
+				break; 
 			case MSG_TOUCH_RELEASE:
 				if (_GetBtnStatus(hXButton)) {
+					if (hXButton->viewClickCallBack != NULL) {
+						hXButton->viewClickCallBack(hXButton, _GetBtnStatus(hXButton));
+					}
 					hXButton->buttonWidge.pencil.DrawColor = hXButton->upColor;
 					_SetBtnRelease(hXButton);
 					WindowsInvaildRect(hXButton->buttonWidge.parentHWIN, hXButton);

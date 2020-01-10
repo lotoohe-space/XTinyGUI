@@ -78,6 +78,9 @@
     <ClInclude Include="x_malloc.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SqQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -129,6 +132,9 @@
       <Filter>头文件</Filter>
     </ClCompile>
     <ClCompile Include="x_malloc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SqQueue.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

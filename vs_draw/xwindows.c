@@ -48,6 +48,9 @@ HWIN WindowsCreate(char *title,int16 x,int16 y,int16 w,int16 h) {
 	hWin->winWidge.isVisable = TRUE;
 	hWin->winWidge.parentHWIN = NULL;
 
+	/*设置需要全部重绘*/
+	_SetDrawAllLag(hWin);
+
 	/*先设置为不显示头部*/
 	_ClrDrawWinHead(hWin);
 	/*加入一个控件*/
@@ -97,13 +100,13 @@ int8 WindowsWidgeAdd(HWIN hWin, void *widge) {
 		hWidge->rect.x + hWin->winWidge.rect.x,
 		hWidge->rect.y + hWin->winWidge.rect.y + (_IsDrawWinHead(hWin) ? hWin->hWinHead->headWidge.rect.h : 0)
 	);
+	/*设置父窗口*/
 	WidgeSetParentWin(hWidge, hWin);
-	/* 更新窗口 */
 
+	/* 设置更新窗口区域 */
 	if (hWin->winWidge.parentHWIN == NULL) {
 		DrawInvaildRect(hWin);
-	}
-	else {
+	}else {
 		DrawInvaildRect(hWin->winWidge.parentHWIN);
 	}
 	return 0;
@@ -158,13 +161,6 @@ void WindowsMoveTo(HWIN hWin, int16 x, int16 y) {
 		WindowsInvaildRect(hWin,hWin->winWidge.parentHWIN);
 	}
 	setMovingWin(hWin);
-	//if (isGUINeedCut(hWin)) {
-	//	_SET_BIT((hWin)->flag, 2);
-	//}
-	//else {
-	//	_CLR_BIT((hWin)->flag, 2);
-	//}
-	
 
 }
 /*设置窗口颜色*/
@@ -205,7 +201,9 @@ void WindowsPaint(void *hObject) {
 	hWin = hObject;
 	if (!hWin) { return; }
 	if(!(hWin->winWidge.isVisable)){return ;}
-	if (!isGUINeedCut(hWin)) { return; }
+	if (!isGUINeedCut(hWin) && !_IsDrawAllLag(hWin)) { return; }
+	/*初次需要全部刷新*/
+	_ClrDrawAllLag(hWin);
 
 	/*设置当前绘图区域*/
 	DrawSetArea(hWin);

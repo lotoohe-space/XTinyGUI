@@ -99,7 +99,7 @@ HXRECT RectCutFind(void) {
 	uint16 temp_w = 0;
 	uint16 val = bgRect.y + bgRect.h;
 	//int val1 = bgRect.y + bgRect.h;
-	//fill_rect(startPoint.x, startPoint. y, 5, 5, rand()%65535);
+	
 	pointEnd.x = bgRect.w + bgRect.x;
 	pointEnd.y = bgRect.y + bgRect.h;
 
@@ -111,17 +111,26 @@ gotonext:
 		/*************查找参考线下面离得最近的一条边*************/
 		/*优化，不应该只找离得最近的一条边，应该是找右边最近的矩形的上下最近的一条边*/
 		if (hRect->y > startPoint.y) {							/*上边*/
-			if (hRect->y - startPoint.y < val) {				/*找最近的一条*/
-				val = hRect->y - startPoint.y;
-				pointEnd.y = hRect->y;
-
+			/*在被剪裁矩形的纵向限定范围内*/
+			if (hRect->y > bgRect.y 
+				&& hRect->y < bgRect.y + bgRect.h) {
+				if (hRect->y - startPoint.y < val) {				/*找最近的一条*/
+					val = hRect->y - startPoint.y;
+					pointEnd.y = hRect->y;
+					//fill_rect(startPoint.x, startPoint.y, 5, 5, rand() % 65535);
+				}
 			}
 		}
 		else if (hRect->y + hRect->h > startPoint.y) {			/*下边*/
-			if ((hRect->y + hRect->h - startPoint.y) < val) {	/*找最近的一条*/
-				val = (hRect->y + hRect->h - startPoint.y);
-				pointEnd.y = hRect->y + hRect->h;
+			/*在被剪裁矩形的纵向限定范围内*/
+			if (hRect->y + hRect->h > bgRect.y  
+				&& hRect->y + hRect->h < bgRect.y + bgRect.h) {
+				if ((hRect->y + hRect->h - startPoint.y) < val) {	/*找最近的一条*/
+					val = (hRect->y + hRect->h - startPoint.y);
 
+					pointEnd.y = hRect->y + hRect->h;
+					//fill_rect(startPoint.x, startPoint.y, 5, 5, rand() % 65535);
+				}
 			}
 
 			/************找右边离起点x最近的线************/
@@ -169,17 +178,25 @@ gotonext:
 					/*pointEnd.y可能还没有达到与参考位置最近，故继续遍历*/
 					while (hRect = RectCutGetNext()) {
 						if (hRect->y > startPoint.y) {							/*上边*/
-							if (hRect->y - startPoint.y < val) {				/*找最近的一条*/
-								val = hRect->y - startPoint.y;
-								pointEnd.y = hRect->y;
+							/*在被剪裁矩形的纵向限定范围内*/
+							if (hRect->y > bgRect.y
+								&& hRect->y < bgRect.y + bgRect.h) {
+								if (hRect->y - startPoint.y < val) {				/*找最近的一条*/
+									val = hRect->y - startPoint.y;
+									pointEnd.y = hRect->y;
 
+								}
 							}
 						}
 						else if (hRect->y + hRect->h > startPoint.y) {			/*下边*/
-							if ((hRect->y + hRect->h - startPoint.y) < val) {	/*找最近的一条*/
-								val = (hRect->y + hRect->h - startPoint.y);
-								pointEnd.y = hRect->y + hRect->h;
+							/*在被剪裁矩形的纵向限定范围内*/
+							if (hRect->y + hRect->h > bgRect.y
+								&& hRect->y + hRect->h < bgRect.y + bgRect.h) {
+								if ((hRect->y + hRect->h - startPoint.y) < val) {	/*找最近的一条*/
+									val = (hRect->y + hRect->h - startPoint.y);
+									pointEnd.y = hRect->y + hRect->h;
 
+								}
 							}
 						}
 					}
@@ -192,7 +209,37 @@ gotonext:
 				}
 				/*右移超出边界，x回到起点*/
 				startPoint.x = bgRect.x;
-				/*Y回到向下上次找到的最近的一条边*/
+				/*Y回到找到的最近的一条边*/
+				HLIST tempItem;
+				int tempPointEndY;
+				tempPointEndY = pointEnd.y;
+				tempItem = rectItem;
+				/*pointEnd.y可能还没有达到与参考位置最近，故继续遍历*/
+				while (hRect = RectCutGetNext()) {
+					if (hRect->y > startPoint.y) {							/*上边*/
+							/*在被剪裁矩形的纵向限定范围内*/
+						if (hRect->y > bgRect.y 
+							&& hRect->y < bgRect.y + bgRect.h) {
+							if (hRect->y - startPoint.y < val) {				/*找最近的一条*/
+								val = hRect->y - startPoint.y;
+								pointEnd.y = hRect->y;
+
+							}
+						}
+					}
+					else if (hRect->y + hRect->h > startPoint.y) {			/*下边*/
+						/*在被剪裁矩形的纵向限定范围内*/
+						if (hRect->y + hRect->h > bgRect.y 
+							&& hRect->y + hRect->h < bgRect.y + bgRect.h) {
+							if ((hRect->y + hRect->h - startPoint.y) < val) {	/*找最近的一条*/
+								val = (hRect->y + hRect->h - startPoint.y);
+								pointEnd.y = hRect->y + hRect->h;
+
+							}
+						}
+					}
+				}
+				//rectItem = tempItem;
 				startPoint.y = pointEnd.y;
 
 				/*更新完成后，剪裁的起点发生了变化，重新退回剪裁域*/
@@ -202,10 +249,13 @@ gotonext:
 				pointEnd.x = bgRect.w + bgRect.x;
 				pointEnd.y = bgRect.y + bgRect.h;
 
+				temp_w = 0;
+
 				val = bgRect.y + bgRect.h;
 
 				lastRightRect = NULL;
 			}
+			//fill_rect(startPoint.x, startPoint.y, 5, 5, rand() % 65535);
 			/*退回，因为可能之前的矩形与现在的碰撞，但是之前的起点并未发现*/
 			rectItem = rectCutList->next;
 		}
@@ -220,6 +270,9 @@ gotonext:
 	if (pointEnd.x >= bgRect.x + bgRect.w || temp_w >= bgRect.x + bgRect.w) {
 		startPoint.y = pointEnd.y;
 		startPoint.x = bgRect.x;
+
+		//fill_rect(startPoint.x, startPoint.y, 5, 5, rand() % 65535);
+
 		if (pointEnd.y >= bgRect.h + bgRect.y) {
 			isEnd = TRUE;
 		}
@@ -230,6 +283,9 @@ gotonext:
 			startPoint.y = pointEnd.y;
 			startPoint.x = bgRect.x;
 		}
+
+		//fill_rect(startPoint.x, startPoint.y, 5, 5, rand() % 65535);
 	}
+	//fill_rect(startPoint.x, startPoint.y, 5, 5, rand() % 65535);
 	return &xResRect;
 }

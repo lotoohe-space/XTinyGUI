@@ -9,20 +9,10 @@
 /*桌面也应该是一个窗体*/
 HXDESKTOP hXDesktop = NULL;
 
-
-
 //添加一个窗口到列表
 int8 WinListAdd(HWIN hWin) {
 
 	WindowsWidgeAdd(hXDesktop->desktopWin, hWin);
-
-	/*HLIST addItem = ListNew();
-	addItem->val = hWin;
-	if (!addItem) { return -1; }
-	if (ListAddLast(hXDesktop->desktopWin->widgetList, addItem) == -1) {
-		return -1;
-	}
-	hXDesktop->topWin = hWin;*/
 	return 0;
 }
 //获取顶层的窗口
@@ -72,12 +62,11 @@ HWIN WinGetFocus(void) {
 	//如果没有存在焦点的窗口则返回顶层的窗口
 	return hXDesktop->topWin;
 }
-HMSGE hTempMsg = NULL;
-void GUIPostEvent(HMSGE hMsg) {
-	hTempMsg = hMsg;
-}
+
 /*GUI事件处理*/
 void GUIEvent(void) {
+	HMSGE hTempMsg;
+	hTempMsg = GUIGetMsg();
 	if (hTempMsg == NULL) { return; }
 	if (hTempMsg->msgType == MSG_TOUCH) {
 		//hXDesktop->desktopWin->widgeCallBackFun(hXDesktop->desktopWin, hMsg);
@@ -107,10 +96,13 @@ void GUIEvent(void) {
 	else if (hTempMsg->msgType == MSG_WIN) {
 		WindowsMoveTo(hTempMsg->msgSrc, hTempMsg->msgVal.xy.x, hTempMsg->msgVal.xy.y);
 	}
+	GUIDelMsg(hTempMsg);
 }
 
 //初始化GUI
 HXDESKTOP GUIInit(void) {
+
+	GUIMsgEventInit();
 
 	hXDesktop = (HXDESKTOP)xMalloc( sizeof(XDESKTOP));
 	if (hXDesktop == NULL) { return NULL; }
@@ -135,7 +127,9 @@ HXDESKTOP GUIInit(void) {
 void setMovingWin(HWIN hWin) {
 	hXDesktop->winMoving = hWin;
 }
-/*当前的窗口是否需要剪裁*/
+/*当前的窗口是否需要剪裁
+	TRUE:需要剪裁
+*/
 BOOL isGUINeedCut(HXRECT hXRECT) {
 	if (hXRECT == NULL) { return TRUE; }
 	

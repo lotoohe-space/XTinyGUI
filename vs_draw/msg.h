@@ -27,6 +27,9 @@ typedef struct {
 	}msgVal;
 }*HMSGE, MSGE;
 
+uint8 GUIMsgEventInit(void);
+HMSGE GUIGetMsg(void);
+void GUIDelMsg(HMSGE hMsg);
 int8 GUISendMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y);
 int8 GUISendTouchMsg(int ID, int16 x, int16 y);
 
