@@ -62,10 +62,25 @@ HWIN WinGetFocus(void) {
 	//如果没有存在焦点的窗口则返回顶层的窗口
 	return hXDesktop->topWin;
 }
-
+extern void _DrawInvaildRect(HXRECT hXRect);
 /*GUI事件处理*/
 void GUIEvent(void) {
 	HMSGE hTempMsg;
+	while ((hTempMsg = GUIGetDrawMsg()) != NULL) {
+		if (hTempMsg != NULL) {
+			if (hTempMsg->msgType == MSG_WIN_INVAILD_UPDATE) {
+				XRECT hRect;
+				hRect.x = hTempMsg->msgVal.xy.x;
+				hRect.y = hTempMsg->msgVal.xy.y;
+				hRect.w = hTempMsg->msgVal.xy.w;
+				hRect.h = hTempMsg->msgVal.xy.h;
+				_DrawInvaildRect(&hRect);
+				GUIExec();
+			}
+			GUIDelMsg(hTempMsg);
+		}
+	}
+
 	hTempMsg = GUIGetMsg();
 	if (hTempMsg == NULL) { return; }
 	if (hTempMsg->msgType == MSG_TOUCH) {
@@ -97,6 +112,8 @@ void GUIEvent(void) {
 		WindowsMoveTo(hTempMsg->msgSrc, hTempMsg->msgVal.xy.x, hTempMsg->msgVal.xy.y);
 	}
 	GUIDelMsg(hTempMsg);
+	
+	
 }
 
 //初始化GUI

@@ -178,6 +178,7 @@ int8 ButtonWidgeCallBack(void *hObject, HMSGE hMsg) {
 		if (_IsDrawCheckPointR((hMsg->msgVal.xy.x), (hMsg->msgVal.xy.y),(&(hXButton->buttonWidge.pencil)))) {
 			switch (hMsg->msgID) {
 			case MSG_TOUCH_MOVE:
+				break;
 			case MSG_TOUCH_PRESS:
 				if (hXButton->viewClickCallBack != NULL) {
 					hXButton->viewClickCallBack(hXButton, _GetBtnStatus(hXButton));

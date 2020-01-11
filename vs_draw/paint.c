@@ -4,6 +4,7 @@
 #include "gui.h"
 #include "paint_cut.h"
 #include "widge.h"
+#include "msg.h"
 #include <stdlib.h>
 #ifdef WIN32
  extern void d_pix(int x, int y, int color);
@@ -18,14 +19,16 @@
  /*设置无效区域*/
  void DrawInvaildRect(HXRECT hXRect) {
 	 if (hXRect == NULL) {
-		 drawArea.x = 0;
-		 drawArea.y = 0;
-		 drawArea.w = LCD_SCREEN_W;
-		 drawArea.h = LCD_SCREEN_H;
+		 GUISendDrawMsg(NULL, MSG_WIN_INVAILD_UPDATE, 0, 0, 0, LCD_SCREEN_W, LCD_SCREEN_H);
 	 }
 	 else {
-		 XRECT_COPY(&drawArea, hXRect);
+		 GUISendDrawMsg(NULL, MSG_WIN_INVAILD_UPDATE, 0, hXRect->x, hXRect->y, hXRect->w, hXRect->h);
 	 }
+	
+ }
+ /*事件处理程序使用*/
+ void _DrawInvaildRect(HXRECT hXRect) {
+	XRECT_COPY(&drawArea, hXRect);
  }
  /*设置允许绘图的窗口，是当前窗口与桌面的相交区域*/
 void DrawSetArea(void* hObject) {
