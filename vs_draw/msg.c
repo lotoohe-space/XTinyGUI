@@ -5,7 +5,7 @@
 #include "x_malloc.h"
 
 /*队列最大长度*/
-#define MSG_EVENT_MAX_VAL	10000
+#define MSG_EVENT_MAX_VAL	256
 
 /*事件队列*/
 SqQueue eventMsg;
@@ -78,7 +78,7 @@ int8 GUISendMsg(void* hWin, uint8 msgType,uint8 msgID,int16 x,int16 y,uint16 w,u
 	//GUIPostEvent(&Msg);
 	return TRUE;
 }
-int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h) {
+int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h,int16 dx,int16 dy) {
 	HMSGE hMsg;
 	//if (hWin == NULL) { return FALSE; }
 
@@ -93,6 +93,8 @@ int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uin
 	hMsg->msgVal.xy.y = y;
 	hMsg->msgVal.xy.w = w;
 	hMsg->msgVal.xy.h = h;
+	hMsg->dXY.dx = dx;
+	hMsg->dXY.dy = dy;
 	enQueue(&drawMsg, hMsg);
 
 	//GUIPostEvent(&Msg);

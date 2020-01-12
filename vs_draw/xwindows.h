@@ -21,6 +21,7 @@ typedef struct {
 	int16 t_dx;
 	int16 t_dy;
 
+	/*相对上次的偏移量*/
 	int16 dx;
 	int16 dy;
 }*HWIN,WIN;

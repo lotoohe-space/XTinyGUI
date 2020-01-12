@@ -30,6 +30,11 @@ typedef struct {
 			uint16	h;
 		}xy;
 	}msgVal;
+	/*Æ«ÒÆÖµ*/
+	struct {
+		int16 dx;
+		int16 dy;
+	}dXY;
 }*HMSGE, MSGE;
 
 uint8 GUIMsgEventInit(void);
@@ -38,7 +43,7 @@ void GUIDelMsg(HMSGE hMsg);
 int8 GUISendMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h);
 int8 GUISendTouchMsg(int ID, int16 x, int16 y);
 
-int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h);
+int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h,int16 dx,int16 dy);
 HMSGE GUIGetDrawMsg(void);
 void GUIDelDrawMsg(HMSGE hMsg);
 
