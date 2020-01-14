@@ -36,6 +36,12 @@ HXBUTTON ButtonWidgeCreate(char *text,int16 x, int16 y, int16 w, int16 h) {
 
 	return hXButton;
 }
+void ButtonSetText(HXBUTTON hObject,const char* text) {
+	if (hObject == NULL) { return; }
+	hObject->text = text;
+	WindowsInvaildRect(hObject->buttonWidge.parentHWIN, hObject);
+}
+/*设置点击回调*/
 void WidgeSetClickBack(HXBUTTON hObject, ViewClickCallBack viewClickCallBack) {
 	if (!hObject) { return; }
 	hObject->viewClickCallBack = viewClickCallBack;
@@ -135,7 +141,6 @@ void ButtonWidgePaint(void *hObject) {
 	xRECT.w = hXButton->buttonWidge.rect.w - 4;
 	xRECT.h = hXButton->buttonWidge.rect.h - 4;
 	DrawCutRect(hXButton, &xRECT);
-	//DrawCutRect(hXButton, &xRECT);
 
 	tempColor = hXButton->buttonWidge.pencil.DrawColor;
 	
@@ -175,7 +180,7 @@ int8 ButtonWidgeCallBack(void *hObject, HMSGE hMsg) {
 	HXBUTTON hXButton = hObject;
 	if (!hXButton || !hMsg) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
-		if (_IsDrawCheckPointR((hMsg->msgVal.xy.x), (hMsg->msgVal.xy.y),(&(hXButton->buttonWidge.pencil)))) {
+		if (_IsDrawCheckPointR((hMsg->msgVal.rect.x), (hMsg->msgVal.rect.y),(&(hXButton->buttonWidge.pencil)))) {
 			switch (hMsg->msgID) {
 			case MSG_TOUCH_MOVE:
 				break;

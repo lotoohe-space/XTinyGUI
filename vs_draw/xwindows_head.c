@@ -114,7 +114,7 @@ int8 WindowsHeadsCallBack(void *hObject, HMSGE hMsg) {
 	HWIN_HEAD hWinHead = hObject;
 	if (!hWinHead || !hMsg) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
-		if (_IsDrawCheckPoint(hMsg->msgVal.xy.x, hMsg->msgVal.xy.y,
+		if (_IsDrawCheckPoint(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y,
 			hWinHead->headWidge.rect.x,
 			hWinHead->headWidge.rect.y,
 			hWinHead->headWidge.rect.w,

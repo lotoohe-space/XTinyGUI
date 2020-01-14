@@ -22,8 +22,9 @@ typedef struct {
 	int16 t_dy;
 
 	/*相对上次的偏移量*/
-	int16 dx;
-	int16 dy;
+	XRECT lastRect;
+	//int16 lastX;
+	//int16 lastY;
 }*HWIN,WIN;
 
 //获取是否绘制win头部标志位

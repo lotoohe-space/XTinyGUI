@@ -26,19 +26,19 @@ uint32 TStrlen(char *str) {
 int8 _inline isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
 	// 矩形A位于矩形B的右侧
 	if (x1 >= x2 && x1 >= x2 + w2) {
-		return 0;
+		return FALSE;
 		// 矩形A位于矩形B的左侧	
 	}else if (x1 <= x2 && x1 + w1 <= x2) {
-			return 0;
+			return FALSE;
 		// 矩形A位于矩形B的下侧		
 	}else if (y1 >= y2 && y1 >= y2 + h2) {
-			return 0;
+			return FALSE;
 		// 矩形A位于矩形B的上侧		
 	}else if (y1 <= y2 && y1 + h1 <= y2) {
-		return 0;	
+		return FALSE;
 	}
 	// 不相交都不满足，那就是相交了
-	return 1;	
+	return TRUE;	
 }
 
 //获得两个矩形的重叠部分

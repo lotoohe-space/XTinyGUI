@@ -104,7 +104,7 @@ HXRECT RectCutFind(void) {
 	pointEnd.y = bgRect.y + bgRect.h;
 
 	lastRightRect = NULL;
-gotonext:
+
 	rectItem = rectCutList->next;
 	while ((hRect = RectCutGetNext()) != NULL) {
 

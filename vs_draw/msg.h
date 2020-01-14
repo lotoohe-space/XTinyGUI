@@ -28,23 +28,34 @@ typedef struct {
 			/*宽高*/
 			uint16	w;
 			uint16	h;
-		}xy;
+		}rect;
 	}msgVal;
-	/*偏移值*/
-	struct {
-		int16 dx;
-		int16 dy;
-	}dXY;
+	union {
+		uint32 what;
+		void* v;
+		struct {
+			int16 x;
+			int16 y;
+			uint16 w;
+			uint16 h;
+		}rect;
+	}msgVal1;
+	/*上一次的大小*/
+	
 }*HMSGE, MSGE;
 
 uint8 GUIMsgEventInit(void);
 HMSGE GUIGetMsg(void);
 void GUIDelMsg(HMSGE hMsg);
-int8 GUISendMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h);
+//int8 GUISendMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h);
 int8 GUISendTouchMsg(int ID, int16 x, int16 y);
 
-int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h,int16 dx,int16 dy);
+int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h, int16 x1, int16 y1, uint16 w1, uint16 h1);
 HMSGE GUIGetDrawMsg(void);
 void GUIDelDrawMsg(HMSGE hMsg);
+
+int GUISendMoveMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y);
+//HMSGE GUIGetMoveMsg(void);
+//void GUIDelMoveMsg(HMSGE hMsg);
 
 #endif

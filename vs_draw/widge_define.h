@@ -35,6 +35,8 @@ typedef struct {
 	int16 x1;
 }*HXHLINE, XHLINE;
 
+
+
 /*变量强转为矩形*/
 #define _PToHXRECTType(a) ((HXRECT)(a))
 

@@ -48,8 +48,10 @@ HWIN WindowsCreate(char *title,int16 x,int16 y,int16 w,int16 h) {
 	hWin->winWidge.isVisable = TRUE;
 	hWin->winWidge.parentHWIN = NULL;
 
-	hWin->dx = 0;
-	hWin->dy = 0;
+	hWin->lastRect.x = x;
+	hWin->lastRect.y = y;
+	hWin->lastRect.w = w;
+	hWin->lastRect.h = h;
 	hWin->t_dx = 0;
 	hWin->t_dy = 0;
 
@@ -123,13 +125,13 @@ void WindowsInvaildRect(HWIN hWin,HXRECT hXRect) {
 	if (hXRect == NULL) {
 		//DrawInvaildRect((HXRECT)hWin);
 		GUISendDrawMsg(hWin, MSG_WIN_INVAILD_UPDATE, 0, hWin->winWidge.rect.x, hWin->winWidge.rect.y, hWin->winWidge.rect.w, hWin->winWidge.rect.h
-		, hWin->dx,hWin->dy
+		, hWin->lastRect.x, hWin->lastRect.y, hWin->lastRect.w, hWin->lastRect.h
 		);
 	}
 	else {
 		//DrawInvaildRect(hXRect);
 		GUISendDrawMsg(hWin, MSG_WIN_INVAILD_UPDATE, 0, hXRect->x, hXRect->y, hXRect->w, hXRect->h
-			, hWin->dx, hWin->dy
+			, hWin->lastRect.x, hWin->lastRect.y, hWin->lastRect.w, hWin->lastRect.h
 		);
 	}
 }
@@ -142,12 +144,12 @@ void WindowsClose(HWIN hWin) {
 }
 /*移动窗体*/
 void WindowsMoveTo(HWIN hWin, int16 x, int16 y) {
-	//int16 dx;
-	//int16 dy;
+	int16 dx;
+	int16 dy;
 	if (!hWin) { return; }
 	/*新位置相对于上一次移动的偏移量*/
-	hWin->dx = x - hWin->winWidge.rect.x;
-	hWin->dy = y - hWin->winWidge.rect.y;
+	dx = x - hWin->winWidge.rect.x;
+	dy = y - hWin->winWidge.rect.y;
 
 	/*位置没有改变*/
 	if (x == hWin->winWidge.rect.x 
@@ -155,6 +157,11 @@ void WindowsMoveTo(HWIN hWin, int16 x, int16 y) {
 		return;
 	}
 
+	/*拷贝矩形为上一次的*/
+	hWin->lastRect.x = hWin->winWidge.rect.x;
+	hWin->lastRect.y = hWin->winWidge.rect.y;
+	hWin->lastRect.w = hWin->winWidge.rect.w;
+	hWin->lastRect.h = hWin->winWidge.rect.h;
 	/*设置新的位置*/
 	hWin->winWidge.rect.x = x;
 	hWin->winWidge.rect.y = y;
@@ -168,18 +175,18 @@ void WindowsMoveTo(HWIN hWin, int16 x, int16 y) {
 		while (hWidgeList) {
 			HWIDGE_BASE hWidge = (HWIDGE_BASE)(hWidgeList->val);	
 			/*对内部每一个控件进行偏移*/
-			hWidge->moveToFun(hWidge, hWidge->rect.x + hWin->dx, hWidge->rect.y + hWin->dy);
+			hWidge->moveToFun(hWidge, hWidge->rect.x + dx, hWidge->rect.y + dy);
 			hWidgeList = hWidgeList->next;
 		}
 	}
 
 	/* 更新窗口 */
-	//if (hWin->winWidge.parentHWIN == NULL) {
-	//	WindowsInvaildRect(hWin, NULL);
-	//}
-	//else {
-	WindowsInvaildRect(hWin, hWin->winWidge.parentHWIN);
-	//}
+	if (hWin->winWidge.parentHWIN == NULL) {
+		WindowsInvaildRect(hWin, NULL);
+	}
+	else {
+		WindowsInvaildRect(hWin, hWin->winWidge.parentHWIN);
+	}
 	/*设置当前窗口为移动窗口*/
 	//setMovingWin(hWin);
 
@@ -222,7 +229,9 @@ void WindowsPaint(void *hObject) {
 	hWin = hObject;
 	if (!hWin) { return; }
 	if(!(hWin->winWidge.isVisable)){return ;}
-	if (!isGUINeedCut(hWin) && !_IsDrawAllLag(hWin)) { return; }
+	if (!isGUINeedCut(hWin) 
+		&& !_IsDrawAllLag(hWin)
+		) { return; }
 	/*初次需要全部刷新*/
 	_ClrDrawAllLag(hWin);
 
@@ -301,8 +310,8 @@ int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 				//有头才能抓取移动
 					//被抓的是不是头
 					if (WindowsHeadsCallBack(hWin->hWinHead, hMsg) == 0) {
-						hWin->t_dx = hMsg->msgVal.xy.x - hWin->winWidge.rect.x;
-						hWin->t_dy = hMsg->msgVal.xy.y - hWin->winWidge.rect.y;
+						hWin->t_dx = hMsg->msgVal.rect.x - hWin->winWidge.rect.x;
+						hWin->t_dy = hMsg->msgVal.rect.y - hWin->winWidge.rect.y;
 						_SetWinMoveing(hWin);
 						WindowsInvaildRect(hWin, hWin);
 						return 0;
@@ -313,7 +322,7 @@ int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 					if (_IsWinMoving(hWin)) {
 						/*WindowsMoveTo(hWin, 
 							hMsg->msgVal.xy.x - hWin->t_dx, hMsg->msgVal.xy.y - hWin->t_dy);*/
-						GUISendMsg(hWin, MSG_WIN, MSG_WIN_MOVE, hMsg->msgVal.xy.x - hWin->t_dx, hMsg->msgVal.xy.y - hWin->t_dy, 0, 0);
+						GUISendMoveMsg(hWin, MSG_WIN, MSG_WIN_MOVE, hMsg->msgVal.rect.x - hWin->t_dx, hMsg->msgVal.rect.y - hWin->t_dy);
 						return 0;
 					}
 				break;
@@ -325,7 +334,7 @@ int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 				break;
 			}
 		}
-		if (!_IsDrawCheckPoint(hMsg->msgVal.xy.x, hMsg->msgVal.xy.y,
+		if (!_IsDrawCheckPoint(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y,
 			hWin->winWidge.rect.x, hWin->winWidge.rect.y, 
 			hWin->winWidge.rect.w, hWin->winWidge.rect.h)) {
 			return 2;
@@ -357,7 +366,6 @@ int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 						}
 					}
 					lastWidge = lastWidge->lnext;
-				
 				}
 			}
 		}
