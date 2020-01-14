@@ -3,12 +3,20 @@
 #include "type.h"
 #include "widge_define.h"
 #include "font.h"
+
+/*按钮事件回调*/
+typedef void(*ViewClickCallBack)(void* Object, uint8 status);
+
+/*按钮的管理结构体*/
 typedef struct {
 	WIDGE_BASE buttonWidge;
 
 	HFONTF hFont;//字体
 	char *text;
-	uint8 flag;//0bit 状态
+	uint8 flag;//0:bit 按钮状态
+	ViewClickCallBack viewClickCallBack;
+
+
 	uintColor downColor;
 	uintColor upColor;
 	
@@ -29,5 +37,6 @@ HXBUTTON ButtonWidgeCreate(char *text, int16 x, int16 y, int16 w, int16 h);
 void ButtonWidgeMoveTo(HXBUTTON hObject, int16 x, int16 y);
 void ButtonWidgePaint(void *hObject);
 int8 ButtonWidgeCallBack(void *hObject, HMSGE hMsg);
+void WidgeSetClickBack(HXBUTTON hObject,ViewClickCallBack viewClickCallBack);
 
 #endif

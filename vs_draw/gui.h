@@ -35,7 +35,7 @@ HWIN WinGetFocus(void);
 HXDESKTOP GUIInit(void);
 void GUIEvent(void);
 void WinMoveTop(void* hObject);
-void GUIPostEvent(HMSGE hMsg);
+//void GUIPostEvent(HMSGE hMsg);
 BOOL isGUINeedCut(HXRECT hXRECT);
 void setMovingWin(HWIN hWin);
 

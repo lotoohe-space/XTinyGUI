@@ -34,6 +34,11 @@ HTEXT_WIDGE TextWidegeCreate(char *text, int16 x, int16 y) {
 
 	return hObject;
 }
+void TextSetText(HTEXT_WIDGE hObject, const char* title) {
+	if (hObject == NULL) { return; }
+	hObject->title = title;
+	WindowsInvaildRect(hObject->textWidge.parentHWIN, hObject);
+}
 void TextWidegeMoveTo(HTEXT_WIDGE hObject, int16 x, int16 y) {
 	if (!hObject) { return; }
 	hObject->textWidge.rect.x = x;
@@ -56,7 +61,7 @@ int8 TextWidegeCallBack(void *hObject, HMSGE hMsg) {
 	HTEXT_WIDGE hTextWidge = hObject;
 	if (!hTextWidge || !hMsg) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
-		if (_IsDrawCheckPoint(hMsg->msgVal.xy.x, hMsg->msgVal.xy.y, 
+		if (_IsDrawCheckPoint(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, 
 			hTextWidge->textWidge.rect.x, 
 			hTextWidge->textWidge.rect.y,
 			hTextWidge->textWidge.rect.w,

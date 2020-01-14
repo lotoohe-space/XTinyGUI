@@ -4,7 +4,7 @@
 #include "type.h"
 #include "widge_define.h"
 #include "font.h"
-
+#include "bitmap.h"
 
 void  DrawInvaildRect(HXRECT hXRect);
 void  DrawSetArea(void* hObject);
@@ -17,7 +17,7 @@ uint8 DrawCutRect(void* hObject, HXRECT hXRECT);
 uint8 DrawChar(HXRECT hXRectArea, HFONTF hFont, int16 x, int16 y, uint8 ch, uintColor color);
 uint8 DrawString(HPENCIL hPencil, HFONTF hFont, HXRECT dHRect, int16 x, int16 y, uint8* text);
 uint8 DrawCutString(void* hObject, HFONTF hFont, HXRECT border, uint8* text);
-
+uint8 DrawCutBitmap(void* hObject, HXRECT border, HXBITMAP hXBitmap);
 
 
 #endif 

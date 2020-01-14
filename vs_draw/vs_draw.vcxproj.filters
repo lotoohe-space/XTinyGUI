@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="源文件\img">
+      <UniqueIdentifier>{e3ad4bb8-6203-4385-8ee5-b6e0da615532}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -78,6 +81,18 @@
     <ClInclude Include="x_malloc.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SqQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap_widge.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="girl_bitmap.h">
+      <Filter>源文件\img</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -129,6 +144,15 @@
       <Filter>头文件</Filter>
     </ClCompile>
     <ClCompile Include="x_malloc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SqQueue.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="bitmap.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="bitmap_widge.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

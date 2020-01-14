@@ -67,7 +67,7 @@ int8 WidgeCallBack(void *hObject, HMSGE hMsg) {
 	HWIDGE_BASE hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
-		if (_IsDrawCheckPoint(hMsg->msgVal.xy.x, hMsg->msgVal.xy.y, hWidgeBase->pencil.x, hWidgeBase->pencil.y, hWidgeBase->pencil.w, hWidgeBase->pencil.h)) {
+		if (_IsDrawCheckPoint(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, hWidgeBase->pencil.x, hWidgeBase->pencil.y, hWidgeBase->pencil.w, hWidgeBase->pencil.h)) {
 			return 0;
 		}
 	}

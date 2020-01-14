@@ -147,14 +147,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="bitmap.h" />
+    <ClInclude Include="bitmap_widge.h" />
     <ClInclude Include="button_widge.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="font_ASCII_12_16.h" />
     <ClInclude Include="font_ASCII_8_12.h" />
+    <ClInclude Include="girl_bitmap.h" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="list.h" />
+    <ClInclude Include="SqQueue.h" />
     <ClInclude Include="x_malloc.h" />
     <ClInclude Include="msg.h" />
     <ClInclude Include="paint.h" />
@@ -170,9 +174,12 @@
     <ClInclude Include="z_malloc.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bitmap.c" />
+    <ClCompile Include="bitmap_widge.c" />
     <ClCompile Include="fonts.c" />
     <ClCompile Include="gui.c" />
     <ClCompile Include="list.c" />
+    <ClCompile Include="SqQueue.c" />
     <ClCompile Include="x_malloc.c" />
     <ClCompile Include="msg.c" />
     <ClCompile Include="paint.c" />
