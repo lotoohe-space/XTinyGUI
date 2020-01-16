@@ -11,7 +11,7 @@ HTEXT_WIDGE TextWidegeCreate(char *text, int16 x, int16 y) {
 		return NULL;
 	}
 	WidgeInit((HWIDGE_BASE)hObject, x, y, 0, 0);
-	hObject->hFont = (HFONTF)&fontASCII12_16;
+	hObject->hFont = (HFONTF)& fontASCII8_12;
 	hObject->textWidge.rect.x = x;
 	hObject->textWidge.rect.y = y;
 	
@@ -57,11 +57,12 @@ void TextWidegePaint(void * hObject) {
 	XPOINT xPoint;
 	xPoint.x = 0;
 	xPoint.y = 0;
-	DrawCutStringEx(hTextWidge, (HXRECT)hTextWidge, &xPoint);
-	/*DrawCutString(hTextWidge, hTextWidge->hFont, 
+//	DrawChar(&(hTextWidge->textWidge.pencil), hTextWidge->hFont, hTextWidge, hTextWidge, '0');
+//	DrawCutStringEx(hTextWidge, &xPoint);
+	DrawCutString(hTextWidge, hTextWidge->hFont, 
 		&(hTextWidge->textWidge.rect),
 		NULL,
-		hTextWidge->title);*/
+		hTextWidge->title);
 }
 int8 TextWidegeCallBack(void *hObject, HMSGE hMsg) {
 	HTEXT_WIDGE hTextWidge = hObject;

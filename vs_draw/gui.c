@@ -63,7 +63,9 @@ HWIN WinGetFocus(void) {
 	//如果没有存在焦点的窗口则返回顶层的窗口
 	return hXDesktop->topWin;
 }
-extern void _DrawInvaildRect(HXRECT hXRect);
+void _DrawInvaildRect(HXRECT hXRect) {
+   XRECT_COPY(&(hXDesktop->drawArea), hXRect);
+}
 /*GUI事件处理*/
 void GUIEvent(void) {
 	HMSGE hTempMsg;
