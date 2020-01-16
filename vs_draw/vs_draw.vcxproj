@@ -72,6 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\zspace\source\repos\vs_draw\vs_draw\NES_Simulator;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -150,6 +151,7 @@
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="bitmap_widge.h" />
     <ClInclude Include="button_widge.h" />
+    <ClInclude Include="check_box_widge.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="font.h" />
@@ -158,6 +160,13 @@
     <ClInclude Include="girl_bitmap.h" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="list.h" />
+    <ClInclude Include="NES_Simulator\6502.H" />
+    <ClInclude Include="NES_Simulator\JoyPad.h" />
+    <ClInclude Include="NES_Simulator\nes_datatype.h" />
+    <ClInclude Include="NES_Simulator\nes_main.h" />
+    <ClInclude Include="NES_Simulator\PPU.h" />
+    <ClInclude Include="NES_Simulator\rom.h" />
+    <ClInclude Include="progress_widge.h" />
     <ClInclude Include="SqQueue.h" />
     <ClInclude Include="x_malloc.h" />
     <ClInclude Include="msg.h" />
@@ -176,9 +185,16 @@
   <ItemGroup>
     <ClCompile Include="bitmap.c" />
     <ClCompile Include="bitmap_widge.c" />
+    <ClCompile Include="check_box_widge.c" />
     <ClCompile Include="fonts.c" />
     <ClCompile Include="gui.c" />
     <ClCompile Include="list.c" />
+    <ClCompile Include="NES_Simulator\6502.C" />
+    <ClCompile Include="NES_Simulator\JoyPad.c" />
+    <ClCompile Include="NES_Simulator\nes_main.c" />
+    <ClCompile Include="NES_Simulator\PPU.c" />
+    <ClCompile Include="NES_Simulator\ROM__MARIO.c" />
+    <ClCompile Include="progress_widge.c" />
     <ClCompile Include="SqQueue.c" />
     <ClCompile Include="x_malloc.c" />
     <ClCompile Include="msg.c" />

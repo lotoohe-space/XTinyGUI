@@ -16,7 +16,7 @@ typedef struct {
 	HWIN topWin;
 
 	/*正在移动的窗口*/
-	HWIN winMoving;
+	XRECT movingWidge;
 	//XRECT desktopRect;
 	//PENCIL pencil;//画笔
 	//XRECT invaildRect;
@@ -37,7 +37,7 @@ void GUIEvent(void);
 void WinMoveTop(void* hObject);
 //void GUIPostEvent(HMSGE hMsg);
 BOOL isGUINeedCut(HXRECT hXRECT);
-void setMovingWin(HWIN hWin);
+void SetMovingWin(HWIN hXRect);
 
 
 

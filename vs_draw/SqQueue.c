@@ -16,6 +16,10 @@ uint8 InitQueue(SqQueue *q,uint16 size){
 
 	return TRUE;
 }
+uint16 QueueLength(SqQueue* q) {
+	if (q == NULL) { return; }
+	return (q->rear - q->front + q->maxVal) % q->maxVal;
+}
 void DestroyQueue(SqQueue* q) {
 	if (q == NULL) { return ; }
 	xFree(q->rear);

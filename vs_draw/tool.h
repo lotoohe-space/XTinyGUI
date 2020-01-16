@@ -21,7 +21,7 @@ extern int8 _inline isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, i
 #define _IsDrawCheckArea(x1,y1,w1,h1,x2,y2,w2,h2) isCollsionWithRect(x1,y1,w1,h1,x2,y2,w2,h2)
 //点是否在矩形内
 #define _IsDrawCheckPoint(x,y,x0,y0,w0,h0) (((x) >= (x0)) && ((x) < ((x0) + (w0))) && ((y)>=(y0)) && ((y)<((y0) + (h0))))//isInside( x,  y, x0, y0, w0, h0)
-#define _IsDrawCheckPointR(xp,yp,a) _IsDrawCheckPoint((xp),(yp),(a->x),(a->y),(a->w),(a->h))
+#define _IsDrawCheckPointR(xp,yp,a) _IsDrawCheckPoint((xp),(yp),((a)->x),((a)->y),((a)->w),((a)->h))
 //获得两个矩形的重叠部分
 #define _GetOverLapRect(x1,y1,w1,h1,a) \
 rRect.x = MAX((x1), ((a)->x));\

@@ -4,15 +4,13 @@
 #include "button_widge.h"
 #include "x_malloc.h"
 
-HXBUTTON ButtonWidgeCreate(char *text,int16 x, int16 y, int16 w, int16 h) {
+PUBLIC HXBUTTON BUTTON_MARK_HEAD(Create)(char *text,int16 x, int16 y, int16 w, int16 h) {
 	HXBUTTON hXButton = xMalloc( sizeof(XBUTTON));
 	if (hXButton == NULL) { return NULL; }
+	WidgeInit((HWIDGE_BASE)hXButton, x, y, w, h);
+
 	hXButton->hFont = (HFONTF)&fontASCII8_12;
 
-	hXButton->buttonWidge.rect.x = x;
-	hXButton->buttonWidge.rect.y = y;
-	hXButton->buttonWidge.rect.w = w;
-	hXButton->buttonWidge.rect.h = h;
 
 	hXButton->buttonWidge.paintFun = ButtonWidgePaint;
 	hXButton->buttonWidge.moveToFun = ButtonWidgeMoveTo;
@@ -31,27 +29,24 @@ HXBUTTON ButtonWidgeCreate(char *text,int16 x, int16 y, int16 w, int16 h) {
 	hXButton->buttonWidge.isVisable = TRUE;
 
 	hXButton->text = text;
-	hXButton->viewClickCallBack = NULL;
-
 
 	return hXButton;
 }
-void ButtonSetText(HXBUTTON hObject,const char* text) {
+PUBLIC void BUTTON_MARK_HEAD(SetText)(HXBUTTON hObject,const char* text) {
 	if (hObject == NULL) { return; }
 	hObject->text = text;
 	WindowsInvaildRect(hObject->buttonWidge.parentHWIN, hObject);
 }
 /*设置点击回调*/
-void WidgeSetClickBack(HXBUTTON hObject, ViewClickCallBack viewClickCallBack) {
-	if (!hObject) { return; }
-	hObject->viewClickCallBack = viewClickCallBack;
+PUBLIC void BUTTON_MARK_HEAD(SetClickBack)(HXBUTTON hObject, ViewClickCallBack viewClickCallBack) {
+	WIDGE_MARK_HEAD(SetClickBack)(hObject,viewClickCallBack);
 }
-void ButtonWidgeMoveTo(HXBUTTON hObject, int16 x, int16 y) {
+PUBLIC void BUTTON_MARK_HEAD(MoveTo)(HXBUTTON hObject, int16 x, int16 y) {
 	if (!hObject) { return; }
 	hObject->buttonWidge.rect.x = x;
 	hObject->buttonWidge.rect.y = y;
 }
-void ButtonWidgePaint(void *hObject) {
+PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
 	HXBUTTON hXButton;
 	XRECT xRECT;
 	hXButton = hObject;
@@ -176,43 +171,21 @@ void ButtonWidgePaint(void *hObject) {
 	}
 	hXButton->buttonWidge.pencil.DrawColor = tempColor;
 }
-int8 ButtonWidgeCallBack(void *hObject, HMSGE hMsg) {
+PRIVATE int8 BUTTON_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
+	int8 ret;
 	HXBUTTON hXButton = hObject;
 	if (!hXButton || !hMsg) { return -1; }
-	if (hMsg->msgType == MSG_TOUCH) {
-		if (_IsDrawCheckPointR((hMsg->msgVal.rect.x), (hMsg->msgVal.rect.y),(&(hXButton->buttonWidge.pencil)))) {
-			switch (hMsg->msgID) {
-			case MSG_TOUCH_MOVE:
-				break;
-			case MSG_TOUCH_PRESS:
-				if (hXButton->viewClickCallBack != NULL) {
-					hXButton->viewClickCallBack(hXButton, _GetBtnStatus(hXButton));
-				}
-				hXButton->buttonWidge.pencil.DrawColor = hXButton->downColor;
-				_SetBtnPress(hXButton);
-				WindowsInvaildRect(hXButton->buttonWidge.parentHWIN, hXButton);
-				break; 
-			case MSG_TOUCH_RELEASE:
-				if (_GetBtnStatus(hXButton)) {
-					if (hXButton->viewClickCallBack != NULL) {
-						hXButton->viewClickCallBack(hXButton, _GetBtnStatus(hXButton));
-					}
-					hXButton->buttonWidge.pencil.DrawColor = hXButton->upColor;
-					_SetBtnRelease(hXButton);
-					WindowsInvaildRect(hXButton->buttonWidge.parentHWIN, hXButton);
-				}
-				break;
-			}
-			return 0;
-		}else {
-			if (_GetBtnStatus(hXButton)) {
-				hXButton->buttonWidge.pencil.DrawColor = hXButton->upColor;
-				_SetBtnRelease(hXButton);
-				return 0;
-			}
-			
+	if (!(hXButton->buttonWidge.isVisable)) { return -1; }
+
+	ret = WIDGE_MARK_HEAD(CallBack)(hXButton, hMsg);
+	if (ret == 0) {
+		if (_GetBtnStatus(hXButton)) {
+			hXButton->buttonWidge.pencil.DrawColor = hXButton->downColor;
+		}
+		else {
+			hXButton->buttonWidge.pencil.DrawColor = hXButton->upColor;
 		}
 	}
-	return -1;
+	return ret;
 }
 

@@ -13,6 +13,7 @@ HXDESKTOP hXDesktop = NULL;
 int8 WinListAdd(HWIN hWin) {
 
 	WindowsWidgeAdd(hXDesktop->desktopWin, hWin);
+
 	return 0;
 }
 //获取顶层的窗口
@@ -75,11 +76,17 @@ void GUIEvent(void) {
 				HLIST lastWin = ListGetLast(hXDesktop->desktopWin->widgetList);
 				if (lastWin != NULL) {
 					while (lastWin != hXDesktop->desktopWin->widgetList) {
-						HWIN hWin = (HWIN)(lastWin->val);
-
-						if ((ret = hWin->winWidge.widgeCallBackFun(hWin, hTempMsg)) == 0 || ret == 1) {//是被点击了
-							tmpTopHWin = hWin;
-							break;
+						HWIDGE_BASE hWidgeBase = (HWIDGE_BASE)(lastWin->val);
+						if (_GET_IS_WIN(hWidgeBase)) {
+							/*是否为窗口,是窗口则如果被点击则，窗口置顶*/
+							if ((ret = hWidgeBase->widgeCallBackFun(hWidgeBase, hTempMsg)) == 0 || ret == 1) {//是被点击了
+								tmpTopHWin = (HWIN)hWidgeBase;
+								break;
+							}
+						}
+						else {
+							/*不是窗口则直接刷新即可*/
+							hWidgeBase->widgeCallBackFun(hWidgeBase, hTempMsg);
 						}
 
 						lastWin = lastWin->lnext;
@@ -87,37 +94,35 @@ void GUIEvent(void) {
 				}
 			}
 			if (tmpTopHWin != NULL && tmpTopHWin != hXDesktop->topWin) {
-				WinMoveTop(tmpTopHWin);
-				//DrawInvaildRect(NULL);
-				GUISendDrawMsg(tmpTopHWin, MSG_WIN_INVAILD_UPDATE, 0, 
-					tmpTopHWin->winWidge.rect.x, tmpTopHWin->winWidge.rect.y, tmpTopHWin->winWidge.rect.w, tmpTopHWin->winWidge.rect.h,
-					tmpTopHWin->winWidge.rect.x, tmpTopHWin->winWidge.rect.y, tmpTopHWin->winWidge.rect.w, tmpTopHWin->winWidge.rect.h);
+				if (_GET_IS_WIN(tmpTopHWin)) {
+					WinMoveTop(tmpTopHWin);
+					//DrawInvaildRect(NULL);
+					GUISendDrawMsg(tmpTopHWin, MSG_WIN_INVAILD_UPDATE, 0,
+						tmpTopHWin->winWidge.rect.x, tmpTopHWin->winWidge.rect.y, tmpTopHWin->winWidge.rect.w, tmpTopHWin->winWidge.rect.h
+						//tmpTopHWin->winWidge.rect.x, tmpTopHWin->winWidge.rect.y, tmpTopHWin->winWidge.rect.w, tmpTopHWin->winWidge.rect.h
+					);
+				}
 			}
 		}
 		else if (hTempMsg->msgType == MSG_WIN) {/*窗口移动事件*/
-			WindowsMoveTo(hTempMsg->msgSrc, hTempMsg->msgVal.rect.x, hTempMsg->msgVal.rect.y);
+			if (_GET_IS_WIN(hTempMsg->msgSrc)) {
+				WindowsMoveTo(hTempMsg->msgSrc, hTempMsg->msgVal.rect.x, hTempMsg->msgVal.rect.y);
+			}
 		}
-
 		GUIDelMsg(hTempMsg);
 	}
 
 	while ((hTempMsg = GUIGetDrawMsg()) != NULL) {
 		if (hTempMsg->msgType == MSG_WIN_INVAILD_UPDATE) {
 			XRECT hRect;
-			hRect.x = hTempMsg->msgVal.rect.x;
-			hRect.y = hTempMsg->msgVal.rect.y;
-			hRect.w = hTempMsg->msgVal.rect.w;
-			hRect.h = hTempMsg->msgVal.rect.h;
+			hRect.x = ((HXRECT)(hTempMsg->msgSrc))->x;
+			hRect.y = ((HXRECT)(hTempMsg->msgSrc))->y;
+			hRect.w = ((HXRECT)(hTempMsg->msgSrc))->w;
+			hRect.h = ((HXRECT)(hTempMsg->msgSrc))->h;
 			_DrawInvaildRect(&hRect);
-			HWIN hWIN = ((HWIN)(hTempMsg->msgSrc));
-			if (hWIN != NULL) {
-				setMovingWin(hWIN);
-				/*用于拷贝上次的矩形*/
-				XRECT_COPY(&(hWIN->lastRect), &hTempMsg->msgVal1.rect);
-			}
-			else {
-				XRECT_COPY(&(hWIN->winWidge.rect), &(hWIN->lastRect));
-			}
+			HXRECT srcWidge = ((HXRECT)(&(hTempMsg->msgVal.rect)));
+			SetMovingWin(srcWidge);
+
 			GUIExec();
 		}
 		GUIDelDrawMsg(hTempMsg);
@@ -143,7 +148,7 @@ HXDESKTOP GUIInit(void) {
 		return NULL;
 	}
 	hXDesktop->topWin = NULL;
-	hXDesktop->winMoving = NULL;
+	//hXDesktop->winMoving = NULL;
 
 	WindowsSetColor(hXDesktop->desktopWin, 0xffff);
 	WindowsSetDrawHead(hXDesktop->desktopWin,0);
@@ -156,8 +161,12 @@ HXDESKTOP GUIInit(void) {
 	return hXDesktop;
 }
 /*设置当前正在移动的窗口*/
-void setMovingWin(HWIN hWin) {
-	hXDesktop->winMoving = hWin;
+void SetMovingWin(HXRECT hXRect) {
+	if (hXRect == NULL) { return; }
+	hXDesktop->movingWidge.x = hXRect->x;
+	hXDesktop->movingWidge.y = hXRect->y;
+	hXDesktop->movingWidge.w = hXRect->w;
+	hXDesktop->movingWidge.h = hXRect->h;
 }
 /*当前的窗口是否需要剪裁
 	TRUE:需要剪裁
@@ -166,8 +175,8 @@ void setMovingWin(HWIN hWin) {
 BOOL isGUINeedCut(HXRECT hXRECT) {
 	if (hXRECT == NULL) { return TRUE; }
 
-	if (hXDesktop->winMoving == NULL) {
-		if (hXDesktop->topWin == NULL) {
+	//if (hXDesktop->winMoving == NULL) {
+	/*	if (hXDesktop->topWin == NULL) {
 			return TRUE;
 		}
 		else {
@@ -184,22 +193,22 @@ BOOL isGUINeedCut(HXRECT hXRECT) {
 				, hXRECT->w
 				, hXRECT->h
 			);
-		}
-	}
-	else {
-		if (hXRECT == &(hXDesktop->winMoving->winWidge.rect)) {
+		}*/
+	/*}
+	else {*/
+		if (hXRECT == &(hXDesktop->movingWidge)) {
 			return TRUE;
 		}
-		return _IsDrawCheckArea(hXDesktop->winMoving->lastRect.x
-			, hXDesktop->winMoving->lastRect.y
-			, hXDesktop->winMoving->lastRect.w
-			, hXDesktop->winMoving->lastRect.h
+		return _IsDrawCheckArea(hXDesktop->movingWidge.x
+			, hXDesktop->movingWidge.y
+			, hXDesktop->movingWidge.w
+			, hXDesktop->movingWidge.h
 			, hXRECT->x
 			, hXRECT->y
 			, hXRECT->w
 			, hXRECT->h
 		);
-	}
+	//}
 	/*if (hXDesktop->winMoving == hXDesktop->topWin) {
 		if (hXDesktop->winMoving == NULL) {
 			return TRUE;

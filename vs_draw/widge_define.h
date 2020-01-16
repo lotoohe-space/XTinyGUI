@@ -46,5 +46,10 @@ typedef void (*PaintFunction)(void* hObject);
 typedef void (*WidgeMoveToFunction)(void* hObject, int16 x, int16 y);
 //事件回调函数
 typedef int8(*WidgeCallBackFunction)(void* hObject, HMSGE hMsg);
+/*关闭函数*/
+typedef void (*WidgeCloseFunction)(void* hObject);
+
+/*按钮事件回调*/
+typedef void(*ViewClickCallBack)(void* Object, uint8 status);
 
 #endif
