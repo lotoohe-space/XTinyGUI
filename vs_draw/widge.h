@@ -18,6 +18,7 @@ typedef struct {
 
 	/*外部调用，点击事件回调函数，所有控件共有的特性*/
 	ViewClickCallBack viewClickCallBack;
+	void* arg;
 
 	void* parentHWIN;/*父控件*/
 	uint8 isVisable;/*是否显示*/
@@ -41,8 +42,9 @@ PUBLIC HWIDGE_BASE WIDGE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h);
 PUBLIC HWIDGE_BASE WIDGE_MARK_HEAD(CreateEx)(HXRECT hXRect);
 PUBLIC void WIDGE_MARK_HEAD(Close)(HWIDGE_BASE hObject);
 PUBLIC void WIDGE_MARK_HEAD(Init)(HWIDGE_BASE hWidgeBase, int16 x, int16 y, int16 w, int16 h);
-PUBLIC void WIDGE_MARK_HEAD(SetClickBack)(HWIDGE_BASE hObject, ViewClickCallBack viewClickCallBack);
+PUBLIC void WIDGE_MARK_HEAD(SetClickBack)(HWIDGE_BASE hObject, void* arg, ViewClickCallBack viewClickCallBack);
 PUBLIC void WIDGE_MARK_HEAD(SetVisable)(HWIDGE_BASE hObject, uint8 isVisable);
+PUBLIC void WIDGE_MARK_HEAD(Resize)(HWIDGE_BASE hObject, int16 x, int16 y, uint16 w, uint16 h);
 PUBLIC void WIDGE_MARK_HEAD(SetParentWin)(HWIDGE_BASE hObject, void* hWIN);
 PUBLIC void WIDGE_MARK_HEAD(SetColor)(HWIDGE_BASE hObject, uintColor color);
 PUBLIC void WIDGE_MARK_HEAD(MoveTo)(HWIDGE_BASE hObject, int16 x, int16 y);

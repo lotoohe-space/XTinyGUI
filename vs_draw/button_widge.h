@@ -33,7 +33,7 @@ typedef struct {
 
 PUBLIC HXBUTTON BUTTON_MARK_HEAD(Create)(char *text, int16 x, int16 y, int16 w, int16 h);
 PUBLIC void BUTTON_MARK_HEAD(MoveTo)(HXBUTTON hObject, int16 x, int16 y);
-PUBLIC void BUTTON_MARK_HEAD(SetClickBack)(HXBUTTON hObject, ViewClickCallBack viewClickCallBack);
+PUBLIC void BUTTON_MARK_HEAD(SetClickBack)(HXBUTTON hObject, void* arg, ViewClickCallBack viewClickCallBack);
 
 PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject);
 PRIVATE int8 BUTTON_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);

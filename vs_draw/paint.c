@@ -6,6 +6,7 @@
 #include "widge.h"
 #include "msg.h"
 #include "bitmap.h"
+#include "text_widge.h"
 #include <stdlib.h>
 #ifdef WIN32
  extern void d_pix(int x, int y, int color);
@@ -16,7 +17,7 @@
 #endif
 
  /*绘图区域*/
- XRECT drawArea = {0,0,LCD_SCREEN_W ,LCD_SCREEN_H};//绘制区域
+ //XRECT drawArea = {0,0,LCD_SCREEN_W ,LCD_SCREEN_H};//绘制区域
 
  /*设置无效区域*/
  void DrawInvaildRect(HXRECT hXRect) {
@@ -34,7 +35,7 @@
  }
  /*事件处理程序使用*/
  void _DrawInvaildRect(HXRECT hXRect) {
-	XRECT_COPY(&drawArea, hXRect);
+	XRECT_COPY(&(hXDesktop->drawArea), hXRect);
  }
  /*设置允许绘图的窗口，是当前窗口与桌面的相交区域*/
 void DrawSetArea(void* hObject) {
@@ -44,10 +45,10 @@ void DrawSetArea(void* hObject) {
 	if (!hWidgeBase) { return; }
 
 	/*控件矩形与桌面矩形的相交矩形即为绘图区域*/
-	GetOverLapRect(&drawArea ,&(hWidgeBase->rect),&rRect);
+	GetOverLapRect(&(hXDesktop->drawArea),&(hWidgeBase->rect),&rRect);
 
 	/*重新设置绘图区域*/
-	XRECT_COPY(&drawArea, &rRect);
+	XRECT_COPY(&(hXDesktop->drawArea), &rRect);
 
 	/*重新设置控件的有效绘图区域*/
 	XRECT_COPY(&(hWidgeBase->pencil), &rRect);
@@ -60,7 +61,7 @@ void DrawResetArea(void* hObject) {
 	if (!hWidgeBase) { return; }
 	hPencil = &(hWidgeBase->pencil);
 
-	XRECT_COPY(&drawArea, hPencil);
+	XRECT_COPY(&(hXDesktop->drawArea), hPencil);
 }
 uint8 DrawPixel(uintColor color,int16 x, int16 y) {
 	d_pix(x, y, RGB565TORGB888(color));
@@ -149,8 +150,10 @@ uint8 DrawRect(HPENCIL hPencil, HXRECT hXRECT) {
 
 	return (uint8)1;
 }
-/*在规定区域内绘制字符串*/
-uint8 DrawString(HPENCIL hPencil, HFONTF hFont, HXRECT dHRect ,int16 x,int16 y, uint8* text) {
+/*
+* 在规定区域内绘制字符串
+*/
+uint8 DrawString(HPENCIL hPencil, HFONTF hFont, HXRECT border ,int16 x,int16 y, uint8* text) {
 	XRECT rRect;
 	uint16 i;
 	int16 stx;
@@ -161,7 +164,7 @@ uint8 DrawString(HPENCIL hPencil, HFONTF hFont, HXRECT dHRect ,int16 x,int16 y, 
 		return (uint8)0;
 	}
 
-	GetOverLapRect(dHRect, (HXRECT)hPencil,&rRect);
+	GetOverLapRect(border, (HXRECT)hPencil,&rRect);
 
 	stx = MAX(rRect.x, x);
 	sty = MAX(rRect.y, y);
@@ -280,15 +283,160 @@ uint8 DrawCutRect(void* hObject, HXRECT hXRECT) {
 
 	return (uint8)1;
 }
+
 /*字符串剪裁绘制*/
-uint8 DrawCutString(void* hObject, HFONTF hFont,HXRECT border, uint8* text) {
+uint8 DrawCutString(void* hObject, HFONTF hFont,HXRECT border,HXPOINT hXPoint, uint8* text) {
 	HWIDGE_BASE hWidgeBase = hObject;
 	if (!hWidgeBase) { return (uint8)FALSE; }
 	RECT_CUT_INIT(border) {
-		DrawString(&(hWidgeBase->pencil), hFont, nextCutRect, border->x, border->y, text);
+		DrawString(&(hWidgeBase->pencil), hFont, nextCutRect, !hXPoint ? border->x : hXPoint->x, !hXPoint ? border->y : hXPoint->y, text);
 	}
 	RECT_CUT_END()
 	return (int8)TRUE;
+}
+
+/*
+* 在规定区域内绘制字符串
+* hObject:需要绘图的控件
+* drawBorder:只绘制drawBorder所指的区域
+* bgDrawBorder:背景绘制区域
+* hStartPoint:代表从bgDrawBorder所值边界的那个点开始绘制
+*/
+uint8 DrawStringEx(HTEXT_WIDGE hObject, HXRECT drawBorder,  HXPOINT hStartPoint) {
+
+	XRECT rRect;
+	uint16 i;
+	int16 x, y;
+	int16 stx;
+	int16 sty;
+	int16 endy;
+	int16 endx;
+	if (!hObject) {
+		return (uint8)0;
+	}
+	const* text;
+	HFONTF hFont;
+	hFont = hObject->hFont;
+	text= hObject->title;
+
+	GetOverLapRect(&drawBorder, ((HXRECT)&(hObject->textWidge.pencil)), &rRect);
+
+	x = hStartPoint->x;
+	y = hStartPoint->y;
+	stx = MAX(rRect.x, x);
+	sty = MAX(rRect.y, y);
+	endy = MIN((hFont->fontInfo.h) + y, rRect.y + rRect.h);
+	endx = MIN((int16)(TStrlen(text) * (hFont->fontInfo.w)) + x, rRect.x + rRect.w);
+
+	for (i = 0; text[i]; i++) {
+		uint8* chData;
+		chData = FontReadChar(hFont, text[i]);
+		if (chData != NULL) {
+			int16 i, j;
+			for (i = y; i < MIN(hFont->fontInfo.h + y, endy); i++) {
+				if (i >= sty) {
+					for (j = x; j < MIN(hFont->fontInfo.w + x, endx); j++) {
+						if (j >= stx) {
+							uint16 tCHData = hFont->fontInfo.perRowBytes == 2 ? ((uint16*)chData)[i - y] : chData[i - y];
+							if (_GET_BIT(tCHData, j - x)) {
+								DrawPixel(hObject->textWidge.pencil.DrawColor, j, i);
+							}
+							else {
+								DrawPixel(hObject->textWidge.pencil.DrawBkColor, j, i);
+							}
+						}
+					}
+				}
+			}
+		}
+		x += hFont->fontInfo.w;
+	}
+	return (uint8)1;
+
+	//XRECT rRect;
+	///*最终绘制的区域*/
+	//XRECT rRect1;
+	///*绘制的字体*/
+	//HFONTF hFont;
+	//const char* text;
+	////uint16 i;
+	//int16 x, y;
+	//int16 stx;
+	//int16 sty;
+	//int16 endy;
+	//int16 endx;
+	//if (!hObject) {
+	//	return (uint8)0;
+	//}
+	///*需要绘制的文字的宽和高*/
+	//uint16 textW;
+	//uint16 textH;
+	//uint16 m;
+	//int16 i, j;
+
+	///*得到绘图区域*/
+	//GetOverLapRect((HXRECT)hObject, (HXRECT)(&(hObject->textWidge.pencil)), &rRect);
+	///*得到分块绘制区域*/
+	//GetOverLapRect((HXRECT)&rRect, (HXRECT)drawBorder, &rRect1);
+	//text = hObject->title;
+	//hFont = hObject->hFont;
+
+	//textW = (int16)(TStrlen(text) * (hFont->fontInfo.w));
+	//textH = hFont->fontInfo.h;
+	//
+	///*控件的起点*/
+	//x = ((HXRECT)hObject)->x;
+	//y = ((HXRECT)hObject)->y;
+
+	///*从那个点开始画*/
+	//stx = ((HXRECT)hObject)->x + hStartPoint->x;
+	//sty = ((HXRECT)hObject)->x + hStartPoint->y;
+
+
+	//int16 drawX, drawY;
+	//drawX = rRect1.x + hStartPoint->x;
+	//drawY = rRect1.y + hStartPoint->y;
+
+	//for (m = 0; text[m]; m++) {
+	//	uint8* chData;
+	//	chData = FontReadChar(hFont, text[m]);
+	//	if (chData == NULL) { continue; }
+	//	for (i = y; i < MIN(y + rRect1.h, hFont->fontInfo.h); i++) {
+	//		if (i >= sty) {
+	//			for (j = x; j < MIN(x + rRect1.w, hFont->fontInfo.w); j++) {
+	//				if (j >= stx) {
+	//					uint16 tCHData = hFont->fontInfo.perRowBytes == 2 ? ((uint16*)chData)[i - y] : chData[i - x];
+	//					if (_GET_BIT(tCHData, j - x)) {
+	//						DrawPixel(hObject->textWidge.pencil.DrawColor, j, i);
+	//					}
+	//					else {
+	//						DrawPixel(hObject->textWidge.pencil.DrawBkColor, j, i);
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+	//	/*画一个字宽度增加 hFont->fontInfo.w */
+	//	drawX += hFont->fontInfo.w;
+	//}
+
+	//
+
+	
+	return (uint8)1;
+}
+/*字符串剪裁绘制*/
+uint8 DrawCutStringEx(void*  hObject,HXPOINT hStartPoint) {
+	HTEXT_WIDGE hTextWidge;
+	hTextWidge = (HTEXT_WIDGE)hObject;
+	if (!hObject) { return (uint8)FALSE; }
+	HXRECT border;/*绘图的边界*/
+	border = &(hTextWidge->textWidge.rect);
+	RECT_CUT_INIT(border) {
+		DrawStringEx(hTextWidge, nextCutRect,  hStartPoint);
+	}
+	RECT_CUT_END()
+		return (int8)TRUE;
 }
 /*图片剪裁绘制*/
 uint8 DrawCutBitmap(void* hObject, HXRECT border, HXBITMAP hXBitmap) {

@@ -148,6 +148,12 @@ HXDESKTOP GUIInit(void) {
 		return NULL;
 	}
 	hXDesktop->topWin = NULL;
+
+	hXDesktop->drawArea.x = 0;
+	hXDesktop->drawArea.y = 0;
+	hXDesktop->drawArea.w = LCD_SCREEN_W;
+	hXDesktop->drawArea.h = LCD_SCREEN_H;
+
 	//hXDesktop->winMoving = NULL;
 
 	WindowsSetColor(hXDesktop->desktopWin, 0xffff);
@@ -259,12 +265,12 @@ BOOL isGUINeedCut(HXRECT hXRECT) {
 	*/
 }
 
-extern  XRECT drawArea;
+//extern  XRECT drawArea;
 //GUI执行函数
 void GUIExec(void) {
-	if (drawArea.x != -1) {
+	if (hXDesktop->drawArea.x != -1) {
  		if (hXDesktop->topWin!=NULL
-			&& memcmp(&drawArea, &(hXDesktop->topWin->winWidge.rect),sizeof(XRECT)) ==0 /*顶部窗口与绘制区域一样大*/
+			&& memcmp(&(hXDesktop->drawArea), &(hXDesktop->topWin->winWidge.rect),sizeof(XRECT)) ==0 /*顶部窗口与绘制区域一样大*/
 			) {
 			hXDesktop->topWin->winWidge.paintFun(hXDesktop->topWin);		/*则只重绘顶部窗口*/
 		}
@@ -272,7 +278,7 @@ void GUIExec(void) {
 			//fill_rect(0, 0, 1024, 700, 0xffffff);
 			hXDesktop->desktopWin->winWidge.paintFun(hXDesktop->desktopWin);	/*桌面重绘*/
 		}
-		drawArea.x = -1;
+		hXDesktop->drawArea.x = -1;
 	}
 }
 

@@ -46,7 +46,7 @@ PUBLIC void BITMAP_MARK_HEAD(SetBitmap)(HBITMAP_WIDGE hObject, HXBITMAP hXBitmap
 	if (!hObject) { return; }
 	/*ÉèÖÃÏÔÊ¾µÄÍ¼Æ¬*/
 	hObject->bitmap = hXBitmap;
-	WindowsInvaildRect(hObject, (HXRECT)hObject);
+	WindowsInvaildRect((HWIDGE_BASE)hObject, (HXRECT)hObject);
 }
 PUBLIC void BITMAP_MARK_HEAD(MoveTo)(HBITMAP_WIDGE hObject, int16 x, int16 y) {
 	if (!hObject) { return; }

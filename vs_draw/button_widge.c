@@ -35,11 +35,11 @@ PUBLIC HXBUTTON BUTTON_MARK_HEAD(Create)(char *text,int16 x, int16 y, int16 w, i
 PUBLIC void BUTTON_MARK_HEAD(SetText)(HXBUTTON hObject,const char* text) {
 	if (hObject == NULL) { return; }
 	hObject->text = text;
-	WindowsInvaildRect(hObject->buttonWidge.parentHWIN, hObject);
+	WindowsInvaildRect(hObject->buttonWidge.parentHWIN, (HXRECT)hObject);
 }
 /*设置点击回调*/
-PUBLIC void BUTTON_MARK_HEAD(SetClickBack)(HXBUTTON hObject, ViewClickCallBack viewClickCallBack) {
-	WIDGE_MARK_HEAD(SetClickBack)(hObject,viewClickCallBack);
+PUBLIC void BUTTON_MARK_HEAD(SetClickBack)(HXBUTTON hObject, void* arg,ViewClickCallBack viewClickCallBack) {
+	WIDGE_MARK_HEAD(SetClickBack)((HWIDGE_BASE)hObject, arg, viewClickCallBack);
 }
 PUBLIC void BUTTON_MARK_HEAD(MoveTo)(HXBUTTON hObject, int16 x, int16 y) {
 	if (!hObject) { return; }
@@ -51,7 +51,7 @@ PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
 	XRECT xRECT;
 	hXButton = hObject;
 	if (!hObject) { return; }
-	if (!isGUINeedCut(hXButton)) { return; }
+	if (!isGUINeedCut((HXRECT)hXButton)) { return; }
 
 	DrawSetArea(hXButton);
 
@@ -153,6 +153,7 @@ PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
 		DrawCutString(hXButton, 
 			hXButton->hFont,
 			&xRECT,
+			NULL,
 			hXButton->text);
 	}
 	else {
@@ -167,6 +168,7 @@ PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
 		DrawCutString(hXButton, 
 			hXButton->hFont,
 			&xRECT,
+			NULL,
 			hXButton->text);
 	}
 	hXButton->buttonWidge.pencil.DrawColor = tempColor;

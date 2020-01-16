@@ -5,8 +5,8 @@
 #include "font_ASCII_12_16.h"
 
 typedef struct {
-	uint16 w;
-	uint16 h;
+	uint16 w;//字符的宽
+	uint16 h;//字符的高
 	uint16 startInx;//开始位置
 	uint16 endInx;//结束位置
 	uint16 perRowBytes;//一个字符的一行占多少字节

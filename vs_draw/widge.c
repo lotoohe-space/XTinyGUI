@@ -45,8 +45,10 @@ PUBLIC void WIDGE_MARK_HEAD(Init)(HWIDGE_BASE hWidgeBase,int16 x, int16 y, int16
 
 	/*默认可见*/
 	hWidgeBase->isVisable = TRUE;
+	hWidgeBase->parentHWIN = NULL;
 
 	hWidgeBase->viewClickCallBack = NULL;
+	hWidgeBase->arg = NULL;
 
 	/*当前控件不是窗口*/
 	_SET_IS_WIN(hWidgeBase);
@@ -55,15 +57,25 @@ PUBLIC void WIDGE_MARK_HEAD(Close)(HWIDGE_BASE hObject){
 	if (hObject == NULL) { return; }
 	xFree(hObject);
 }
-PUBLIC void WIDGE_MARK_HEAD(SetClickBack)(HWIDGE_BASE hObject, ViewClickCallBack viewClickCallBack) {
+PUBLIC void WIDGE_MARK_HEAD(SetClickBack)(HWIDGE_BASE hObject,void * arg, ViewClickCallBack viewClickCallBack) {
 	if (!hObject) { return; }
+	hObject->arg = arg;
 	hObject->viewClickCallBack = viewClickCallBack;
 }
 /*设置是否可见*/
 PUBLIC void WIDGE_MARK_HEAD(SetVisable)(HWIDGE_BASE hObject, uint8 isVisable) {
 	if (!hObject) { return; }
 	hObject->isVisable = isVisable;
-	WindowsInvaildRect(hObject->parentHWIN, hObject);
+	WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
+}
+/*重新设置大小*/
+PUBLIC void WIDGE_MARK_HEAD(Resize)(HWIDGE_BASE hObject, int16 x, int16 y, uint16 w,uint16 h) {
+	if (!hObject) { return; }
+	hObject->rect.x = x;
+	hObject->rect.y = y;
+	hObject->rect.w = w;
+	hObject->rect.h = h;
+	WindowsInvaildRect(hObject->parentHWIN, hObject->parentHWIN);
 }
 
 /*设置父控件*/
@@ -75,14 +87,14 @@ PUBLIC void WIDGE_MARK_HEAD(SetParentWin)(HWIDGE_BASE hObject, HWIN hWIN) {
 PUBLIC void WIDGE_MARK_HEAD(SetColor)(HWIDGE_BASE hObject, uintColor color) {
 	if (!hObject) { return; }
 	hObject->pencil.DrawColor = color;
-	WindowsInvaildRect(hObject->parentHWIN, hObject);
+	WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
 }
 /*移动控件*/
 PUBLIC void WIDGE_MARK_HEAD(MoveTo)(HWIDGE_BASE hObject, int16 x, int16 y) {
 	if (!hObject) { return; }
 	hObject->rect.x = x;
 	hObject->rect.y = y;
-	WindowsInvaildRect(hObject->parentHWIN, hObject);
+	WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
 }
 /*重绘函数*/
 PRIVATE void WIDGE_MARK_HEAD(Paint)(void *hObject) {
@@ -114,18 +126,18 @@ PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 				break;
 			case MSG_TOUCH_PRESS:
 				if (hWidgeBase->viewClickCallBack != NULL) {
-					hWidgeBase->viewClickCallBack(hWidgeBase, _GetBtnStatus(hWidgeBase));
+					hWidgeBase->viewClickCallBack(hWidgeBase,hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
 				}
 				_SetBtnPress(hWidgeBase);
-				WindowsInvaildRect(hWidgeBase->parentHWIN, hWidgeBase);
+				WindowsInvaildRect(hWidgeBase->parentHWIN, (HXRECT)hWidgeBase);
 				break;
 			case MSG_TOUCH_RELEASE:
 				if (_GetBtnStatus(hWidgeBase)) {
 					if (hWidgeBase->viewClickCallBack != NULL) {
-						hWidgeBase->viewClickCallBack(hWidgeBase, _GetBtnStatus(hWidgeBase));
+						hWidgeBase->viewClickCallBack(hWidgeBase, hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
 					}
 					_SetBtnRelease(hWidgeBase);
-					WindowsInvaildRect(hWidgeBase->parentHWIN, hWidgeBase);
+					WindowsInvaildRect(hWidgeBase->parentHWIN, (HXRECT)hWidgeBase);
 				}
 				break;
 			}

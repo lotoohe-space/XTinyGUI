@@ -12,19 +12,24 @@ typedef struct {
 	/*桌面也是一个窗口，不过没有窗头控件*/
 	HWIN desktopWin;
 
+	/*绘图区域*/
+	XRECT drawArea;
+
 	/*最顶上的窗体*/
 	HWIN topWin;
 
 	/*正在移动的窗口*/
 	XRECT movingWidge;
+
+	
 	//XRECT desktopRect;
 	//PENCIL pencil;//画笔
 	//XRECT invaildRect;
 	/*HLIST winList;*/
 	
 }*HXDESKTOP, XDESKTOP;
-
-extern  XRECT drawArea;//绘制区域
+extern HXDESKTOP hXDesktop;
+//extern  XRECT drawArea;//绘制区域
 
 
 //void GUIInvaildRect(HXRECT hXRect);
@@ -37,7 +42,7 @@ void GUIEvent(void);
 void WinMoveTop(void* hObject);
 //void GUIPostEvent(HMSGE hMsg);
 BOOL isGUINeedCut(HXRECT hXRECT);
-void SetMovingWin(HWIN hXRect);
+void SetMovingWin(HXRECT hXRect);
 
 
 

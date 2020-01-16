@@ -6,11 +6,18 @@
 #include "list.h"
 #include "font.h"
 #include "widge.h"
+#include "button_widge.h"
+
+#define WINDOWS_HEAD_MARK_HEAD(a) WindowsHeadWidge##a
+
 typedef struct {
-	WIDGE_BASE headWidge;
+	WIDGE_BASE widgeBase;
 
 	HLIST	widgetList;//控件列表
-	char	*title;
+	HXBUTTON hXButtonMin;/*最小化按钮，该按钮被添加到widgetList中*/
+	HXBUTTON hXButtonMax;/*最大化按钮，该按钮被添加到widgetList中*/
+	char	*title;/*窗口的text*/
+
 }*HWIN_HEAD, WIN_HEAD;
 
 #define _DefaultHeadColor 0xc100
@@ -19,14 +26,15 @@ typedef struct {
 //默认的窗口名
 #define _DefaultWinHeadName "window"
 
-HWIN_HEAD WindowsHeadCreate(char *title, int16 x, int16 y, int16 w, int16 h);
-void WindowsHeadClose(HWIN_HEAD hWinHead);
-void WindowsHeadPaint(void *hObject);
-void WindowsHeadMoveTo(HWIN_HEAD hObject, int16 x, int16 y);
-int8 WindowsHeadsCallBack(void *hObject, HMSGE hMsg);
-void WindowsHeadSetArea(HWIN_HEAD hObject, int16 x, int16 y, int16 w, int16 h);
-int8 WindowsHeadAdd(HWIN_HEAD hWinHead, void *widge);
-void WindowsHeadSetVisable(void* hObject, int8 isVisable);
+PUBLIC HWIN_HEAD WINDOWS_HEAD_MARK_HEAD(Create)(char *title, int16 x, int16 y, int16 w, int16 h);
+PUBLIC void WINDOWS_HEAD_MARK_HEAD(Close)(HWIN_HEAD hWinHead);
+PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetVisable)(void* hObject, int8 isVisable);
+PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetMinimumBtnClickBack)(HWIN_HEAD hObject, void* arg, ViewClickCallBack viewClickCallBack);
+PUBLIC void WINDOWS_HEAD_MARK_HEAD(MoveTo)(HWIN_HEAD hObject, int16 x, int16 y);
+PRIVATE void WINDOWS_HEAD_MARK_HEAD(Paint)(void* hObject);
+PUBLIC int8 WINDOWS_HEAD_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg);
 
+PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetArea)(HWIN_HEAD hObject, int16 x, int16 y, int16 w, int16 h);
+PUBLIC int8 WINDOWS_HEAD_MARK_HEAD(Add)(HWIN_HEAD hWinHead, void* widge);
 #endif
 

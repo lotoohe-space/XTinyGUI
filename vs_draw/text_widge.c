@@ -37,7 +37,7 @@ HTEXT_WIDGE TextWidegeCreate(char *text, int16 x, int16 y) {
 void TextSetText(HTEXT_WIDGE hObject, const char* title) {
 	if (hObject == NULL) { return; }
 	hObject->title = title;
-	WindowsInvaildRect(hObject->textWidge.parentHWIN, hObject);
+	WindowsInvaildRect(hObject->textWidge.parentHWIN, (HXRECT)hObject);
 }
 void TextWidegeMoveTo(HTEXT_WIDGE hObject, int16 x, int16 y) {
 	if (!hObject) { return; }
@@ -54,9 +54,14 @@ void TextWidegePaint(void * hObject) {
 	DrawSetArea(hTextWidge);
 	//DrawCutRect(hTextWidge,
 	//	&(hTextWidge->textWidge.rect));
-	DrawCutString(hTextWidge, hTextWidge->hFont, 
+	XPOINT xPoint;
+	xPoint.x = 0;
+	xPoint.y = 0;
+	DrawCutStringEx(hTextWidge, (HXRECT)hTextWidge, &xPoint);
+	/*DrawCutString(hTextWidge, hTextWidge->hFont, 
 		&(hTextWidge->textWidge.rect),
-		hTextWidge->title);
+		NULL,
+		hTextWidge->title);*/
 }
 int8 TextWidegeCallBack(void *hObject, HMSGE hMsg) {
 	HTEXT_WIDGE hTextWidge = hObject;

@@ -6,7 +6,7 @@
 
 /*初始化队列*/
 uint8 InitQueue(SqQueue *q,uint16 size){
-	uint8* data;
+	QueueDateType* data;
 	if (q == NULL) { return FALSE; }
 	data = xMalloc(sizeof(QueueDateType)*size);
 	if (data == NULL) { return FALSE; }
@@ -17,12 +17,12 @@ uint8 InitQueue(SqQueue *q,uint16 size){
 	return TRUE;
 }
 uint16 QueueLength(SqQueue* q) {
-	if (q == NULL) { return; }
+	if (q == NULL) { return 0; }
 	return (q->rear - q->front + q->maxVal) % q->maxVal;
 }
 void DestroyQueue(SqQueue* q) {
 	if (q == NULL) { return ; }
-	xFree(q->rear);
+	xFree(q->data);
 }
 uint8 QueueEmpty(SqQueue* q) {
 	if (q == NULL) { return 1; }

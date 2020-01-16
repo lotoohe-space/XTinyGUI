@@ -50,6 +50,6 @@ typedef int8(*WidgeCallBackFunction)(void* hObject, HMSGE hMsg);
 typedef void (*WidgeCloseFunction)(void* hObject);
 
 /*按钮事件回调*/
-typedef void(*ViewClickCallBack)(void* Object, uint8 status);
+typedef void(*ViewClickCallBack)(void* Object, void* arg, uint8 status);
 
 #endif
