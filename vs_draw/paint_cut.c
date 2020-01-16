@@ -8,57 +8,41 @@
 XRECT xResRect;
 /*和那个矩形产生了碰撞*/
 HXRECT lastRightRect = NULL;
-HLIST rectCutList;//剪裁矩形
-HLIST rectItem;//临时用
+LIST rectCutList = { 0 };//剪裁矩形
+HLIST rectItem = NULL;//临时用
 XRECT bgRect;//被剪裁的矩形
 XPOINT startPoint;//初始扫描起点
 
-HLIST lastAddPostion = NULL;
 BOOL isEnd = 0;
 
 //添加剪裁矩形
 //每次添加到尾部
 HLIST RectCutAddRectList(HLIST addRectList) {
 	HLIST tempRectCutList;
-	tempRectCutList = rectCutList;
+	tempRectCutList = &rectCutList;
 
 	while (tempRectCutList->next) {
 		tempRectCutList = tempRectCutList->next;
 	}
 	tempRectCutList->next = addRectList;
-	//lastAddPostion = tempRectCutList;
+
 	return tempRectCutList;
 }
 //指定的List处断开
 void RectCutSplitRectList(HLIST splitRectList) {
-	//HLIST tempRectCutList;
-	//tempRectCutList = rectCutList;
 	splitRectList->next = NULL;
-	/*if (lastAddPostion->next == splitRectList) {
-		lastAddPostion->next = NULL;
-	}
-	else {*/
-	/*while (tempRectCutList->next != splitRectList) {
-		tempRectCutList = tempRectCutList->next;
-	}
-	tempRectCutList->next = NULL;*/
-	/*}*/
 }
 
 //初始化剪裁
 int8 RectCutInit(void) {
 
-	rectCutList = (HLIST)xMalloc(sizeof(LIST));
-	if (!rectCutList) {
-		return FALSE;
-	}
 
 	return TRUE;
 }
 
 //开始剪裁
 int8 RectCutStart(HXRECT hXRECT) {
-	rectItem = rectCutList->next;
+	rectItem = rectCutList.next;
 	bgRect.x = hXRECT->x;
 	bgRect.y = hXRECT->y;
 	bgRect.w = hXRECT->w;
@@ -94,7 +78,7 @@ extern void fill_rect(int x, int y, int w, int h, int color);
 HXRECT RectCutFind(void) {
 	HXRECT hRect;
 	XPOINT pointEnd;
-	HLIST tempRectCutlist;
+//	HLIST tempRectCutlist;
 
 	uint16 temp_w = 0;
 	uint16 val = bgRect.y + bgRect.h;
@@ -105,8 +89,11 @@ HXRECT RectCutFind(void) {
 
 	lastRightRect = NULL;
 
-	rectItem = rectCutList->next;
+	rectItem = rectCutList.next;
 	while ((hRect = RectCutGetNext()) != NULL) {
+		if (((HWIDGE_BASE)hRect)->isVisable == FALSE) { 
+			continue;
+		}
 
 		/*************查找参考线下面离得最近的一条边*************/
 		/*优化，不应该只找离得最近的一条边，应该是找右边最近的矩形的上下最近的一条边*/
@@ -177,6 +164,7 @@ HXRECT RectCutFind(void) {
 					tempItem = rectItem;
 					/*pointEnd.y可能还没有达到与参考位置最近，故继续遍历*/
 					while (hRect = RectCutGetNext()) {
+						if (((HWIDGE_BASE)hRect)->isVisable == FALSE) { continue; }
 						if (hRect->y > startPoint.y) {							/*上边*/
 							/*在被剪裁矩形的纵向限定范围内*/
 							if (hRect->y > bgRect.y
@@ -216,6 +204,7 @@ HXRECT RectCutFind(void) {
 				tempItem = rectItem;
 				/*pointEnd.y可能还没有达到与参考位置最近，故继续遍历*/
 				while (hRect = RectCutGetNext()) {
+					if (((HWIDGE_BASE)hRect)->isVisable == FALSE) { continue; }
 					if (hRect->y > startPoint.y) {							/*上边*/
 							/*在被剪裁矩形的纵向限定范围内*/
 						if (hRect->y > bgRect.y 
@@ -243,7 +232,7 @@ HXRECT RectCutFind(void) {
 				startPoint.y = pointEnd.y;
 
 				/*更新完成后，剪裁的起点发生了变化，重新退回剪裁域*/
-				rectItem = rectCutList->next;
+				rectItem = rectCutList.next;
 
 				/*复位到原始起点*/
 				pointEnd.x = bgRect.w + bgRect.x;
@@ -257,7 +246,7 @@ HXRECT RectCutFind(void) {
 			}
 			//fill_rect(startPoint.x, startPoint.y, 5, 5, rand() % 65535);
 			/*退回，因为可能之前的矩形与现在的碰撞，但是之前的起点并未发现*/
-			rectItem = rectCutList->next;
+			rectItem = rectCutList.next;
 		}
 	}
 

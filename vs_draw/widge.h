@@ -2,28 +2,51 @@
 #define _XWIDGE_H__
 #include "type.h"
 #include "widge_define.h"
+#include "tool.h"
+
+#define WIDGE_MARK_HEAD(a) Widge##a
 
 typedef struct {
 	XRECT	rect;/*控件大小*/
 	PENCIL	pencil;/*画笔，设置有效绘图大小，以及颜色*/
+
+	/*内部调用使用*/
 	PaintFunction paintFun;/*控件刷新函数*/
 	WidgeMoveToFunction moveToFun;/*控件移动函数*/
 	WidgeCallBackFunction widgeCallBackFun;/*控件事件回调函数*/
+	WidgeCloseFunction widgeCloseFun;/*控件关闭函数*/
 
-	int8 isVisable;/*是否显示*/
-	void* parentHWIN;/*父控件，可以将控件加入*/
-	
+	/*外部调用，点击事件回调函数，所有控件共有的特性*/
+	ViewClickCallBack viewClickCallBack;
+
+	void* parentHWIN;/*父控件*/
+	uint8 isVisable;/*是否显示*/
+	uint8 flag;/*0:bit 是否为窗口 1:bit 是否被点击*/
+
 }*HWIDGE_BASE, WIDGE_BASE;
+
+/*改widge是不是窗口*/
+#define _SET_IS_WIN(a)			_SET_BIT((((HWIDGE_BASE)(a))->flag),0)
+#define _CLR_IS_WIN(a)			_CLR_BIT((((HWIDGE_BASE)(a))->flag),0)
+#define _GET_IS_WIN(a)			_GET_BIT((((HWIDGE_BASE)(a))->flag),0)
+
+/*是否被点击*/
+#define _SetBtnPress(a)			_SET_BIT(((HWIDGE_BASE)(a))->flag,1)
+#define _SetBtnRelease(a)		_CLR_BIT(((HWIDGE_BASE)(a))->flag,1)
+#define _GetBtnStatus(a)		_GET_BIT(((HWIDGE_BASE)(a))->flag,1)
 
 #define _PToHWidgeBaseType(a) ((HWIDGE_BASE)a)
 
-HWIDGE_BASE WidgeCreate(int16 x, int16 y, int16 w, int16 h);
-
-void WidgeSetParentWin(HWIDGE_BASE hObject, void* hWIN);
-void WidgeSetColor(HWIDGE_BASE hObject, uintColor color);
-void WidgePaint(void* hObject);
-void WidgeMoveTo(HWIDGE_BASE hObject, int16 x, int16 y);
-//void WidgeSetArea(void* hObject, int16 x, int16 y, int16 w, int16 h);
-int8 WidgeCallBack(void *hObject, HMSGE hMsg);
+PUBLIC HWIDGE_BASE WIDGE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h);
+PUBLIC HWIDGE_BASE WIDGE_MARK_HEAD(CreateEx)(HXRECT hXRect);
+PUBLIC void WIDGE_MARK_HEAD(Close)(HWIDGE_BASE hObject);
+PUBLIC void WIDGE_MARK_HEAD(Init)(HWIDGE_BASE hWidgeBase, int16 x, int16 y, int16 w, int16 h);
+PUBLIC void WIDGE_MARK_HEAD(SetClickBack)(HWIDGE_BASE hObject, ViewClickCallBack viewClickCallBack);
+PUBLIC void WIDGE_MARK_HEAD(SetVisable)(HWIDGE_BASE hObject, uint8 isVisable);
+PUBLIC void WIDGE_MARK_HEAD(SetParentWin)(HWIDGE_BASE hObject, void* hWIN);
+PUBLIC void WIDGE_MARK_HEAD(SetColor)(HWIDGE_BASE hObject, uintColor color);
+PUBLIC void WIDGE_MARK_HEAD(MoveTo)(HWIDGE_BASE hObject, int16 x, int16 y);
+PRIVATE void WIDGE_MARK_HEAD(Paint)(void* hObject);
+PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);
 
 #endif

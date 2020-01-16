@@ -8,7 +8,6 @@
 typedef struct {
 	WIDGE_BASE textWidge;
 
-	int8 isVisable;/*ÊÇ·ñÏÔÊ¾*/
 
 	HFONTF hFont;//×ÖÌå
 	char *title;

@@ -5,9 +5,28 @@
 #include "gui.h"
 #include "paint_cut.h"
 #include "text_widge.h"
+#include "button_widge.h"
+
 HWIN_HEAD WindowsHeadCreate(char *title ,int16 x,int16 y,int16 w,int16 h) {
-	HWIN_HEAD hWinHead = (HWIN_HEAD)(xMalloc( sizeof(WIN_HEAD)));
+	HWIN_HEAD hWinHead;
+	HTEXT_WIDGE hTextWidge;
+	HXBUTTON hXButtonMin;
+	
+	hWinHead= (HWIN_HEAD)(xMalloc(sizeof(WIN_HEAD)));
 	if (hWinHead == NULL) {
+		return NULL;
+	}
+	hTextWidge = TextWidegeCreate(title ? title : _DefaultWinHeadName, 0, 0);
+	if (hTextWidge == NULL) {
+		xFree(hWinHead);
+		return NULL;
+	}
+	hXButtonMin = BUTTON_MARK_HEAD(Create)("-", 
+		w- hTextWidge->hFont->fontInfo.w-1, h+1,
+		hTextWidge->hFont->fontInfo.w, hTextWidge->hFont->fontInfo.h-2);
+	if (hXButtonMin == NULL) {
+		xFree(hWinHead);
+		xFree(hTextWidge);
 		return NULL;
 	}
 	//控件列表
@@ -15,26 +34,51 @@ HWIN_HEAD WindowsHeadCreate(char *title ,int16 x,int16 y,int16 w,int16 h) {
 	if (hWinHead->widgetList == NULL) {
 		xFree( hWinHead);
 	}
-	hWinHead->hFont = (HFONTF)&fontASCII8_12;
+	WidgeInit((HWIDGE_BASE)hWinHead, x, y, w, h);
+
 	hWinHead->headWidge.rect.x = x;
 	hWinHead->headWidge.rect.y = y;
 	hWinHead->headWidge.rect.w = w;
-	hWinHead->headWidge.rect.h = hWinHead->hFont->fontInfo.h;
+	hWinHead->headWidge.rect.h = hTextWidge->hFont->fontInfo.h;
 	hWinHead->headWidge.paintFun = WindowsHeadPaint;
 	hWinHead->headWidge.moveToFun = WindowsHeadMoveTo;
 	hWinHead->headWidge.widgeCallBackFun = WindowsHeadsCallBack;
+	hWinHead->headWidge.widgeCloseFun = WindowsHeadClose;
 	
 	hWinHead->headWidge.pencil.DrawColor = _DefaultHeadColor;
+	hWinHead->headWidge.pencil.DrawBkColor = _DefaultFontColor;
+
 	hWinHead->headWidge.pencil.x = x;
 	hWinHead->headWidge.pencil.y = y;
 	hWinHead->headWidge.pencil.w = w;
 	hWinHead->headWidge.pencil.h = hWinHead->headWidge.rect.h;
 
-	hWinHead->headWidge.isVisable = TRUE;
+	hTextWidge->textWidge.parentHWIN = hWinHead;
+	hXButtonMin->buttonWidge.parentHWIN = hWinHead;
 
-	WindowsHeadAdd(hWinHead, TextWidegeCreate(title ? title : _DefaultWinHeadName,0,0));
+	WindowsHeadAdd(hWinHead, hTextWidge);
+	WindowsHeadAdd(hWinHead, hXButtonMin);
 
 	return hWinHead;
+}
+
+//添加一个控件
+void WindowsHeadClose(HWIN_HEAD hWinHead) {
+	if (!hWinHead) { return; }
+	/*在这里释放窗口中的内存*/
+	/*获取每一个控件*/
+	HLIST hWidgeList = hWinHead->widgetList;
+	if (hWidgeList != NULL) {
+		hWidgeList = hWidgeList->next;
+		while (hWidgeList) {
+			HWIDGE_BASE hWidge = (HWIDGE_BASE)(hWidgeList->val);
+			/*调用每一个控件的关闭函数*/
+			hWidge->widgeCloseFun(hWidge);
+
+			hWidgeList = hWidgeList->next;
+		}
+	}
+	WIDGE_MARK_HEAD(Close)(hWinHead);
 }
 //添加一个控件
 int8 WindowsHeadAdd(HWIN_HEAD hWinHead, void *widge) {
@@ -113,12 +157,24 @@ void WindowsHeadPaint(void * hObject){
 int8 WindowsHeadsCallBack(void *hObject, HMSGE hMsg) {
 	HWIN_HEAD hWinHead = hObject;
 	if (!hWinHead || !hMsg) { return -1; }
+	if (!(hWinHead->headWidge.isVisable)) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
-		if (_IsDrawCheckPoint(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y,
-			hWinHead->headWidge.rect.x,
-			hWinHead->headWidge.rect.y,
-			hWinHead->headWidge.rect.w,
-			hWinHead->headWidge.rect.h)) {
+		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y,
+			&(hWinHead->headWidge.rect))) {
+			HLIST hWidgeList = hWinHead->widgetList;
+			if (hWidgeList) {
+				int8 ret;
+				HLIST lastWidge = ListGetLast(hWidgeList);
+				if (lastWidge != NULL) {
+					while (lastWidge != hWidgeList) {
+						HWIDGE_BASE hWidge = (HWIDGE_BASE)(lastWidge->val);
+						if ((ret = hWidge->widgeCallBackFun(hWidge, hMsg)) == 0) {
+							return 0;
+						}
+						lastWidge = lastWidge->lnext;
+					}
+				}
+			}
 			return 0;
 		}
 	}

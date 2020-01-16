@@ -55,7 +55,9 @@ int8 GUISendTouchMsg(int ID,int16 x, int16 y) {
 	//GUIPostEvent(&Msg);
 	return TRUE;
 }
-int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h,int16 x1,int16 y1,uint16 w1,uint16 h1) {
+int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h
+//	,int16 x1,int16 y1,uint16 w1,uint16 h1
+) {
 	HMSGE hMsg;
 	//if (hWin == NULL) { return FALSE; }
 
@@ -70,10 +72,10 @@ int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uin
 	hMsg->msgVal.rect.y = y;
 	hMsg->msgVal.rect.w = w;
 	hMsg->msgVal.rect.h = h;
-	hMsg->msgVal1.rect.x = x1;
+	/*hMsg->msgVal1.rect.x = x1;
 	hMsg->msgVal1.rect.y = y1;
 	hMsg->msgVal1.rect.w = w1;
-	hMsg->msgVal1.rect.h = h1;
+	hMsg->msgVal1.rect.h = h1;*/
 	enQueue(&drawMsg, hMsg);
 
 	//GUIPostEvent(&Msg);

@@ -28,11 +28,11 @@ typedef struct {
 }*HWIN,WIN;
 
 //获取是否绘制win头部标志位
-#define _IsDrawWinHead(a)  (!_GET_BIT((a)->flag,0))
+#define _IsDrawWinHead(a)  (_GET_BIT(((HWIN)(a))->flag,0))
 //设置显示窗口头
-#define _SetDrawWinHead(a) (_CLR_BIT((a)->flag,0))
+#define _SetDrawWinHead(a) (_SET_BIT(((HWIN)(a))->flag,0))
 //不显示头
-#define _ClrDrawWinHead(a) (_SET_BIT((a)->flag,0))
+#define _ClrDrawWinHead(a) (_CLR_BIT(((HWIN)(a))->flag,0))
 
 //是否需要重新剪裁与绘制
 #define _SetDrawAllLag(a)	(_SET_BIT((a)->flag,2))

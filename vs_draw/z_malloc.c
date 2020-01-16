@@ -7,7 +7,7 @@
 uint8 z_mem_malloc[ZMEM_SIZE] = { 0 };		
 //uint8 Z_mem_malloc1[ZMEM_SIZE_1]={0};		//外部SRAM内存池
 ////内存控制块
- uint16 z_mmt[ZMMTS] = { 0 };
+uint16 z_mmt[ZMMTS] = { 0 };
 // u16 z_mmt1[ZMMTS_1] __attribute__((at(0X68000000+ZMEM_SIZE_1)))= { 0 };
 
 //内存管理表

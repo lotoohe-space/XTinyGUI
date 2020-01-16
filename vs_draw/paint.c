@@ -1,4 +1,4 @@
-﻿
+﻿  
 #include "paint.h"
 #include "tool.h"
 #include "gui.h"
@@ -21,10 +21,14 @@
  /*设置无效区域*/
  void DrawInvaildRect(HXRECT hXRect) {
 	 if (hXRect == NULL) {
-		 GUISendDrawMsg(NULL, MSG_WIN_INVAILD_UPDATE, 0, 0, 0, LCD_SCREEN_W, LCD_SCREEN_H, 0, 0, LCD_SCREEN_W, LCD_SCREEN_H);
+		 GUISendDrawMsg(NULL, MSG_WIN_INVAILD_UPDATE, 0, 0, 0, LCD_SCREEN_W, LCD_SCREEN_H 
+			// 0, 0, LCD_SCREEN_W, LCD_SCREEN_H
+		 );
 	 }
 	 else {
-		 GUISendDrawMsg(NULL, MSG_WIN_INVAILD_UPDATE, 0, hXRect->x, hXRect->y, hXRect->w, hXRect->h, hXRect->x, hXRect->y, hXRect->w, hXRect->h);
+		 GUISendDrawMsg(NULL, MSG_WIN_INVAILD_UPDATE, 0, hXRect->x, hXRect->y, hXRect->w, hXRect->h
+			 //,  hXRect->x, hXRect->y, hXRect->w, hXRect->h
+		 );
 	 }
 	
  }
@@ -97,13 +101,13 @@ uint8 DrawLineV(HPENCIL hPencil, int16 x, int16 y0, int16 y1) {
 	return (uint8)1;
 }
 
-
-void delay_ms(int n) {
-	int i, j;
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < 1000000; j++);
-	}
-}
+//
+//void delay_ms(int n) {
+//	int i, j;
+//	for (i = 0; i < n; i++) {
+//		for (j = 0; j < 1000000; j++);
+//	}
+//}
 
 uint8 DrawChar(HXRECT hXRectArea, HFONTF hFont,int16 x, int16 y,uint8 ch,uintColor color) {
 	uint8 *chData;
@@ -189,8 +193,41 @@ uint8 DrawString(HPENCIL hPencil, HFONTF hFont, HXRECT dHRect ,int16 x,int16 y, 
 	}
 	return (uint8)1;
 }
+/*绘制二进制图片,宽和高只能是8的倍数*/
+void DrawBitmapBinary(HXRECT drawBorder, HXPOINT startDrawPT, HXBITMAP hXBitmap) {
+	uint16 i, j;
+	uint16 pixel;
+	uint16 draw_w;
+	uint16 draw_h;
+	if (drawBorder == NULL || startDrawPT == NULL || hXBitmap == NULL) {
+		return;
+	}
+	draw_w = MIN(drawBorder->w,hXBitmap->w);
+	draw_h = MIN(drawBorder->h,hXBitmap->h);
 
-/*在规定区域内绘制图片*/
+	if (hXBitmap->bitsPerPixel == 1) {
+		for (i = 0; i < draw_h; i++) {
+			for (j = 0; j < draw_w; j++) {
+				uint16 temp = (i+startDrawPT->y) * hXBitmap->w +
+					(j+startDrawPT->x);//当前像素的位置
+				pixel = hXBitmap->pixels[temp / 8]&((1<< (7 - (temp % 8))));
+				if (pixel) {
+					DrawPixel(0x0000, j+ drawBorder->x, i+ drawBorder->y);
+				}
+				else {
+					DrawPixel(0xffff, j+ drawBorder->x, i+ drawBorder->y);
+				}
+			}
+		}
+	}
+}
+/*
+* 在规定区域内绘制图片
+* hPencil 画布
+* border 绘图的边界
+* bgBorder 控件的边界
+* hXBitmap 绘制的图片
+*/
 uint8 DrawBitmap(HPENCIL hPencil, HXRECT border,HXRECT bgBorder,HXBITMAP hXBitmap) {
 	XRECT rRect;/*可以绘制的区域*/
 	XRECT rRect1;/*可以绘制的区域*/
@@ -199,20 +236,33 @@ uint8 DrawBitmap(HPENCIL hPencil, HXRECT border,HXRECT bgBorder,HXBITMAP hXBitma
 		return (uint8)0;
 	}
 	GetOverLapRect(border, (HXRECT)hPencil, &rRect);
-	temp.x = border->x;
-	temp.y = border->y;
+	temp.x = bgBorder->x;
+	temp.y = bgBorder->y;
 	temp.w = hXBitmap->w;
 	temp.h = hXBitmap->h;
 
 	GetOverLapRect(&rRect, (HXRECT)&temp, &rRect1);
 
-	d_bmp(
-		rRect1.x, rRect1.y, /*实际图片绘制的起点*/
-		rRect1.w, rRect1.h, /*需要绘制的图片的大小，应当是图片大小和边界大小中较小的哪一个*/
-		hXBitmap->pixels, 
-		rRect.x - bgBorder->x,rRect.y - bgBorder->y, /*从图片中绘制的开始位置*/
-		hXBitmap->w, hXBitmap->h  
-	);
+	XPOINT xPoint;
+	xPoint.x = rRect.x - bgBorder->x;
+	xPoint.y = rRect.y - bgBorder->y;
+	switch (hXBitmap->bitsPerPixel) {
+	case 1:
+		DrawBitmapBinary(&rRect1, &xPoint, hXBitmap);
+		break;
+	case 16:
+		d_bmp(
+			rRect1.x, rRect1.y, /*实际图片绘制的起点*/
+			rRect1.w, rRect1.h, /*需要绘制的图片的大小*/
+			hXBitmap->pixels,
+			rRect.x - bgBorder->x, rRect.y - bgBorder->y, /*从图片中绘制的开始位置*/
+			hXBitmap->w, hXBitmap->h
+		);
+		break;
+	}
+	
+
+	
 
 	return TRUE;
 }
@@ -233,12 +283,12 @@ uint8 DrawCutRect(void* hObject, HXRECT hXRECT) {
 /*字符串剪裁绘制*/
 uint8 DrawCutString(void* hObject, HFONTF hFont,HXRECT border, uint8* text) {
 	HWIDGE_BASE hWidgeBase = hObject;
-	if (!hWidgeBase) { return (uint8)0; }
+	if (!hWidgeBase) { return (uint8)FALSE; }
 	RECT_CUT_INIT(border) {
 		DrawString(&(hWidgeBase->pencil), hFont, nextCutRect, border->x, border->y, text);
 	}
 	RECT_CUT_END()
-	return (int8)1;
+	return (int8)TRUE;
 }
 /*图片剪裁绘制*/
 uint8 DrawCutBitmap(void* hObject, HXRECT border, HXBITMAP hXBitmap) {

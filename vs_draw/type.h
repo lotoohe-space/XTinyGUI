@@ -34,7 +34,7 @@ typedef unsigned int uint32;
 #define BOOL uint8
 
 #define PUBLIC 
-#define PRIVATE
+#define PRIVATE static
 
 
 #endif

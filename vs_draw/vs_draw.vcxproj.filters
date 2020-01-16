@@ -16,6 +16,18 @@
     <Filter Include="源文件\img">
       <UniqueIdentifier>{e3ad4bb8-6203-4385-8ee5-b6e0da615532}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\xTinyGUI">
+      <UniqueIdentifier>{f12ca95f-4a2c-4acf-b286-31f684f0d4bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\XTinyGUI">
+      <UniqueIdentifier>{bb47f9de-e989-445b-8cf6-960289e8f1b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\nes">
+      <UniqueIdentifier>{42445235-5acf-4466-abb8-7086f9a0b828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\nes">
+      <UniqueIdentifier>{2e05589a-6c72-4fe2-a0db-327d369bccd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -24,74 +36,98 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="type.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="z_malloc.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="paint.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="xwindows.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="color.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="tool.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="list.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="gui.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="xwindows_head.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="widge.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="msg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="font.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="font_ASCII_8_12.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="font_ASCII_12_16.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="paint_cut.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="button_widge.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="text_widge.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="x_malloc.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SqQueue.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="bitmap.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="bitmap_widge.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="girl_bitmap.h">
       <Filter>源文件\img</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap_widge.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="button_widge.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="check_box_widge.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="color.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="font.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="font_ASCII_8_12.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="font_ASCII_12_16.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="gui.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="list.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="msg.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="paint.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="paint_cut.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="progress_widge.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SqQueue.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="text_widge.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="tool.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="type.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="widge.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="x_malloc.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="xwindows.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="xwindows_head.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="NES_Simulator\6502.H">
+      <Filter>头文件\nes</Filter>
+    </ClInclude>
+    <ClInclude Include="NES_Simulator\JoyPad.h">
+      <Filter>头文件\nes</Filter>
+    </ClInclude>
+    <ClInclude Include="NES_Simulator\nes_datatype.h">
+      <Filter>头文件\nes</Filter>
+    </ClInclude>
+    <ClInclude Include="NES_Simulator\nes_main.h">
+      <Filter>头文件\nes</Filter>
+    </ClInclude>
+    <ClInclude Include="NES_Simulator\PPU.h">
+      <Filter>头文件\nes</Filter>
+    </ClInclude>
+    <ClInclude Include="NES_Simulator\rom.h">
+      <Filter>头文件\nes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -101,59 +137,80 @@
     <ClCompile Include="z_malloc.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="paint.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="xwindows.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="vs_draw.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="list.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="gui.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="xwindows_head.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="widge.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="msg.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="fonts.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="tool.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="paint_cut.c">
-      <Filter>源文件</Filter>
+    <ClCompile Include="bitmap_widge.c">
+      <Filter>源文件\xTinyGUI</Filter>
     </ClCompile>
     <ClCompile Include="button_widge.c">
-      <Filter>源文件</Filter>
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="check_box_widge.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="progress_widge.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="widge.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="xwindows_head.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="xwindows.c">
+      <Filter>源文件\xTinyGUI</Filter>
     </ClCompile>
     <ClCompile Include="text_widge.c">
-      <Filter>源文件</Filter>
+      <Filter>源文件\xTinyGUI</Filter>
     </ClCompile>
-    <ClCompile Include="widge_define.h">
-      <Filter>头文件</Filter>
+    <ClCompile Include="paint.c">
+      <Filter>源文件\xTinyGUI</Filter>
     </ClCompile>
-    <ClCompile Include="x_malloc.c">
-      <Filter>源文件</Filter>
+    <ClCompile Include="paint_cut.c">
+      <Filter>源文件\xTinyGUI</Filter>
     </ClCompile>
-    <ClCompile Include="SqQueue.c">
-      <Filter>源文件</Filter>
+    <ClCompile Include="gui.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="fonts.c">
+      <Filter>源文件\xTinyGUI</Filter>
     </ClCompile>
     <ClCompile Include="bitmap.c">
-      <Filter>源文件</Filter>
+      <Filter>源文件\xTinyGUI</Filter>
     </ClCompile>
-    <ClCompile Include="bitmap_widge.c">
-      <Filter>源文件</Filter>
+    <ClCompile Include="list.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="msg.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SqQueue.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="tool.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="x_malloc.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="widge_define.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="NES_Simulator\6502.C">
+      <Filter>源文件\nes</Filter>
+    </ClCompile>
+    <ClCompile Include="NES_Simulator\JoyPad.c">
+      <Filter>源文件\nes</Filter>
+    </ClCompile>
+    <ClCompile Include="NES_Simulator\nes_main.c">
+      <Filter>源文件\nes</Filter>
+    </ClCompile>
+    <ClCompile Include="NES_Simulator\PPU.c">
+      <Filter>源文件\nes</Filter>
+    </ClCompile>
+    <ClCompile Include="NES_Simulator\ROM__MARIO.c">
+      <Filter>源文件\nes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
