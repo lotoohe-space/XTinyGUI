@@ -258,111 +258,6 @@ uint8 DrawString(HPENCIL hPencil, HFONTF hFont, HXRECT border, int16 x, int16 y,
 	return (uint8)1;
 }
 
-/*
-* 在规定区域内绘制字符串
-*/
-uint8 DrawStringEx(HPENCIL hPencil, HFONTF hFont, HXRECT border, int16 x, int16 y, uint8* text) {
-	XRECT rRect;
-	XRECT rRect1;
-	XRECT temp;
-	uint16 m;
-	int16 stx;
-	int16 sty;
-	int16 endy;
-	int16 endx;
-	if (!hPencil) {
-		return (uint8)0;
-	}
-	
-	GetOverLapRect(border, (HXRECT)hPencil, &rRect1);/*得到绘图区域*/
-
-	temp.x = border->x + x;
-	temp.y = border->y + y;
-	temp.w = border->w;
-	temp.h = border->h;
-	GetOverLapRect(&temp, &rRect1, &rRect);
-
-	//fill_rect(rRect.x, rRect.y, rRect.w, rRect.h, RGB565TORGB888(hPencil->DrawBkColor));
-
-	int sx,sy,ex, ey;
-	int tsx,tsy,tex, tey;
-
-	tsx = rRect.x;
-	tsy = rRect.y;
-	tex = rRect.x + (int16)(TStrlen(text) * (hFont->fontInfo.w));
-	tey = rRect.y + hFont->fontInfo.h;
-
-	sx = border->x;
-	sy = border->y;
-	ex = border->x + border->w;
-	ey = border->y + border->h;
-
-	/*绘图的起点与终点*/
-	stx = rRect.x;
-	sty = rRect.y;
-	endx = rRect.x + rRect.w;
-	endy = rRect.y + rRect.h;
-
-	//fill_rect(rRect.x, rRect.y, rRect.w, rRect.h, RGB565TORGB888(hPencil->DrawBkColor));
-
-	for (m = 0; text[m]; m++) {
-		uint8* chData;
-		chData = FontReadChar(hFont, text[m]);
-		if (chData != NULL) {
-			int i, j;
-			for (i = sy; i < ey; i++) {
-				for (j = sx; j < ex; j++) {
-					if (j < tsx || i < tsy || j >= tex || i >= tey
-						) {
-						DrawPixel(hPencil->DrawBkColor, j, i);
-					}
-					else {
-						/*uint16 temp=x;
-						uint16 index = m;
-						do {
-							temp = temp % hFont->fontInfo.w;
-						} while (index--);*/
-						uint16 tCHData = hFont->fontInfo.perRowBytes == 2 ?
-							((uint16*)chData)[(i - sy ) % hFont->fontInfo.h] : chData[(i - sy) % hFont->fontInfo.h];
-						if (_GET_BIT(tCHData, (j - sx) % hFont->fontInfo.w)) {
-							DrawPixel(hPencil->DrawColor, j, i);
-						}
-						else {
-							DrawPixel(hPencil->DrawBkColor, j, i);
-						}
-					}
-
-				}
-			}
-		}
-		sx += hFont->fontInfo.w;
-	}
-	//fill_rect(rRect.x, rRect.y, rRect.w, rRect.h, RGB565TORGB888(hPencil->DrawColor));
-	/*for (i = 0; text[i]; i++) {
-		uint8* chData;
-		chData = FontReadChar(hFont, text[i]);
-		if (chData != NULL) {
-			int16 i, j;
-			for (i = y; i < MIN(hFont->fontInfo.h + y, endy); i++) {
-				if (i >= sty) {
-					for (j = x; j < MIN(hFont->fontInfo.w + x, endx); j++) {
-						if (j >= stx) {
-							uint16 tCHData = hFont->fontInfo.perRowBytes == 2 ? ((uint16*)chData)[i - sty] : chData[i - sty];
-							if (_GET_BIT(tCHData, j - stx)) {
-								DrawPixel(hPencil->DrawColor, j, i);
-							}
-							else {
-								DrawPixel(hPencil->DrawBkColor, j, i);
-							}
-						}
-					}
-				}
-			}
-		}
-		x += hFont->fontInfo.w;
-	}*/
-	return (uint8)1;
-}
 static uint8 _DrawChar(HPENCIL hPencil, HXRECT hXRectArea, HFONTF hFont, HXPOINT startPoint, uint8 ch) {
 	uint8* chData;
 	if (!hXRectArea) {
@@ -397,6 +292,99 @@ static uint8 _DrawChar(HPENCIL hPencil, HXRECT hXRectArea, HFONTF hFont, HXPOINT
 	}
 	return (uint8)1;
 }
+uint8 _DrawCharEx(HXRECT bgRect, HXRECT drawRect, HXPOINT hStartXPoint, HFONTF hFont, char ch) {
+	uint16 i, j;
+	uint16 pixel;
+	uint8* chData;
+	uint16 draw_w;
+	uint16 draw_h;
+	uint16 sDrawX;
+	uint16 sDrawY;
+
+	//if (drawRect->w == 0) { return; }
+	//sDrawX = bgRect->x + hStartXPoint->x;
+	//sDrawY = bgRect->y + hStartXPoint->y;
+
+	//draw_w = MIN(drawRect->w, hFont->fontInfo.w);
+	//draw_h = MIN(drawRect->h, hFont->fontInfo.h);
+
+	//fill_rect(
+	//	sDrawX,
+	//	sDrawY,
+	//	draw_w,
+	//	draw_h,
+	//	0xff00
+	//);
+	//fill_rect(
+	//	drawRect->x,
+	//	drawRect->y,
+	//	drawRect->w,
+	//	drawRect->h,
+	//	0xf000
+	//);
+	chData = FontReadChar(hFont, ch);
+	if (chData != NULL) {
+
+		sDrawX = bgRect->x + hStartXPoint->x;
+		sDrawY = bgRect->y + hStartXPoint->y;
+
+		draw_w = MIN(drawRect->w, hFont->fontInfo.w);
+		draw_h = MIN(drawRect->h, hFont->fontInfo.h);
+
+		for (i = drawRect->y; i < drawRect->y + drawRect->h; i++) {
+			for (j = drawRect->x; j < drawRect->x + drawRect->w; j++) {
+				if (j >= sDrawX && i >= sDrawY
+					&& j < sDrawX + draw_w && i < sDrawY + draw_h
+					) {
+
+					uint16 temp = (i - sDrawY) * hFont->fontInfo.w +
+						(j - sDrawX);//当前像素的位置
+					pixel = chData[temp / 8] & ((1 << ((temp % 8))));
+					if (pixel) {
+						DrawPixel(0xffff, 
+							j, i );
+					}else {
+						DrawPixel(0x0000, 
+							j , i );
+					}
+
+				}
+				else {
+					DrawPixel(0xffff,
+						j , i);
+				}
+			}
+		}
+		
+		//for (i = 0; i < draw_h; i++) {
+		//	for (j = 0; j < draw_w; j++) {
+		//		uint16 temp = (i ) * hFont->fontInfo.w +
+		//			(j );//当前像素的位置
+		//		pixel = chData[temp / 8] & ((1 << ((temp % 8))));
+		//		if (pixel) {
+		//			DrawPixel(0xffff, j + sDrawX, i + sDrawY);
+		//		}
+		//		else {
+		//			DrawPixel(0x0000, j + sDrawX, i + sDrawY);
+		//		}
+		//	}
+		//}
+	}
+	Vsrefresh();
+	return 1;
+}
+uint8 DrawCharEx(HXRECT bgBorder, HXRECT drawBorder, HXPOINT hStartXPoint,  HFONTF hFont,  char ch, HPENCIL hPencil) {
+	XRECT rRect;/*可以绘制的区域*/
+	XRECT rRect1;/*可以绘制的区域*/
+	XRECT temp;
+	if (!hPencil) {
+		return (uint8)0;
+	}
+	GetOverLapRect(drawBorder, (HXRECT)hPencil, &rRect);
+
+	_DrawCharEx(bgBorder, &rRect,  hStartXPoint, hFont, ch);
+	return TRUE;
+}
 uint8 DrawChar(HPENCIL hPencil, HFONTF hFont,HXRECT border, HXRECT bgBorder, char ch) {
 	XRECT rRect;/*可以绘制的区域*/
 	XRECT rRect1;/*可以绘制的区域*/
@@ -420,12 +408,25 @@ uint8 DrawChar(HPENCIL hPencil, HFONTF hFont,HXRECT border, HXRECT bgBorder, cha
 	return TRUE;
 }
 
+/*字绘制*/
+uint8 DrawCutChar(void* hObject, HFONTF hFont, HXRECT bgRect, HXPOINT hStartXPoint, char ch) {
+	HWIDGE_BASE hWidgeBase = hObject;
+	if (!hWidgeBase) { return (uint8)FALSE; }
+	RECT_CUT_INIT(bgRect) {
+		//DrawString(&(hWidgeBase->pencil), hFont, nextCutRect, !hXPoint ? 0 : hXPoint->x, !hXPoint ? 0 : hXPoint->y, text);
+		DrawCharEx(bgRect, nextCutRect, hStartXPoint, hFont, ch, &(hWidgeBase->pencil));
+
+	}
+	RECT_CUT_END()
+		return (int8)TRUE;
+}
+
 /*字符串剪裁绘制*/
 uint8 DrawCutString(void* hObject, HFONTF hFont, HXRECT border, HXPOINT hXPoint, uint8* text) {
 	HWIDGE_BASE hWidgeBase = hObject;
 	if (!hWidgeBase) { return (uint8)FALSE; }
 	RECT_CUT_INIT(border) {
-		DrawStringEx(&(hWidgeBase->pencil), hFont, nextCutRect, !hXPoint ? 0 : hXPoint->x, !hXPoint ? 0 : hXPoint->y, text);
+		DrawString(&(hWidgeBase->pencil), hFont, nextCutRect, !hXPoint ? border->x : hXPoint->x, !hXPoint ? border->y : hXPoint->y, text);
 	}
 	RECT_CUT_END()
 	return (int8)TRUE;
