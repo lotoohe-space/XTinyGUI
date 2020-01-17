@@ -137,16 +137,16 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 		DrawCutRect(hWidge, &xRect);
 		hWidge->widgeBase.pencil.DrawColor = color;
 		XPOINT xPoint;
-		xPoint.x = hWidge->widgeBase.rect.x + drawW;
-		xPoint.y = hWidge->widgeBase.rect.y + 1;
+		xPoint.x = drawW*2;
+		xPoint.y = 5;
 		DrawCutString(hWidge, hWidge->hFONTF, (HXRECT)(hWidge), &xPoint, hWidge->text);
 	}
 		break;
 	case 1:/*µã»÷×´Ì¬*/
 		DrawCutBitmap(hWidge, &xRect, &(hWidge->checkedImg));
 		XPOINT xPoint;
-		xPoint.x = hWidge->widgeBase.rect.x + drawW;
-		xPoint.y = hWidge->widgeBase.rect.y + 1;
+		xPoint.x = drawW * 2;
+		xPoint.y =  5;
 		DrawCutString(hWidge, hWidge->hFONTF, (HXRECT)(hWidge), &xPoint, hWidge->text);
 		break;
 	case 2:

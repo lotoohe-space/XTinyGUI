@@ -49,6 +49,7 @@ PUBLIC void WIDGE_MARK_HEAD(Init)(HWIDGE_BASE hWidgeBase,int16 x, int16 y, int16
 
 	hWidgeBase->viewClickCallBack = NULL;
 	hWidgeBase->arg = NULL;
+	hWidgeBase->flag = 0;
 
 	/*当前控件不是窗口*/
 	_SET_IS_WIN(hWidgeBase);
