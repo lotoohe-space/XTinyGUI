@@ -46,7 +46,7 @@ PUBLIC HCHECKBOX_WIDGE CHECKBOX_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int
 
 	hWidge->flag = 0;
 	hWidge->text = text;
-	hWidge->hFONTF = &fontASCII12_16;
+	hWidge->hFONTF = &fontASCII8_12;
 	return hWidge;
 }
 /*设置点击回调*/
@@ -138,16 +138,18 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 		hWidge->widgeBase.pencil.DrawColor = color;
 		XPOINT xPoint;
 		xPoint.x = drawW*2;
-		xPoint.y = 5;
-		DrawCutString(hWidge, hWidge->hFONTF, (HXRECT)(hWidge), &xPoint, hWidge->text);
+		xPoint.y = 0;
+		DrawCutChar(hWidge, hWidge->hFONTF, hWidge, &xPoint, 'S');
+		//DrawCutString(hWidge, hWidge->hFONTF, (HXRECT)(hWidge), &xPoint, hWidge->text);
 	}
 		break;
 	case 1:/*点击状态*/
 		DrawCutBitmap(hWidge, &xRect, &(hWidge->checkedImg));
 		XPOINT xPoint;
-		xPoint.x = drawW * 2;
-		xPoint.y =  5;
-		DrawCutString(hWidge, hWidge->hFONTF, (HXRECT)(hWidge), &xPoint, hWidge->text);
+		xPoint.x = drawW*2;
+		xPoint.y =  0;
+		DrawCutChar(hWidge, hWidge->hFONTF, hWidge, &xPoint, 'S');
+		//DrawCutString(hWidge, hWidge->hFONTF, (HXRECT)(hWidge), &xPoint, hWidge->text);
 		break;
 	case 2:
 		break;

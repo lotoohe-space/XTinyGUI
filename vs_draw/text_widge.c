@@ -11,7 +11,7 @@ HTEXT_WIDGE TextWidegeCreate(char *text, int16 x, int16 y) {
 		return NULL;
 	}
 	WidgeInit((HWIDGE_BASE)hObject, x, y, 0, 0);
-	hObject->hFont = (HFONTF)&fontASCII12_16;
+	hObject->hFont = (HFONTF)& fontASCII12_16;
 	hObject->textWidge.rect.x = x;
 	hObject->textWidge.rect.y = y;
 	
