@@ -425,7 +425,7 @@ uint8 DrawCutString(void* hObject, HFONTF hFont, HXRECT border, HXPOINT hXPoint,
 	HWIDGE_BASE hWidgeBase = hObject;
 	if (!hWidgeBase) { return (uint8)FALSE; }
 	RECT_CUT_INIT(border) {
-		DrawStringEx(&(hWidgeBase->pencil), hFont, nextCutRect, !hXPoint ? 0 : hXPoint->x, !hXPoint ? 0 : hXPoint->y, text);
+		DrawString(&(hWidgeBase->pencil), hFont, nextCutRect, !hXPoint ? border->x : hXPoint->x, !hXPoint ? border->y : hXPoint->y, text);
 	}
 	RECT_CUT_END()
 	return (int8)TRUE;
