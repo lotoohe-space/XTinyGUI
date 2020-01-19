@@ -334,7 +334,7 @@ uint8 _DrawCharEx(HXRECT bgRect, HXRECT drawRect, HXPOINT hStartXPoint, HFONTF h
 		for (i = drawRect->y; i < drawRect->y + drawRect->h; i++) {
 			for (j = drawRect->x; j < drawRect->x + drawRect->w; j++) {
 				if (j >= sDrawX && i >= sDrawY
-					&& j < sDrawX + draw_w && i < sDrawY + draw_h
+					&& j <= sDrawX + draw_w && i <= sDrawY + draw_h
 					) {
 
 					uint16 temp = (i - sDrawY) * hFont->fontInfo.w +
