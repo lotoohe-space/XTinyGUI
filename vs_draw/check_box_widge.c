@@ -137,19 +137,29 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 		DrawCutRect(hWidge, &xRect);
 		hWidge->widgeBase.pencil.DrawColor = color;
 		XPOINT xPoint;
-		xPoint.x = drawW*2;
-		xPoint.y = 0;
-		DrawCutChar(hWidge, hWidge->hFONTF, hWidge, &xPoint, 'S');
-		//DrawCutString(hWidge, hWidge->hFONTF, (HXRECT)(hWidge), &xPoint, hWidge->text);
+		xPoint.x = 0;
+		xPoint.y = 3;
+		XRECT xRect;
+		xRect.x = hWidge->widgeBase.rect.x+ drawW;
+		xRect.y = hWidge->widgeBase.rect.y;
+		xRect.w = hWidge->widgeBase.rect.w- drawW;
+		xRect.h = hWidge->widgeBase.rect.h;
+		//DrawCutChar(hWidge, hWidge->hFONTF, &xRect, &xPoint, 'S');
+		DrawCutString(hWidge, hWidge->hFONTF, &xRect, &xPoint, hWidge->text);
 	}
 		break;
 	case 1:/*µã»÷×´Ì¬*/
 		DrawCutBitmap(hWidge, &xRect, &(hWidge->checkedImg));
 		XPOINT xPoint;
-		xPoint.x = drawW*2;
-		xPoint.y =  0;
-		DrawCutChar(hWidge, hWidge->hFONTF, hWidge, &xPoint, 'S');
-		//DrawCutString(hWidge, hWidge->hFONTF, (HXRECT)(hWidge), &xPoint, hWidge->text);
+		xPoint.x = 0;
+		xPoint.y = 3;
+		XRECT xRect;
+		xRect.x = hWidge->widgeBase.rect.x + drawW;
+		xRect.y = hWidge->widgeBase.rect.y;
+		xRect.w = hWidge->widgeBase.rect.w - drawW;
+		xRect.h = hWidge->widgeBase.rect.h;
+		//DrawCutChar(hWidge, hWidge->hFONTF, &xRect, &xPoint, 'S');
+		DrawCutString(hWidge, hWidge->hFONTF, &xRect, &xPoint, hWidge->text);
 		break;
 	case 2:
 		break;
