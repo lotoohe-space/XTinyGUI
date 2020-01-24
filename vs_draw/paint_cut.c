@@ -91,7 +91,7 @@ HXRECT RectCutFind(void) {
 
 	rectItem = rectCutList.next;
 	while ((hRect = RectCutGetNext()) != NULL) {
-		if (((HWIDGE_BASE)hRect)->isVisable == FALSE) { 
+		if (!_GetVisable(hRect) || _GET_IS_DPY(hRect)) {
 			continue;
 		}
 
@@ -164,7 +164,7 @@ HXRECT RectCutFind(void) {
 					tempItem = rectItem;
 					/*pointEnd.y可能还没有达到与参考位置最近，故继续遍历*/
 					while (hRect = RectCutGetNext()) {
-						if (((HWIDGE_BASE)hRect)->isVisable == FALSE) { continue; }
+						if (!_GetVisable(hRect) || _GET_IS_DPY(hRect)) { continue; }
 						if (hRect->y > startPoint.y) {							/*上边*/
 							/*在被剪裁矩形的纵向限定范围内*/
 							if (hRect->y > bgRect.y
@@ -204,7 +204,7 @@ HXRECT RectCutFind(void) {
 				tempItem = rectItem;
 				/*pointEnd.y可能还没有达到与参考位置最近，故继续遍历*/
 				while (hRect = RectCutGetNext()) {
-					if (((HWIDGE_BASE)hRect)->isVisable == FALSE) { continue; }
+					if (!_GetVisable(hRect) || _GET_IS_DPY(hRect)) { continue; }
 					if (hRect->y > startPoint.y) {							/*上边*/
 							/*在被剪裁矩形的纵向限定范围内*/
 						if (hRect->y > bgRect.y 

@@ -6,6 +6,12 @@
 #include "xwindows.h"
 #include <string.h>
 
+//volatile uint32 GUITick = 0;
+extern unsigned long long GetCurrentTimeMsec();
+uint32 GUIGetTick(void) {
+	return (uint32)GetCurrentTimeMsec();
+}
+
 /*桌面也应该是一个窗体*/
 HXDESKTOP hXDesktop = NULL;
 
@@ -107,8 +113,15 @@ void GUIEvent(void) {
 			}
 		}
 		else if (hTempMsg->msgType == MSG_WIN) {/*窗口移动事件*/
-			if (_GET_IS_WIN(hTempMsg->msgSrc)) {
-				WindowsMoveTo(hTempMsg->msgSrc, hTempMsg->msgVal.rect.x, hTempMsg->msgVal.rect.y);
+			if (hTempMsg->msgID == MSG_WIN_MOVE) {
+				if (_GET_IS_WIN(hTempMsg->msgSrc)) {
+					WindowsMoveTo(hTempMsg->msgSrc, hTempMsg->msgVal.rect.x, hTempMsg->msgVal.rect.y);
+				}
+			}
+		}
+		else if (hTempMsg->msgType == MSG_KEY) {
+			if (hXDesktop->topWin!=NULL) {
+				hXDesktop->topWin->winWidge.widgeCallBackFun(hXDesktop->topWin, hTempMsg);
 			}
 		}
 		GUIDelMsg(hTempMsg);
@@ -159,7 +172,7 @@ HXDESKTOP GUIInit(void) {
 	//hXDesktop->winMoving = NULL;
 
 	WindowsSetColor(hXDesktop->desktopWin, 0xffff);
-	WindowsSetDrawHead(hXDesktop->desktopWin,0);
+	WindowsSetDrawHead(hXDesktop->desktopWin,FALSE);
 
 	if (!RectCutInit()) {
 		WindowsClose( hXDesktop->desktopWin);
@@ -180,8 +193,18 @@ void SetMovingWin(HXRECT hXRect) {
 	TRUE:需要剪裁
 */
 //extern void d_rect(int x, int y, int w, int h, int color);
-BOOL isGUINeedCut(HXRECT hXRECT) {
+BOOL IsGUINeedCut(HXRECT hXRECT) {
+
+#if USE_ALPHA
+	/*暂时这么写*/
+	return TRUE;
+#else
 	if (hXRECT == NULL) { return TRUE; }
+
+	/*如果透明则需要剪裁，也就是需要绘制*/
+	if (_GET_IS_DPY(hXRECT)) {
+		return TRUE;
+	}
 
 	//if (hXDesktop->winMoving == NULL) {
 	/*	if (hXDesktop->topWin == NULL) {
@@ -265,21 +288,23 @@ BOOL isGUINeedCut(HXRECT hXRECT) {
 
 	return TRUE;
 	*/
+#endif
+
 }
 
 //extern  XRECT drawArea;
 //GUI执行函数
 void GUIExec(void) {
 	if (hXDesktop->drawArea.x != -1) {
- 		if (hXDesktop->topWin!=NULL
-			&& memcmp(&(hXDesktop->drawArea), &(hXDesktop->topWin->winWidge.rect),sizeof(XRECT)) ==0 /*顶部窗口与绘制区域一样大*/
-			) {
-			hXDesktop->topWin->winWidge.paintFun(hXDesktop->topWin);		/*则只重绘顶部窗口*/
-		}
-		else {
+ 	//	if (hXDesktop->topWin!=NULL
+		//	&& memcmp(&(hXDesktop->drawArea), &(hXDesktop->topWin->winWidge.rect),sizeof(XRECT)) ==0 /*顶部窗口与绘制区域一样大*/
+		//	) {
+		//	hXDesktop->topWin->winWidge.paintFun(hXDesktop->topWin);		/*则只重绘顶部窗口*/
+		//}
+		//else {
 			//fill_rect(0, 0, 1024, 700, 0xffffff);
 			hXDesktop->desktopWin->winWidge.paintFun(hXDesktop->desktopWin);	/*桌面重绘*/
-		}
+		//}
 		hXDesktop->drawArea.x = -1;
 	}
 }

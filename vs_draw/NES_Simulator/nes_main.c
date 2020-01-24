@@ -20,7 +20,7 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 uint8 Continue = TRUE;//初始化为真
-int FrameCnt;
+int FrameCnt=0;
 
 /* NES 帧周期循环*/   
 void NesFrameCycle(void)
@@ -60,7 +60,7 @@ void NesFrameCycle(void)
 				if(SpriteHitFlag == FALSE)
 					NES_GetSpr0HitFlag(PPU_scanline - SCAN_LINE_DISPALY_START_NUM);						//查找Sprite #0 碰撞标志
 			}
-			if(FrameCnt & 2){										 //每2帧显示一次
+			if(FrameCnt){										 //每2帧显示一次
 				NES_RenderLine(PPU_scanline - SCAN_LINE_DISPALY_START_NUM);					//水平同步与显示一行
 			}	
 		}

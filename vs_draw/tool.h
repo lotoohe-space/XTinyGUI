@@ -35,6 +35,8 @@ rRect.w-=rRect.x;rRect.h-=rRect.y;\
 }
 void   TMemcpy(void *dst, void *src, uint32 len);
 uint32 TStrlen(char *str);
+uint32 UStrlen(uint16* str);
+const char* TCharGet(const char* str, uint16 index);
 
 //¾ØÐÎ¸´ÖÆº¯Êý
 #define XRECT_COPY(a,b) TMemcpy((a), (b), sizeof(XRECT))

@@ -6,7 +6,7 @@
 #include "paint.h"
 #include "gui.h"
 
-void WindowsHeadBtnCallBack(void* Object, void* arg, uint8 status);
+static void WindowsHeadBtnCallBack(void* Object, void* arg, uint8 status);
 
 HWIN WindowsCreate(char *title,int16 x,int16 y,int16 w,int16 h) {
 	/*创建一个窗口*/
@@ -21,7 +21,7 @@ HWIN WindowsCreate(char *title,int16 x,int16 y,int16 w,int16 h) {
 		xFree( hWin);
 	}
 	/*创建一个窗口头部控件*/
-	hWin->hWinHead = WINDOWS_HEAD_MARK_HEAD(Create)(title, 0, 0, w, 0);
+	hWin->hWinHead = WINDOWS_HEAD_MARK_HEAD(Create)(title, 0, 0, w, 20);
 	if (hWin->hWinHead == NULL) { 
 		xFree( hWin->widgetList);
 		xFree( hWin); 
@@ -29,27 +29,10 @@ HWIN WindowsCreate(char *title,int16 x,int16 y,int16 w,int16 h) {
 	}
 	WidgeInit((HWIDGE_BASE)hWin, x, y, w, h);
 
-	/*设置窗口初值*/
-	//hWin->winWidge.rect.x = x;
-	//hWin->winWidge.rect.y = y;
-	//hWin->winWidge.rect.w = w;
-	//hWin->winWidge.rect.h = h;
-
 	/*设置回调函数*/
 	hWin->winWidge.paintFun = WindowsPaint;
 	hWin->winWidge.moveToFun = WindowsMoveTo;
 	hWin->winWidge.widgeCallBackFun = WindowsCallBack;
-
-	///*设置画笔颜色*/
-	//hWin->winWidge.pencil.DrawColor = _DefaultFrColor;
-	///*设置窗口有效区域*/
-	//hWin->winWidge.pencil.x = x;
-	//hWin->winWidge.pencil.y = y;
-	//hWin->winWidge.pencil.w = w;
-	//hWin->winWidge.pencil.h = h;
-
-	//hWin->winWidge.isVisable = TRUE;
-	//hWin->winWidge.parentHWIN = NULL;
 
 	hWin->lastRect.x = x;
 	hWin->lastRect.y = y;
@@ -59,6 +42,7 @@ HWIN WindowsCreate(char *title,int16 x,int16 y,int16 w,int16 h) {
 	hWin->t_dy = 0;
 
 	hWin->flag = 0;
+	hWin->winProcessFun = NULL;
 
 	/*设置基础控件中的窗口标识为真*/
 	_SET_IS_WIN(hWin);
@@ -90,15 +74,23 @@ HWIN WindowsCreate(char *title,int16 x,int16 y,int16 w,int16 h) {
 		WindowsWidgeAdd(hWin, widgeTemp);
 	}
 	
+
+
 	return hWin;
 }
 /*窗口中button点击事件的回调接口*/
-void WindowsHeadBtnCallBack(void* Object,void* arg, uint8 status) {
+static void WindowsHeadBtnCallBack(void* Object,void* arg, uint8 status) {
 	HWIN CentWIN = (HWIN)arg;
 	if (status) {
 		WindowsSetMin(CentWIN);
 	}
 }
+/*设置窗口处理回调事件*/
+void WindowsSetProcessCallBack(HWIN hObject, WinProcessCallBack winProcessFun) {
+	if (hObject == NULL) { return; }
+	hObject->winProcessFun = winProcessFun;
+}
+/*设置窗口最小化*/
 void WindowsSetMin(HWIN hObject) {
 	if (!hObject) { return; }
 	if (_IsMinWIN(hObject)) {
@@ -115,6 +107,7 @@ void WindowsSetMin(HWIN hObject) {
 		WindowsResize(hObject, hObject->winWidge.rect.x, hObject->winWidge.rect.y, hObject->hWinHead->widgeBase.rect.w, hObject->hWinHead->widgeBase.rect.h);
 	}
 }
+/*设置窗口最大化，暂时还未全部实现*/
 void WindowsSetMax(HWIN hObject) {
 	if (!hObject) { return; }
 	if (_IsMaxWIN(hObject)) {
@@ -144,7 +137,6 @@ void* WindoswGetWidge(HWIN hWin, uint16 index) {
 	HLIST hlist=ListGet(hWin->widgetList, index);
 	return hlist;
 }
-
 /*往窗体中添加一个控件*/
 int8 WindowsWidgeAdd(HWIN hWin, void *widge) {
 	if (!hWin|| !widge) { return -1; }
@@ -181,14 +173,12 @@ void WindowsInvaildRect(HWIDGE_BASE hWidgeBase,HXRECT hXRect) {
 		//DrawInvaildRect((HXRECT)hWin);
 		GUISendDrawMsg(hWidgeBase, MSG_WIN_INVAILD_UPDATE, 0,
 			hWidgeBase->rect.x, hWidgeBase->rect.y, hWidgeBase->rect.w, hWidgeBase->rect.h
-		//, hWin->lastRect.x, hWin->lastRect.y, hWin->lastRect.w, hWin->lastRect.h
 		);
 	}
 	else {
 		//DrawInvaildRect(hXRect);
 		GUISendDrawMsg(hWidgeBase, MSG_WIN_INVAILD_UPDATE, 0,
 			hXRect->x, hXRect->y, hXRect->w, hXRect->h
-		//	, hWin->lastRect.x, hWin->lastRect.y, hWin->lastRect.w, hWin->lastRect.h
 		);
 	}
 }
@@ -278,14 +268,15 @@ void WindowsSetVisable(void* hObject, int8 isVisable) {
 	HWIN hWin;
 	hWin = hObject;
 	if (!hWin) { return; }
-	hWin->winWidge.isVisable = isVisable;
+	WIDGE_MARK_HEAD(SetVisable)(hWin, isVisable);
+	//hWin->winWidge.isVisable = isVisable;
 
 	/* 更新窗口 */
 	//if (hWin->winWidge.parentHWIN == NULL) {
 	//	WindowsInvaildRect(hWin, hWin);
 	//}
 	//else {
-		WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)hWin);
+	//	WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)hWin);
 	//}
 }
 /*
@@ -296,8 +287,20 @@ void WindowsPaint(void *hObject) {
 	HWIN hWin;
 	hWin = hObject;
 	if (!hWin) { return; }
-	if(!(hWin->winWidge.isVisable)){return ;}
-	if (!isGUINeedCut((HXRECT)hWin) && !_IsDrawAllLag(hWin)) { return; }
+
+	if (_IsDrawAllLag(hWin)) {
+		/*首次的创建事件*/
+		if (hWin->winProcessFun != NULL) {
+			MSGE msg;
+			msg.msgSrc = hWin;
+			msg.msgType = MSG_WIN;
+			msg.msgID = MSG_WIN_CREATE;
+			hWin->winProcessFun(hWin, hWin->winWidge.arg, &msg);
+		}
+	}
+
+	if (!_GetVisable(hWin)) { return; }
+	if (!IsGUINeedCut((HXRECT)hWin) && !_IsDrawAllLag(hWin)) { return; }
 
 	/*初次需要全部刷新*/
 	_ClrDrawAllLag(hWin);
@@ -314,9 +317,16 @@ void WindowsPaint(void *hObject) {
 	}
 	/*画矩形*/
 	DrawCutRect(hWin, &(hWin->winWidge.rect));
+	/*重绘事件*/
+	if (hWin->winProcessFun != NULL) {
+		MSGE msg;
+		msg.msgSrc = hWin;
+		msg.msgType = MSG_WIN;
+		msg.msgID = MSG_WIN_PAINT;
+		hWin->winProcessFun(hWin, hWin->winWidge.arg, &msg);
+	}
+	
 	RectCutSplitRectList(cutPostionList);
-	/*退回到之前剪裁域*/
-
 	/*迭代每一个控件*/
 	_StartScanU(hWin->widgetList) {//开始扫描
 		/*当前列表控件加入剪裁域*/
@@ -335,28 +345,66 @@ void WindowsPaint(void *hObject) {
 /*是否显示头部*/
 void WindowsSetDrawHead(HWIN hWin, int8 isEnable) {
 	uint8 i = 0;
-	if (isEnable) {
-		_SetDrawWinHead(hWin);
-	}
-	else {
-		_ClrDrawWinHead(hWin);
-	}
 
 	/*前四个控件为边界和头部*/
 	for (i = 0; i < 4; i++) {
 		HLIST widge= WindoswGetWidge(hWin, i);
 		if (widge != NULL) {
-			((HWIDGE_BASE)(widge->val))->isVisable= isEnable;
+			if (isEnable) {
+				_SetVisable(widge->val);
+			}
+			else {
+				_ClrVisable(widge->val);
+			}
 		}
 	}
 	/* 更新窗口 */
 	WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)hWin);
 }
+///*窗口事件的处理*/
+//PRIVATE int8 WindowsEventProcess(HWIN hWin,HMSGE hMsg) {
+//	switch (hMsg->msgType) {
+//	case MSG_TOUCH:
+//		if (_IsDrawWinHead(hWin)) {
+//			switch (hMsg->msgID) {
+//			case MSG_TOUCH_PRESS:
+//				//有头才能抓取移动
+//					//被抓的是不是头
+//				if (WINDOWS_HEAD_MARK_HEAD(CallBack)(hWin->hWinHead, hMsg) == 0) {
+//					hWin->t_dx = hMsg->msgVal.rect.x - hWin->winWidge.rect.x;
+//					hWin->t_dy = hMsg->msgVal.rect.y - hWin->winWidge.rect.y;
+//					_SetWinMoveing(hWin);
+//					WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)hWin);
+//					return 0;
+//				}
+//				break;
+//			case MSG_TOUCH_MOVE:
+//				//有头才能抓取移动
+//				if (_IsWinMoving(hWin)) {
+//					/*WindowsMoveTo(hWin,
+//						hMsg->msgVal.xy.x - hWin->t_dx, hMsg->msgVal.xy.y - hWin->t_dy);*/
+//					GUISendMoveMsg(hWin, MSG_WIN, MSG_WIN_MOVE, hMsg->msgVal.rect.x - hWin->t_dx, hMsg->msgVal.rect.y - hWin->t_dy);
+//					return 0;
+//				}
+//				break;
+//			case MSG_TOUCH_RELEASE:
+//				//有头才能抓取移动
+//				_ClrWinMoveing(hWin);
+//				break;
+//			}
+//		}
+//		break;
+//	case MSG_KEY:
+//		break;
+//	}
+//	return 1;
+//}
+
 /*窗口事件处理*/
 int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 	HWIN hWin = hObject;
 	if (!hWin || !hMsg) { return -1; }
-	if (!(hWin->winWidge.isVisable)) { return -1; }
+	if (!_GetVisable(hWin)) { return -1; }
 
 	if (hMsg->msgType == MSG_TOUCH) {
 		if (_IsDrawWinHead(hWin)) {
@@ -368,7 +416,7 @@ int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 						hWin->t_dx = hMsg->msgVal.rect.x - hWin->winWidge.rect.x;
 						hWin->t_dy = hMsg->msgVal.rect.y - hWin->winWidge.rect.y;
 						_SetWinMoveing(hWin);
-						WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)hWin);
+						WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)(hWin->winWidge.parentHWIN));
 						return 0;
 					}
 				break;
@@ -392,22 +440,9 @@ int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 			hWin->winWidge.rect.w, hWin->winWidge.rect.h)) {
 			return 2;
 		}
-		//if (hMsg->msgID == MSG_TOUCH_PRESS) {
-		//	DrawInvaildRect(_PToHXRECTType(hWin));
-		//}
+
 		HLIST hWidgeList = hWin->widgetList;
 		if (hWidgeList == NULL) { return 1; }
-		//if (_IsDrawWinHead(hWin)) {
-		//	hWidgeList = hWidgeList->next;/*跳过头部*/
-		//}
-
-		//_StartScanU(hWidgeList)
-		//	HWIDGE_BASE hWidge = (HWIDGE_BASE)val;
-		//	if (hWidge->widgeCallBackFun(hWidge, hMsg) == 1) {
-		//		
-		//		break;
-		//	}
-		//_EndScanU();
 
 		if (hWidgeList) {
 			int8 ret;
@@ -425,6 +460,11 @@ int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 			}
 		}
 		return 1;
+	}
+	else if (hMsg->msgType == MSG_KEY) {
+		if (hWin->winProcessFun != NULL) {
+			hWin->winProcessFun(hWin, hWin->winWidge.arg, hMsg);
+		}
 	}
 
 	return 1;

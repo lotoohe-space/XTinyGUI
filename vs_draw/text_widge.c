@@ -5,13 +5,13 @@
 #include "gui.h"
 #include "paint_cut.h"
 
-HTEXT_WIDGE TextWidegeCreate(char *text, int16 x, int16 y) {
+HTEXT_WIDGE TextWidegeCreate(char *text, int16 x, int16 y,uint16 w, uint16 h) {
 	HTEXT_WIDGE hObject = (HTEXT_WIDGE)(xMalloc( sizeof(TEXT_WIDGE)));
 	if (hObject == NULL) {
 		return NULL;
 	}
 	WidgeInit((HWIDGE_BASE)hObject, x, y, 0, 0);
-	hObject->hFont = (HFONTF)&fontASCII8_12;
+	hObject->hFont = (HFONTF)& fontUNICODE16_16;
 	hObject->textWidge.rect.x = x;
 	hObject->textWidge.rect.y = y;
 	
@@ -19,18 +19,18 @@ HTEXT_WIDGE TextWidegeCreate(char *text, int16 x, int16 y) {
 	hObject->textWidge.moveToFun = TextWidegeMoveTo;
 	hObject->textWidge.widgeCallBackFun = TextWidegeCallBack;
 	hObject->title = text ? text : _DefaultWinHeadName;
-	hObject->textWidge.rect.w = hObject->hFont->fontInfo.w * TStrlen(hObject->title);;
-	hObject->textWidge.rect.h = hObject->hFont->fontInfo.h;
+	hObject->textWidge.rect.w = w;
+	hObject->textWidge.rect.h = h;
 
 
-	hObject->textWidge.pencil.DrawColor = _DefaultFontColor;
-	hObject->textWidge.pencil.DrawBkColor = _DefaultHeadColor;
-	hObject->textWidge.pencil.x = x;
-	hObject->textWidge.pencil.y = y;
-	hObject->textWidge.pencil.w = hObject->textWidge.rect.w;
-	hObject->textWidge.pencil.h = hObject->textWidge.rect.h;
+	//hObject->textWidge.pencil.DrawColor = _DefaultFontColor;
+	//hObject->textWidge.pencil.DrawBkColor = _DefaultHeadColor;
+	//hObject->textWidge.pencil.x = x;
+	//hObject->textWidge.pencil.y = y;
+	//hObject->textWidge.pencil.w = w;
+	//hObject->textWidge.pencil.h = h;
 
-	hObject->textWidge.isVisable = TRUE;
+	//hObject->textWidge.isVisable = TRUE;
 
 	return hObject;
 }
@@ -48,7 +48,7 @@ void TextWidegePaint(void * hObject) {
 	HTEXT_WIDGE hTextWidge;
 	hTextWidge = hObject;
 	if (!hObject) { return; }
-	if (!(hTextWidge->textWidge.isVisable)) { return ; }
+	if (!_GetVisable(hTextWidge)) { return ; }
 	//if (!isGUINeedCut((HXRECT)hTextWidge)) { return; }
 
 	DrawSetArea(hTextWidge);
@@ -67,7 +67,7 @@ void TextWidegePaint(void * hObject) {
 int8 TextWidegeCallBack(void *hObject, HMSGE hMsg) {
 	HTEXT_WIDGE hTextWidge = hObject;
 	if (!hTextWidge || !hMsg) { return -1; }
-	if (!(hTextWidge->textWidge.isVisable)) { return -1; }
+	if (!_GetVisable(hTextWidge)) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
 		if (_IsDrawCheckPoint(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, 
 			hTextWidge->textWidge.rect.x, 

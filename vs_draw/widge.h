@@ -18,15 +18,26 @@ typedef struct {
 
 	/*外部调用，点击事件回调函数，所有控件共有的特性*/
 	ViewClickCallBack viewClickCallBack;
+	/*可以传递一个参数*/
 	void* arg;
 
 	void* parentHWIN;/*父控件*/
-	uint8 isVisable;/*是否显示*/
-	uint8 flag;/*0:bit 是否为窗口 1:bit 是否被点击*/
+	uint8 flag;/*
+			   0:bit 是否为窗口 
+			   1:bit 是否被点击 
+			   2:bit 是否显示 
+			   3:bit 是否有焦点(还未实现)
+			   4:bit 是否需要进行透明处理
+			   */
 
 }*HWIDGE_BASE, WIDGE_BASE;
 
-/*改widge是不是窗口*/
+/*控件是否需要进行透明处理*/
+#define _SET_IS_DPY(a)			_SET_BIT((((HWIDGE_BASE)(a))->flag),4)
+#define _CLR_IS_DPY(a)			_CLR_BIT((((HWIDGE_BASE)(a))->flag),4)
+#define _GET_IS_DPY(a)			_GET_BIT((((HWIDGE_BASE)(a))->flag),4)
+
+/*该widge是不是窗口*/
 #define _SET_IS_WIN(a)			_SET_BIT((((HWIDGE_BASE)(a))->flag),0)
 #define _CLR_IS_WIN(a)			_CLR_BIT((((HWIDGE_BASE)(a))->flag),0)
 #define _GET_IS_WIN(a)			_GET_BIT((((HWIDGE_BASE)(a))->flag),0)
@@ -35,6 +46,11 @@ typedef struct {
 #define _SetBtnPress(a)			_SET_BIT(((HWIDGE_BASE)(a))->flag,1)
 #define _SetBtnRelease(a)		_CLR_BIT(((HWIDGE_BASE)(a))->flag,1)
 #define _GetBtnStatus(a)		_GET_BIT(((HWIDGE_BASE)(a))->flag,1)
+
+/*是否显示*/
+#define _SetVisable(a)			_SET_BIT(((HWIDGE_BASE)(a))->flag,2)
+#define _ClrVisable(a)			_CLR_BIT(((HWIDGE_BASE)(a))->flag,2)
+#define _GetVisable(a)			_GET_BIT(((HWIDGE_BASE)(a))->flag,2)
 
 #define _PToHWidgeBaseType(a) ((HWIDGE_BASE)a)
 

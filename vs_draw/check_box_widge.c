@@ -46,7 +46,7 @@ PUBLIC HCHECKBOX_WIDGE CHECKBOX_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int
 
 	hWidge->flag = 0;
 	hWidge->text = text;
-	hWidge->hFONTF = &fontASCII8_12;
+	hWidge->hFONTF = &fontGB231216_16;
 	return hWidge;
 }
 /*设置点击回调*/
@@ -91,7 +91,7 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 	HCHECKBOX_WIDGE hWidge;
 	hWidge = hObject;
 	if (!hObject) { return; }
-	if (hWidge->widgeBase.isVisable == 0) { return; }
+	if (!_GetVisable(hWidge)) { return; }
 //	if (!isGUINeedCut(hWidge)) { return; }
 
 	DrawSetArea(hWidge);
@@ -138,7 +138,7 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 		hWidge->widgeBase.pencil.DrawColor = color;
 		XPOINT xPoint;
 		xPoint.x = 0;
-		xPoint.y = 3;
+		xPoint.y = 0;
 		XRECT xRect;
 		xRect.x = hWidge->widgeBase.rect.x+ drawW;
 		xRect.y = hWidge->widgeBase.rect.y;
@@ -152,7 +152,7 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 		DrawCutBitmap(hWidge, &xRect, &(hWidge->checkedImg));
 		XPOINT xPoint;
 		xPoint.x = 0;
-		xPoint.y = 3;
+		xPoint.y = 0;
 		XRECT xRect;
 		xRect.x = hWidge->widgeBase.rect.x + drawW;
 		xRect.y = hWidge->widgeBase.rect.y;
@@ -170,7 +170,7 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 int8 CHECKBOX_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
 	HWIDGE_BASE hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg) { return -1; }
-	if (!(hWidgeBase->isVisable)) { return -1; }
+	if (!_GetVisable(hWidgeBase)) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
 
 		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, &(hWidgeBase->rect))) {

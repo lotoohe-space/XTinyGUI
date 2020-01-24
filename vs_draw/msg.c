@@ -39,6 +39,21 @@ HMSGE GUIGetMsg(void) {
 void GUIDelMsg(HMSGE hMsg) {
 	xFree(hMsg);
 }
+int8 GUISendKeyMsg(uint8 ID,uint8 status) {
+	HMSGE hMsg;
+	hMsg = xMalloc(sizeof(MSGE));
+	if (hMsg == NULL) { return FALSE; }
+
+	hMsg->msgSrc = NULL;
+	hMsg->msgType = MSG_KEY;
+	hMsg->msgID = ID;
+	hMsg->msgVal.status = status;
+	//hMsg->msgVal.what = keyVal;
+
+	enQueue(&eventMsg, hMsg);
+	//GUIPostEvent(&Msg);
+	return TRUE;
+}
 /*发送消息到队列*/
 int8 GUISendTouchMsg(int ID,int16 x, int16 y) {
 	HMSGE hMsg;

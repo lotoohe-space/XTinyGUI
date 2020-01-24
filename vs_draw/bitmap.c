@@ -9,7 +9,8 @@ uint8 InitBitmap(HXBITMAP hXBitmap,uint8* pixels, uint16 w, uint16 h, uint8 colo
 	hXBitmap->h = h;
 	hXBitmap->pixels = pixels;
 	hXBitmap->bitsPerPixel = colorDepth;
-
+	hXBitmap->flag = 0;
+	hXBitmap->alpha = 255;	/*²»Í¸Ã÷*/
 	return TRUE;
 }
 uint8 InitBitmapFromFile(const char* file) {

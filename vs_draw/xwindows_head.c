@@ -16,14 +16,13 @@ PUBLIC HWIN_HEAD WINDOWS_HEAD_MARK_HEAD(Create)(char *title ,int16 x,int16 y,int
 	if (hWinHead == NULL) {
 		return NULL;
 	}
-	hTextWidge = TextWidegeCreate(title ? title : _DefaultWinHeadName, 0, 0);
+	hTextWidge = TextWidegeCreate(title ? title : _DefaultWinHeadName, 0, 0,w,h);
 	if (hTextWidge == NULL) {
 		xFree(hWinHead);
 		return NULL;
 	}
-	hWinHead->hXButtonMin = BUTTON_MARK_HEAD(Create)("-",
-		w- hTextWidge->hFont->fontInfo.w-1, h+1,
-		hTextWidge->hFont->fontInfo.w, hTextWidge->hFont->fontInfo.h-2);
+	hWinHead->hXButtonMin = BUTTON_MARK_HEAD(Create)("*",
+		w- h, 0,h, h);
 	if (hWinHead->hXButtonMin == NULL) {
 		xFree(hWinHead);
 		xFree(hTextWidge);
@@ -37,22 +36,22 @@ PUBLIC HWIN_HEAD WINDOWS_HEAD_MARK_HEAD(Create)(char *title ,int16 x,int16 y,int
 	}
 	WIDGE_MARK_HEAD(Init)((HWIDGE_BASE)hWinHead, x, y, w, h);
 
-	hWinHead->widgeBase.rect.x = x;
-	hWinHead->widgeBase.rect.y = y;
-	hWinHead->widgeBase.rect.w = w;
-	hWinHead->widgeBase.rect.h = hTextWidge->hFont->fontInfo.h;
+	//hWinHead->widgeBase.rect.x = x;
+	//hWinHead->widgeBase.rect.y = y;
+	//hWinHead->widgeBase.rect.w = w;
+	//hWinHead->widgeBase.rect.h = h;
 	hWinHead->widgeBase.paintFun = WINDOWS_HEAD_MARK_HEAD(Paint);
 	hWinHead->widgeBase.moveToFun = WINDOWS_HEAD_MARK_HEAD(MoveTo);
 	hWinHead->widgeBase.widgeCallBackFun = WINDOWS_HEAD_MARK_HEAD(CallBack);
 	hWinHead->widgeBase.widgeCloseFun = WINDOWS_HEAD_MARK_HEAD(Close);
 	
-	hWinHead->widgeBase.pencil.DrawColor = _DefaultHeadColor;
-	hWinHead->widgeBase.pencil.DrawBkColor = _DefaultFontColor;
+	//hWinHead->widgeBase.pencil.DrawColor = _DefaultHeadColor;
+	//hWinHead->widgeBase.pencil.DrawBkColor = _DefaultFontColor;
 
-	hWinHead->widgeBase.pencil.x = x;
-	hWinHead->widgeBase.pencil.y = y;
-	hWinHead->widgeBase.pencil.w = w;
-	hWinHead->widgeBase.pencil.h = hWinHead->widgeBase.rect.h;
+	//hWinHead->widgeBase.pencil.x = x;
+	//hWinHead->widgeBase.pencil.y = y;
+	//hWinHead->widgeBase.pencil.w = w;
+	//hWinHead->widgeBase.pencil.h = h;
 
 	WINDOWS_HEAD_MARK_HEAD(Add)(hWinHead, hTextWidge);
 	WINDOWS_HEAD_MARK_HEAD(Add)(hWinHead, hWinHead->hXButtonMin);
@@ -127,17 +126,18 @@ PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetArea)(HWIN_HEAD hObject,int16 x, int16 y, 
 	hObject->widgeBase.pencil.h = h;
 }
 PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetVisable)(void* hObject,int8 isVisable) {
-	HWIN_HEAD hWinHead;
-	hWinHead = hObject;
-	if (!hWinHead) { return; }
-	hWinHead->widgeBase.isVisable = isVisable;
+	WIDGE_MARK_HEAD(SetVisable)(hObject, isVisable);
+	//HWIN_HEAD hWinHead;
+	//hWinHead = hObject;
+	//if (!hWinHead) { return; }
+	//hWinHead->widgeBase.isVisable = isVisable;
 }
 PRIVATE void WINDOWS_HEAD_MARK_HEAD(Paint)(void * hObject){
 	HWIN_HEAD hWinHead;
 	HLIST cutPostionList;
 	hWinHead = hObject;
 	if (!hWinHead) { return; }
-	if (!hWinHead->widgeBase.isVisable) { return; }
+	if (!_GetVisable(hWinHead)) { return; }
 	//if (!isGUINeedCut(hWinHead)) { return; }
 	DrawSetArea(hWinHead);//计算得到当前绘图区域
 	//计算得到剪裁区域
@@ -159,7 +159,7 @@ PRIVATE void WINDOWS_HEAD_MARK_HEAD(Paint)(void * hObject){
 PUBLIC int8 WINDOWS_HEAD_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 	HWIN_HEAD hWinHead = hObject;
 	if (!hWinHead || !hMsg) { return -1; }
-	if (!(hWinHead->widgeBase.isVisable)) { return -1; }
+	if (!_GetVisable(hWinHead)) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
 		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y,
 			&(hWinHead->widgeBase.rect))) {

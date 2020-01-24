@@ -9,24 +9,23 @@ PUBLIC HXBUTTON BUTTON_MARK_HEAD(Create)(char *text,int16 x, int16 y, int16 w, i
 	if (hXButton == NULL) { return NULL; }
 	WidgeInit((HWIDGE_BASE)hXButton, x, y, w, h);
 
-	hXButton->hFont = (HFONTF)&fontASCII8_12;
-
+	hXButton->hFont = (HFONTF)& fontGB231216_16;
 
 	hXButton->buttonWidge.paintFun = ButtonWidgePaint;
 	hXButton->buttonWidge.moveToFun = ButtonWidgeMoveTo;
 	hXButton->buttonWidge.widgeCallBackFun = ButtonWidgeCallBack;
-	hXButton->buttonWidge.pencil.DrawColor = _DefaultButtonUpColor;
-	hXButton->buttonWidge.pencil.DrawBkColor = _DefaultButtonFontColor;
+	//hXButton->buttonWidge.pencil.DrawColor = _DefaultButtonUpColor;
+	//hXButton->buttonWidge.pencil.DrawBkColor = _DefaultButtonFontColor;
 
 	hXButton->downColor = _DefaultButtonDownColor;
 	hXButton->upColor = _DefaultButtonUpColor;
 
-	hXButton->buttonWidge.pencil.x = x;
-	hXButton->buttonWidge.pencil.y = y;
-	hXButton->buttonWidge.pencil.w = w;
-	hXButton->buttonWidge.pencil.h = h;
+	//hXButton->buttonWidge.pencil.x = x;
+	//hXButton->buttonWidge.pencil.y = y;
+	//hXButton->buttonWidge.pencil.w = w;
+	//hXButton->buttonWidge.pencil.h = h;
 
-	hXButton->buttonWidge.isVisable = TRUE;
+	//hXButton->buttonWidge.isVisable = TRUE;
 
 	hXButton->text = text;
 
@@ -51,7 +50,7 @@ PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
 	XRECT xRECT;
 	hXButton = hObject;
 	if (!hObject) { return; }
-	if (!isGUINeedCut((HXRECT)hXButton)) { return; }
+	//if (!isGUINeedCut((HXRECT)hXButton)) { return; }
 
 	DrawSetArea(hXButton);
 
@@ -177,7 +176,7 @@ PRIVATE int8 BUTTON_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 	int8 ret;
 	HXBUTTON hXButton = hObject;
 	if (!hXButton || !hMsg) { return -1; }
-	if (!(hXButton->buttonWidge.isVisable)) { return -1; }
+	if (!_GetVisable(hXButton)) { return -1; }
 
 	ret = WIDGE_MARK_HEAD(CallBack)(hXButton, hMsg);
 	if (ret == 0) {

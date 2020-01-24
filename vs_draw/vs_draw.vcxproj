@@ -155,8 +155,12 @@
     <ClInclude Include="color.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="font.h" />
+    <ClInclude Include="font_ASCII_100_100.h" />
     <ClInclude Include="font_ASCII_12_16.h" />
+    <ClInclude Include="font_ASCII_16_16.h" />
     <ClInclude Include="font_ASCII_8_12.h" />
+    <ClInclude Include="font_GB2312_16_16.h" />
+    <ClInclude Include="font_UNICODE_16_16.h" />
     <ClInclude Include="girl_bitmap.h" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="list.h" />

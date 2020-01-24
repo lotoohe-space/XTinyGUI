@@ -129,6 +129,18 @@
     <ClInclude Include="NES_Simulator\rom.h">
       <Filter>头文件\nes</Filter>
     </ClInclude>
+    <ClInclude Include="font_ASCII_16_16.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="font_GB2312_16_16.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="font_UNICODE_16_16.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="font_ASCII_100_100.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

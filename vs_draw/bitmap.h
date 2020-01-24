@@ -9,8 +9,9 @@ typedef struct {
 	uint16	w;
 	uint16	h;				
 	uint8*  pixels;			/*像素值*/
+	uint8	alpha;			/*透明通道值*/
 	uint8	bitsPerPixel;	/*一个像素多少位 目前支持RGBR565 BIN */
-
+	uint8	flag;			/*0:bit 是否应用透明通道*/
 }*HXBITMAP, XBITMAP;
 
 

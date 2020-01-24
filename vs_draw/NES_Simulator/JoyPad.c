@@ -24,6 +24,9 @@ uint8 NES_GetJoyPadVlaue(int JoyPadNum)
 
 	return retval;
 }
+void NES_SetJoyPadValue(int JoyPadNum,int index,int status) {
+	JoyPad[JoyPadNum].value = ((JoyPad[JoyPadNum].value) & (~(1 << index))) | (status << index);
+}
 
 void NES_JoyPadReset(void)
 {

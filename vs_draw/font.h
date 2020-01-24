@@ -1,8 +1,7 @@
 #ifndef _FONT_H__
 #define _FONT_H__
 #include "type.h"
-#include "font_ASCII_8_12.h"
-#include "font_ASCII_12_16.h"
+
 
 typedef struct {
 	uint16 w;//字符的宽
@@ -17,16 +16,22 @@ typedef struct {
 }*HFONT_INFO,FONT_INFO;
 
 typedef struct {
-	uint8 type;//0:字体在内存中 1:字体在外部存储设备
 	FONT_INFO fontInfo;
+	HFONT_INFO additionFont;
+	uint8 typePos;//0:字体在内存中 1:字体在外部存储设备
+	uint8 fontType;//字库类型 0:ascii 1:gb2312 2:gbk(未实现) 3:unicode编码
 }*HFONTF,FONTF;
 ////计算一行占多少个字节
 //#define FONT_CHAR_PER_BTYES(a) ((uint16)(a->fontInfo.w/8.0f+1))
 
 extern const FONTF fontASCII8_12;
 extern const FONTF fontASCII12_16;
+extern const FONTF fontASCII16_16;
+extern const FONTF fontASCII100_100;
+extern const FONTF fontGB231216_16;
+extern const FONTF fontUNICODE16_16;
 
-uint8* FontReadChar(HFONTF hFont, uint8 ch);
+uint8* FontReadChar(HFONTF hFont, uint16 ch);
 
 #endif
 

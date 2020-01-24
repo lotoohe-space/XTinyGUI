@@ -59,7 +59,7 @@ PRIVATE void PROGRESS_MARK_HEAD(Paint)(void* hObject) {
 	HPROGRESS_WIDGE hWidge;
 	hWidge = hObject;
 	if (!hObject) { return; }
-	if (hWidge->widgeBase.isVisable == 0) { return; }
+	if (!_GetVisable(hWidge)) { return; }
 	//if (!isGUINeedCut(hWidge)) { return; }
 
 	DrawSetArea(hWidge);
@@ -85,7 +85,7 @@ PRIVATE void PROGRESS_MARK_HEAD(Paint)(void* hObject) {
 PRIVATE int8 PROGRESS_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
 	HWIDGE_BASE hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg) { return -1; }
-	if (hWidgeBase->isVisable == 0) { return -1; }
+	if (!_GetVisable(hWidgeBase)) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
 		if (_IsDrawCheckPoint(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, hWidgeBase->pencil.x, hWidgeBase->pencil.y, hWidgeBase->pencil.w, hWidgeBase->pencil.h)) {
 			return 0;

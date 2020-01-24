@@ -10,12 +10,47 @@ void TMemcpy(void *dst, void *src, uint32 len) {
 		*(((char*)dst)++) = *(((char*)src)++);
 	}
 }
-
-//获取字符串长度
+//获取gbk字符串的第index个字符的地址
+const char* TCharGet(const char* str, uint16 index) {
+	uint16 i = 0;
+	uint16 len = 0;
+	if (!str) { return NULL; }
+	while (str[i]) {
+		if (len == index) {
+			return &str[i];
+		}
+		len++;
+		if (str[i] & 0x80) {
+			i += 2;
+		}
+		else {
+			i++;
+		}
+	}
+	return NULL;
+}
+uint32 UStrlen(uint16* str) {
+	uint16 i = 0;
+	if (str == NULL) { return 0; }
+	while (str[i]){ 
+		i++; 
+	}
+	return i;
+}
+//获取GBK字符串长度
 uint32 TStrlen(char *str) {
-	uint32 len;
+	uint16 i = 0;
+	uint16 len = 0;
 	if (!str) { return 0; }
-	for (len=0; str[len];len++) ;
+	while (str[i]) {
+		if (str[i] & 0x80) {
+			i += 2;
+		}
+		else {
+			i++;	
+		}
+		len++;
+	}
 
 	return len;
 }

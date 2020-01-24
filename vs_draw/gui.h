@@ -5,6 +5,9 @@
 #include "type.h"
 #include "paint.h"
 
+/*是否开启透明通道*/
+#define USE_ALPHA	1
+
 #define LCD_SCREEN_W 800
 #define LCD_SCREEN_H 480
 
@@ -41,7 +44,7 @@ HXDESKTOP GUIInit(void);
 void GUIEvent(void);
 void WinMoveTop(void* hObject);
 //void GUIPostEvent(HMSGE hMsg);
-BOOL isGUINeedCut(HXRECT hXRECT);
+BOOL IsGUINeedCut(HXRECT hXRECT);
 void SetMovingWin(HXRECT hXRect);
 
 

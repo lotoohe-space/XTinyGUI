@@ -15,22 +15,25 @@ typedef struct {
 
 	HLIST  widgetList;/*控件列表*/
 	HWIN_HEAD hWinHead;/*标题头控件*/
+	/*临时偏移量，窗口在移动的时候，需要得到一个偏移量，用这个偏移量来偏移内部的每一个控件*/
+	int16 t_dx;
+	int16 t_dy;
+
+	/*之前窗口的大小*/
+	XRECT lastRect;
+	/*windows处理回调函数*/
+	WinProcessCallBack winProcessFun;
+
 	uint8 flag;/*
-			   0bit:是否绘制标题栏(1表示绘制) 
-			   1bit:窗口移动标志位  
+			   0bit:是否绘制标题栏 (1表示绘制) 
+			   1bit:窗口移动标志位，标志窗口是否正在移动
 			   2bit:是否需要重新剪裁与绘制 
 			   3bit:是否处于最小化
 			   4bit:是否处于最大化
 			   */
 
-	/*临时偏移量，窗口在移动的时候，需要得到一个偏移量，用这个偏移量来偏移内部的每一个控件*/
-	int16 t_dx;
-	int16 t_dy;
+	
 
-	/*相对上次的偏移量*/
-	XRECT lastRect;
-	//int16 lastX;
-	//int16 lastY;
 }*HWIN,WIN;
 
 //获取是否绘制win头部标志位
@@ -41,9 +44,9 @@ typedef struct {
 #define _ClrDrawWinHead(a) (_CLR_BIT(((HWIN)(a))->flag,0))
 
 //是否需要重新剪裁与绘制
-#define _SetDrawAllLag(a)	(_SET_BIT((a)->flag,2))
-#define _ClrDrawAllLag(a)	(_CLR_BIT((a)->flag,2))
-#define _IsDrawAllLag(a)	(_GET_BIT((a)->flag,2))
+#define _SetDrawAllLag(a)	(_SET_BIT(((HWIN)(a))->flag,2))
+#define _ClrDrawAllLag(a)	(_CLR_BIT(((HWIN)(a))->flag,2))
+#define _IsDrawAllLag(a)	(_GET_BIT(((HWIN)(a))->flag,2))
 
 //设置是否处于最小化
 #define _IsMinWIN(a)  (_GET_BIT(((HWIN)(a))->flag,3))
@@ -64,6 +67,7 @@ typedef struct {
 
 HWIN WindowsCreate(char *title, int16 x, int16 y, int16 w, int16 h);
 void WindowsClose(HWIN hWin);
+void WindowsSetProcessCallBack(HWIN hObject, WinProcessCallBack winProcessFun);
 void WindowsSetMax(HWIN hObject);
 void WindowsSetMin(HWIN hObject);
 void WindowsResize(HWIN hObject, int16 x, int16 y, uint16 w, uint16 h);

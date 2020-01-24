@@ -15,7 +15,7 @@ typedef struct {
 }*HTEXT_WIDGE, TEXT_WIDGE;
 
 
-HTEXT_WIDGE TextWidegeCreate(char *text, int16 x, int16 y);
+HTEXT_WIDGE TextWidegeCreate(char* text, int16 x, int16 y, uint16 w, uint16 h);
 void		TextSetText(HTEXT_WIDGE hObject, const char* title);
 void		TextWidegeMoveTo(HTEXT_WIDGE hObject, int16 x, int16 y);
 void		TextWidegePaint(void * hObject);

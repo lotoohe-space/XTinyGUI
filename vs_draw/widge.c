@@ -43,16 +43,21 @@ PUBLIC void WIDGE_MARK_HEAD(Init)(HWIDGE_BASE hWidgeBase,int16 x, int16 y, int16
 	hWidgeBase->pencil.w = w;
 	hWidgeBase->pencil.h = h;
 
-	/*默认可见*/
-	hWidgeBase->isVisable = TRUE;
+	
 	hWidgeBase->parentHWIN = NULL;
 
 	hWidgeBase->viewClickCallBack = NULL;
 	hWidgeBase->arg = NULL;
+
 	hWidgeBase->flag = 0;
 
 	/*当前控件不是窗口*/
 	_SET_IS_WIN(hWidgeBase);
+	/*默认可见*/
+	_SetVisable(hWidgeBase);
+	/*默认不透明处理*/
+	_CLR_IS_DPY(hWidgeBase);
+	
 }
 PUBLIC void WIDGE_MARK_HEAD(Close)(HWIDGE_BASE hObject){
 	if (hObject == NULL) { return; }
@@ -66,7 +71,12 @@ PUBLIC void WIDGE_MARK_HEAD(SetClickBack)(HWIDGE_BASE hObject,void * arg, ViewCl
 /*设置是否可见*/
 PUBLIC void WIDGE_MARK_HEAD(SetVisable)(HWIDGE_BASE hObject, uint8 isVisable) {
 	if (!hObject) { return; }
-	hObject->isVisable = isVisable;
+	/*hObject->isVisable = isVisable;*/
+	if (isVisable) {
+		_SetVisable(hObject); 
+	}else { 
+		_ClrVisable(hObject); 
+	}
 	WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
 }
 /*重新设置大小*/
@@ -102,7 +112,7 @@ PRIVATE void WIDGE_MARK_HEAD(Paint)(void *hObject) {
 	HWIDGE_BASE hWidgeBase;
 	hWidgeBase = hObject;
 	if (!hObject) { return; }
-	if (hWidgeBase->isVisable == 0) { return; }
+	if (!_GetVisable(hWidgeBase)) { return; }
 	//if (!isGUINeedCut(hWidgeBase)) { return; }
 
 	DrawSetArea(hWidgeBase);
@@ -118,7 +128,7 @@ PRIVATE void WIDGE_MARK_HEAD(Paint)(void *hObject) {
 PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 	HWIDGE_BASE hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg) { return -1; }
-	if (!(hWidgeBase->isVisable)) { return -1; }
+	if (!_GetVisable(hWidgeBase)) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
 		
 		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, (&(hWidgeBase->rect)))) {
