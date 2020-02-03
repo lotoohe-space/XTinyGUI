@@ -88,6 +88,7 @@ typedef struct {
 }*HMSGE, MSGE;
 
 uint8 GUIMsgEventInit(void);
+void GUIEventValid(void);
 HMSGE GUIGetMsg(void);
 void GUIDelMsg(HMSGE hMsg);
 int8 GUISendKeyMsg(uint8 ID, uint8 status);

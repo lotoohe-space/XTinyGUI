@@ -10,6 +10,7 @@ typedef struct {
 	QueueDateType* data;
 	int16 front, rear;
 	uint16 maxVal;
+	uint8 valid;
 }*PSqQueue, SqQueue;
 
 uint8 InitQueue(SqQueue* q, uint16 size);

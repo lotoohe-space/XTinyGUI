@@ -5,13 +5,12 @@
 #include "x_malloc.h"
 
 /*队列最大长度*/
-#define MSG_EVENT_MAX_VAL	256
+#define MSG_EVENT_MAX_VAL	64
 
 /*事件队列*/
 SqQueue eventMsg;
 /*重绘队列*/
 SqQueue drawMsg;
-/*移动事件队列*/
 
 /*
 * GUI初始化
@@ -26,7 +25,14 @@ uint8 GUIMsgEventInit(void) {
 		DestroyQueue(&eventMsg); 
 		return FALSE;
 	}
+	eventMsg.valid = FALSE;
+	drawMsg.valid = FALSE;
+
 	return TRUE;
+}
+void GUIEventValid(void) {
+	eventMsg.valid = TRUE;
+	drawMsg.valid = TRUE;
 }
 /*获取消息*/
 HMSGE GUIGetMsg(void) {
@@ -41,6 +47,7 @@ void GUIDelMsg(HMSGE hMsg) {
 }
 int8 GUISendKeyMsg(uint8 ID,uint8 status) {
 	HMSGE hMsg;
+	if (eventMsg.valid == FALSE) { return FALSE; }
 	hMsg = xMalloc(sizeof(MSGE));
 	if (hMsg == NULL) { return FALSE; }
 
@@ -57,6 +64,7 @@ int8 GUISendKeyMsg(uint8 ID,uint8 status) {
 /*发送消息到队列*/
 int8 GUISendTouchMsg(int ID,int16 x, int16 y) {
 	HMSGE hMsg;
+	if (eventMsg.valid == FALSE) { return FALSE; }
 	hMsg = xMalloc(sizeof(MSGE));
 	if (hMsg == NULL) { return FALSE; }
 
@@ -75,7 +83,7 @@ int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uin
 ) {
 	HMSGE hMsg;
 	//if (hWin == NULL) { return FALSE; }
-
+	if (drawMsg.valid == FALSE) { return FALSE; }
 	hMsg = xMalloc(sizeof(MSGE));
 	if (hMsg == NULL) { return FALSE; }
 
@@ -104,6 +112,7 @@ HMSGE GUIGetDrawMsg(void) {
 	if (deQueue(&drawMsg, &e)) {
 		return  (HMSGE)e;
 	}
+	
 	return NULL;
 }
 void GUIDelDrawMsg(HMSGE hMsg) {
@@ -113,7 +122,7 @@ void GUIDelDrawMsg(HMSGE hMsg) {
 int GUISendMoveMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y) {
 	HMSGE hMsg;
 	//if (hWin == NULL) { return FALSE; }
-
+	if (eventMsg.valid == FALSE) { return FALSE; }
 	hMsg = xMalloc(sizeof(MSGE));
 	if (hMsg == NULL) { return FALSE; }
 

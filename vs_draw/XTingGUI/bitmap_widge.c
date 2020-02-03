@@ -13,32 +13,23 @@ PUBLIC HBITMAP_WIDGE BITMAP_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h
 	WidgeInit((HWIDGE_BASE)hBitmapWidge, x, y, 0, 0);
 	hBitmapWidge->widgeBase.rect.x = x;
 	hBitmapWidge->widgeBase.rect.y = y;
-	if (hXBitmap != NULL) {
-		hBitmapWidge->widgeBase.rect.w = hXBitmap->w;
-		hBitmapWidge->widgeBase.rect.h = hXBitmap->h;
-	}
-	else {
+	//if (hXBitmap != NULL) {
+	//	hBitmapWidge->widgeBase.rect.w = hXBitmap->w;
+	//	hBitmapWidge->widgeBase.rect.h = hXBitmap->h;
+	//}
+	//else {
 		hBitmapWidge->widgeBase.rect.w = w;
 		hBitmapWidge->widgeBase.rect.h = h;
-	}
+	//}
 
 	/*设置三个回调函数*/
 	hBitmapWidge->widgeBase.paintFun = BITMAP_MARK_HEAD(Paint);
 	hBitmapWidge->widgeBase.moveToFun = BITMAP_MARK_HEAD(MoveTo);
 	hBitmapWidge->widgeBase.widgeCallBackFun = BITMAP_MARK_HEAD(CallBack);
 
-	///*设置颜色*/
-	//hBitmapWidge->bitmapWidge.pencil.DrawColor = _DefaultFrColor;
-
-	//hBitmapWidge->bitmapWidge.pencil.x = x;
-	//hBitmapWidge->bitmapWidge.pencil.y = y;
-	//hBitmapWidge->bitmapWidge.pencil.w = w;
-	//hBitmapWidge->bitmapWidge.pencil.h = h;
 
 	/*设置显示的图片*/
 	hBitmapWidge->bitmap = hXBitmap;
-
-	//hBitmapWidge->bitmapWidge.isVisable = TRUE;
 
 	return hBitmapWidge;
 }
@@ -46,12 +37,13 @@ PUBLIC void BITMAP_MARK_HEAD(SetBitmap)(HBITMAP_WIDGE hObject, HXBITMAP hXBitmap
 	if (!hObject) { return; }
 	/*设置显示的图片*/
 	hObject->bitmap = hXBitmap;
-	WindowsInvaildRect(hObject->widgeBase.parentHWIN, (HXRECT)hObject);
+	WindowsInvaildRect((HWIDGE_BASE)hObject, NULL);
 }
 PUBLIC void BITMAP_MARK_HEAD(MoveTo)(HBITMAP_WIDGE hObject, int16 x, int16 y) {
-	if (!hObject) { return; }
-	hObject->widgeBase.rect.x = x;
-	hObject->widgeBase.rect.y = y;
+	WIDGE_MARK_HEAD(MoveTo)((HWIDGE_BASE)hObject, x, y);
+	//if (!hObject) { return; }
+	//hObject->widgeBase.rect.x = x;
+	//hObject->widgeBase.rect.y = y;
 }
 
 PUBLIC void BITMAP_MARK_HEAD(SetParentWin)(HBITMAP_WIDGE hObject, HWIN hWIN) {
@@ -67,12 +59,9 @@ PUBLIC void BITMAP_MARK_HEAD(Paint)(void* hObject) {
 	hBitmapWidge = hObject;
 	if (!hObject) { return; }
 	if (!_GetVisable(hBitmapWidge)) { return; }
-	//if (!isGUINeedCut(hWidgeBase)) { return; }
-
-	DrawSetArea(hBitmapWidge);
-	//DrawCutRect(hBitmapWidge, hBitmapWidge);
+	//if (!IsGUINeedCut(hBitmapWidge)) { return; }
+	if (!DrawSetArea(hBitmapWidge)) { return; }
 	DrawCutBitmap(hBitmapWidge, (HXRECT)hBitmapWidge, hBitmapWidge->bitmap);
-
 }
 
 int8 BITMAP_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {

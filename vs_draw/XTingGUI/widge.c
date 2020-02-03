@@ -33,8 +33,10 @@ PUBLIC void WIDGE_MARK_HEAD(Init)(HWIDGE_BASE hWidgeBase,int16 x, int16 y, int16
 	hWidgeBase->moveToFun = WIDGE_MARK_HEAD(MoveTo);
 	hWidgeBase->widgeCallBackFun = WIDGE_MARK_HEAD(CallBack);
 	hWidgeBase->widgeCloseFun = WIDGE_MARK_HEAD(Close);
+	hWidgeBase->widgeResizeFun = WIDGE_MARK_HEAD(Resize);
 	/*设置颜色*/
-	hWidgeBase->pencil.DrawColor = _DefaultFrColor;
+	hWidgeBase->pencil.DrawColor = RGB565_BLACK;
+	hWidgeBase->pencil.DrawFrColor = _DefaultFrColor;
 	hWidgeBase->pencil.DrawBkColor = _DefaultBKColor;
 
 	/*默认绘图区域为全部*/
@@ -71,7 +73,6 @@ PUBLIC void WIDGE_MARK_HEAD(SetClickBack)(HWIDGE_BASE hObject,void * arg, ViewCl
 /*设置是否可见*/
 PUBLIC void WIDGE_MARK_HEAD(SetVisable)(HWIDGE_BASE hObject, uint8 isVisable) {
 	if (!hObject) { return; }
-	/*hObject->isVisable = isVisable;*/
 	if (isVisable) {
 		_SetVisable(hObject); 
 	}else { 
@@ -86,9 +87,8 @@ PUBLIC void WIDGE_MARK_HEAD(Resize)(HWIDGE_BASE hObject, int16 x, int16 y, uint1
 	hObject->rect.y = y;
 	hObject->rect.w = w;
 	hObject->rect.h = h;
-	WindowsInvaildRect(hObject->parentHWIN, hObject->parentHWIN);
+	WindowsInvaildRect(((HWIDGE_BASE)hObject)->parentHWIN, NULL);
 }
-
 /*设置父控件*/
 PUBLIC void WIDGE_MARK_HEAD(SetParentWin)(HWIDGE_BASE hObject, HWIN hWIN) {
 	if (!hObject) { return; }
@@ -105,7 +105,7 @@ PUBLIC void WIDGE_MARK_HEAD(MoveTo)(HWIDGE_BASE hObject, int16 x, int16 y) {
 	if (!hObject) { return; }
 	hObject->rect.x = x;
 	hObject->rect.y = y;
-	WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
+	//WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
 }
 /*重绘函数*/
 PRIVATE void WIDGE_MARK_HEAD(Paint)(void *hObject) {
@@ -116,9 +116,7 @@ PRIVATE void WIDGE_MARK_HEAD(Paint)(void *hObject) {
 	//if (!isGUINeedCut(hWidgeBase)) { return; }
 
 	DrawSetArea(hWidgeBase);
-
-	//绘制底色
-	//hWidgeBase->pencil.DrawColor = _DefaultFrColor;
+	hWidgeBase->pencil.DrawColor = hWidgeBase->pencil.DrawBkColor;
 	//绘制底色
 	RECT_CUT_INIT(&(hWidgeBase->rect)) {
 		DrawRect(&(hWidgeBase->pencil), nextCutRect);
@@ -127,8 +125,8 @@ PRIVATE void WIDGE_MARK_HEAD(Paint)(void *hObject) {
 /*事件回调函数*/
 PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 	HWIDGE_BASE hWidgeBase = hObject;
-	if (!hWidgeBase || !hMsg) { return -1; }
-	if (!_GetVisable(hWidgeBase)) { return -1; }
+	if (!hWidgeBase || !hMsg) { return RES_ASSERT_ERR; }
+	if (!_GetVisable(hWidgeBase)) { return RES_ASSERT_ERR; }
 	if (hMsg->msgType == MSG_TOUCH) {
 		
 		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, (&(hWidgeBase->rect)))) {
@@ -136,6 +134,7 @@ PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 			case MSG_TOUCH_MOVE:
 				break;
 			case MSG_TOUCH_PRESS:
+				/*按下*/
 				if (hWidgeBase->viewClickCallBack != NULL) {
 					hWidgeBase->viewClickCallBack(hWidgeBase,hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
 				}
@@ -143,6 +142,7 @@ PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 				WindowsInvaildRect(hWidgeBase->parentHWIN, (HXRECT)hWidgeBase);
 				break;
 			case MSG_TOUCH_RELEASE:
+				/*松开*/
 				if (_GetBtnStatus(hWidgeBase)) {
 					if (hWidgeBase->viewClickCallBack != NULL) {
 						hWidgeBase->viewClickCallBack(hWidgeBase, hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
@@ -152,8 +152,18 @@ PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 				}
 				break;
 			}
-			return 0;
+			return RES_OK;
+		}
+		else {
+			/*松开*/
+			if (_GetBtnStatus(hWidgeBase)) {
+				if (hWidgeBase->viewClickCallBack != NULL) {
+					hWidgeBase->viewClickCallBack(hWidgeBase, hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
+				}
+				_SetBtnRelease(hWidgeBase);
+				WindowsInvaildRect(hWidgeBase->parentHWIN, (HXRECT)hWidgeBase);
+			}
 		}
 	}
-	return -1;
+	return RES_FAIL;
 }

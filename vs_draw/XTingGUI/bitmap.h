@@ -9,14 +9,16 @@ typedef struct {
 	uint16	w;
 	uint16	h;				
 	uint8*  pixels;			/*像素值*/
-	uint8	alpha;			/*透明通道值*/
+	uint8	alpha;			/*当flag:0使能时，透明通道值有效*/
 	uint8	bitsPerPixel;	/*一个像素多少位 目前支持RGBR565 BIN */
-	uint8	flag;			/*0:bit 是否应用透明通道*/
+	uint8	flag;			/*0:bit 是否应用全局透明通道 1:bit 是否应用图片透明通道*/
 }*HXBITMAP, XBITMAP;
 
+#define BITMAP_DRAW_ARGB			0x1	/*使用单个alpha控制整个图片的透明度*/
+#define BITMAP_DRAW_ARGB8888		0x2	/*使用单独的alpha通道，通道在pixels中*/
 
 uint8 InitBitmap(HXBITMAP hXBitmap, uint8* pixels, uint16 w, uint16 h, uint8 colorDepth);
-
+void BitmapSetFlag(HXBITMAP hXBitmap, uint8 flag);
 
 
 #define ________	0X00

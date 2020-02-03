@@ -11,7 +11,8 @@ typedef struct {
 	uint16 h;
 
 	uintColor DrawColor;/*画笔颜色*/
-	uintColor DrawBkColor;//背景色
+	uintColor DrawFrColor;/*前景色*/
+	uintColor DrawBkColor;/*背景色*/
 }*HPENCIL, PENCIL;
 
 /*矩形*/
@@ -48,6 +49,8 @@ typedef void (*WidgeMoveToFunction)(void* hObject, int16 x, int16 y);
 typedef int8(*WidgeCallBackFunction)(void* hObject, HMSGE hMsg);
 /*关闭函数*/
 typedef void (*WidgeCloseFunction)(void* hObject);
+/*重设大小函数*/
+typedef void (*WidgeResizeFunction)(void* hOjbect,int16 x,int16 y,uint16 w,uint16 h);
 
 /*窗口事件回调*/
 typedef uint8(*WinProcessCallBack)(void* Object, void* arg, HMSGE hMsg);

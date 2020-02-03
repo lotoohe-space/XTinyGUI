@@ -34,7 +34,9 @@ rRect.x=(x1);rRect.y=(y1);rRect.w=0;rRect.h=0;\
 rRect.w-=rRect.x;rRect.h-=rRect.y;\
 }
 void   TMemcpy(void *dst, void *src, uint32 len);
+/*获取gbk或者gb2312的长度*/
 uint32 TStrlen(char *str);
+/*获取UNICODE的长度*/
 uint32 UStrlen(uint16* str);
 const char* TCharGet(const char* str, uint16 index);
 

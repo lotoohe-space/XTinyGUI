@@ -5,10 +5,10 @@
 #include "paint_cut.h"
 #include "paint.h"
 #include "gui.h"
-
+static void* WINDOWS_MARK_HEAD(GetWidgeEx)(HWIN hWin, uint16 index);
 static void WindowsHeadBtnCallBack(void* Object, void* arg, uint8 status);
 
-HWIN WindowsCreate(char *title,int16 x,int16 y,int16 w,int16 h) {
+HWIN WINDOWS_MARK_HEAD(Create)(char *title,int16 x,int16 y,int16 w,int16 h) {
 	/*创建一个窗口*/
 	HWIN hWin = (HWIN)(xMalloc(sizeof(WIN)));
 	if (hWin == NULL) {
@@ -33,6 +33,11 @@ HWIN WindowsCreate(char *title,int16 x,int16 y,int16 w,int16 h) {
 	hWin->winWidge.paintFun = WindowsPaint;
 	hWin->winWidge.moveToFun = WindowsMoveTo;
 	hWin->winWidge.widgeCallBackFun = WindowsCallBack;
+	hWin->winWidge.widgeResizeFun = WindowsResize;
+
+	hWin->winWidge.pencil.DrawColor = RGB565_BLACK;
+	hWin->winWidge.pencil.DrawFrColor = _DefaultFrColor;
+	hWin->winWidge.pencil.DrawBkColor = RGB565(230,235,230);
 
 	hWin->lastRect.x = x;
 	hWin->lastRect.y = y;
@@ -46,76 +51,95 @@ HWIN WindowsCreate(char *title,int16 x,int16 y,int16 w,int16 h) {
 
 	/*设置基础控件中的窗口标识为真*/
 	_SET_IS_WIN(hWin);
-
 	/*设置需要全部重绘*/
 	_SetDrawAllLag(hWin);
-
 	/*先设置为不显示头部*/
 	_ClrDrawWinHead(hWin);
-	/*加入一个控件*/
+
+	/*窗口头部控件*/
 	WindowsWidgeAdd(hWin, hWin->hWinHead);
 	/*最小化的回调*/
 	WINDOWS_HEAD_MARK_HEAD(SetMinimumBtnClickBack)(hWin->hWinHead, hWin, WindowsHeadBtnCallBack);
+	/*最大化回调接口*/
+	WINDOWS_HEAD_MARK_HEAD(SetMaximumBtnClickBack)(hWin->hWinHead, hWin, WindowsHeadBtnCallBack);
 
-	/*默认显示头部*/
-	_SetDrawWinHead(hWin);
 	{
 		HWIDGE_BASE widgeTemp;
 		widgeTemp = WidgeCreate(0, 0, 1, hWin->winWidge.rect.h);
+		widgeTemp->pencil.DrawBkColor = RGB565(150, 150, 150);
 		/*添加边框，边框也是控件*/
 		WindowsWidgeAdd(hWin, widgeTemp);
 
 		widgeTemp = WidgeCreate(0 + hWin->winWidge.rect.w - 1, 0, 1, hWin->winWidge.rect.h);
+		widgeTemp->pencil.DrawBkColor = RGB565(150, 150, 150);
 		WindowsWidgeAdd(hWin, widgeTemp);
 
-		widgeTemp = WidgeCreate(0, 
-			0 + hWin->winWidge.rect.h - hWin->hWinHead->widgeBase.rect.h - 1,
-			hWin->hWinHead->widgeBase.rect.w, 1);
+		widgeTemp = WidgeCreate(0,
+			0 + hWin->winWidge.rect.h - 1,
+			_PToHGroupWidgeType(hWin->hWinHead)->widgeBase.rect.w, 1);
+		widgeTemp->pencil.DrawBkColor = RGB565(150, 150, 150);
+		WindowsWidgeAdd(hWin, widgeTemp);
+
+		widgeTemp = WidgeCreate(0,0,
+			_PToHGroupWidgeType(hWin->hWinHead)->widgeBase.rect.w, 1);
+		widgeTemp->pencil.DrawBkColor = RGB565(150, 150, 150);
 		WindowsWidgeAdd(hWin, widgeTemp);
 	}
-	
 
 
+	/*默认显示头部*/
+	_SetDrawWinHead(hWin);
 	return hWin;
 }
-/*窗口中button点击事件的回调接口*/
+
+/*窗口中button点击事件的回调接口函数*/
 static void WindowsHeadBtnCallBack(void* Object,void* arg, uint8 status) {
 	HWIN CentWIN = (HWIN)arg;
+	if (CentWIN == NULL) { return; }
 	if (status) {
-		WindowsSetMin(CentWIN);
+		if (CentWIN->hWinHead->hXButtonMax == Object) {
+			/*按下最大化按钮*/
+			WindowsSetMax(CentWIN);
+		}
+		else if (CentWIN->hWinHead->hXButtonMin == Object) {
+			/*按下最小化按钮*/
+			WindowsSetMin(CentWIN);
+		}
+		
 	}
 }
 /*设置窗口处理回调事件*/
-void WindowsSetProcessCallBack(HWIN hObject, WinProcessCallBack winProcessFun) {
+void WINDOWS_MARK_HEAD(SetProcessCallBack)(HWIN hObject, WinProcessCallBack winProcessFun) {
 	if (hObject == NULL) { return; }
 	hObject->winProcessFun = winProcessFun;
 }
 /*设置窗口最小化*/
-void WindowsSetMin(HWIN hObject) {
+void WINDOWS_MARK_HEAD(SetMin)(HWIN hObject) {
 	if (!hObject) { return; }
 	if (_IsMinWIN(hObject)) {
 		_ClrMinWIN(hObject);
-		hObject->winWidge.rect.w = hObject->lastRect.w;
-		hObject->winWidge.rect.h = hObject->lastRect.h;
+		/*hObject->winWidge.rect.w = hObject->lastRect.w;
+		hObject->winWidge.rect.h = hObject->lastRect.h;*/
 
-		WindowsResize(hObject, hObject->winWidge.rect.x, hObject->winWidge.rect.y,hObject->winWidge.rect.w, hObject->winWidge.rect.h);
+		WindowsResize(hObject, hObject->winWidge.rect.x, hObject->winWidge.rect.y, hObject->lastRect.w, hObject->lastRect.h);
 	}
 	else {
+		_SetMinWIN(hObject);
 		hObject->lastRect.w = hObject->winWidge.rect.w;
 		hObject->lastRect.h = hObject->winWidge.rect.h;
-		_SetMinWIN(hObject);
-		WindowsResize(hObject, hObject->winWidge.rect.x, hObject->winWidge.rect.y, hObject->hWinHead->widgeBase.rect.w, hObject->hWinHead->widgeBase.rect.h);
+		WindowsResize(hObject, hObject->winWidge.rect.x, hObject->winWidge.rect.y,
+			_PToHGroupWidgeType(hObject->hWinHead)->widgeBase.rect.w, _PToHGroupWidgeType(hObject->hWinHead)->widgeBase.rect.h);
 	}
 }
 /*设置窗口最大化，暂时还未全部实现*/
-void WindowsSetMax(HWIN hObject) {
+void WINDOWS_MARK_HEAD(SetMax)(HWIN hObject) {
 	if (!hObject) { return; }
 	if (_IsMaxWIN(hObject)) {
 		_ClrMaxWIN(hObject);
 		/*还原位置*/
-		XRECT_COPY((HXRECT)hObject,&(hObject->lastRect));
-		WindowsResize(hObject, ((HXRECT)hObject->winWidge.parentHWIN)->x, ((HXRECT)hObject->winWidge.parentHWIN)->y,
-			((HXRECT)hObject->winWidge.parentHWIN)->w, ((HXRECT)hObject->winWidge.parentHWIN)->h);
+		//XRECT_COPY((HXRECT)hObject,&(hObject->lastRect));
+		WindowsResize(hObject, hObject->lastRect.x, hObject->lastRect.y,
+			hObject->lastRect.w, hObject->lastRect.h);
 	}
 	else {
 		_SetMaxWIN(hObject);
@@ -126,19 +150,76 @@ void WindowsSetMax(HWIN hObject) {
 			((HXRECT)hObject->winWidge.parentHWIN)->w, ((HXRECT)hObject->winWidge.parentHWIN)->h);
 	}
 }
+
 /*重新设置窗口的大小,还需要更改内部控件的大小与位置*/
-void WindowsResize(HWIN hObject, int16 x, int16 y, uint16 w, uint16 h) {
+void WINDOWS_MARK_HEAD(Resize)(HWIN hObject, int16 x, int16 y, uint16 w, uint16 h) {
+	HWIDGE_BASE hWidgeBase;
+	HWIDGE_BASE hWidgeBaseHead;
 	if (!hObject) { return ; }
+
+	int16 dx, dy;
+	/*窗口位置改变的偏移*/
+	dx = x - ((HXRECT)hObject)->x;
+	dy = y - ((HXRECT)hObject)->y;
+
 	WIDGE_MARK_HEAD(Resize)((HWIDGE_BASE)hObject, x, y ,w, h);
+
+	hWidgeBaseHead = WindowsGetWidge(hObject, 0);
+	if (hWidgeBaseHead == NULL) { return; }
+	WINDOWS_HEAD_MARK_HEAD(Resize)(hWidgeBaseHead, x, y, w, 20);
+
+	hWidgeBase = WindowsGetWidge(hObject, 1);
+	if (hWidgeBase == NULL) { return; }
+	WIDGE_MARK_HEAD(Resize)(hWidgeBase, x, y, 1, h);
+
+	hWidgeBase = WindowsGetWidge(hObject, 2);
+	if (hWidgeBase == NULL) { return; }
+	WIDGE_MARK_HEAD(Resize)(hWidgeBase,x+ w - 1, y, 1, h);
+
+	hWidgeBase = WindowsGetWidge(hObject, 3);
+	if (hWidgeBase == NULL) { return; }
+	WIDGE_MARK_HEAD(Resize)(hWidgeBase, x,
+		y+ h - 1,
+		w, 1);
+	hWidgeBase = WindowsGetWidge(hObject, 4);
+	if (hWidgeBase == NULL) { return; }
+	WIDGE_MARK_HEAD(Resize)(hWidgeBase, x,
+		y ,
+		w, 1);
+	/*迭代每一个控件*/
+	_StartScanU(WindowsGetWidgeEx(hObject,4)) {//开始扫描
+		_PToHWidgeBaseType(val)->widgeResizeFun(
+			_PToHWidgeBaseType(val),
+			_PToHWidgeBaseType(val)->rect.x + dx,
+			_PToHWidgeBaseType(val)->rect.y + dy,
+		_PToHWidgeBaseType(val)->rect.w,
+		_PToHWidgeBaseType(val)->rect.h);
+	}
+	/*结束扫描*/
+	_EndScanU();
+	/*改变窗口大小必须刷新父控件*/
+	WindowsInvaildRect(((HWIDGE_BASE)hObject)->parentHWIN, NULL);
+}
+
+/*获取控件*/
+HWIDGE_BASE WINDOWS_MARK_HEAD(GetWidge)(HWIN hObject, uint16 index) {
+	if (!hObject) { return NULL; }
+	HLIST hlist = ListGet(_PToHGroupWidgeType(hObject)->widgetList, index);
+	if (hlist != NULL) {
+		return (HWIDGE_BASE)(hlist->val);
+	}
+	else {
+		return NULL;
+	}
 }
 /*获取窗口中的某个位置的控件，得到的不是窗口而是窗口的ListItem*/
-void* WindoswGetWidge(HWIN hWin, uint16 index) {
+static void* WINDOWS_MARK_HEAD(GetWidgeEx)(HWIN hWin, uint16 index) {
 	if (!hWin) { return NULL; }
 	HLIST hlist=ListGet(hWin->widgetList, index);
 	return hlist;
 }
 /*往窗体中添加一个控件*/
-int8 WindowsWidgeAdd(HWIN hWin, void *widge) {
+int8 WINDOWS_MARK_HEAD(WidgeAdd)(HWIN hWin, void *widge) {
 	if (!hWin|| !widge) { return -1; }
 	HLIST addItem = ListNew();
 	if (!addItem) { return -1; }
@@ -152,7 +233,7 @@ int8 WindowsWidgeAdd(HWIN hWin, void *widge) {
 	hWidge->moveToFun(
 		hWidge, 
 		hWidge->rect.x + hWin->winWidge.rect.x,
-		hWidge->rect.y + hWin->winWidge.rect.y + (_IsDrawWinHead(hWin) ? hWin->hWinHead->widgeBase.rect.h : 0)
+		hWidge->rect.y + hWin->winWidge.rect.y + (_IsDrawWinHead(hWin) ? _PToHGroupWidgeType(hWin->hWinHead)->widgeBase.rect.h : 0)
 	);
 	/*设置父窗口*/
 	WidgeSetParentWin(hWidge, hWin);
@@ -163,20 +244,18 @@ int8 WindowsWidgeAdd(HWIN hWin, void *widge) {
 	//}else {
 		//DrawInvaildRect(hWin->winWidge.parentHWIN);
 	//}
-	WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)hWidge);
+	WindowsInvaildRect((HWIDGE_BASE)(hWin->winWidge.parentHWIN), (HXRECT)(&(hWin->winWidge)));
 	return 0;
 }
 /*设置窗口的无效区域，调用gui的无效区域设置函数*/
-void WindowsInvaildRect(HWIDGE_BASE hWidgeBase,HXRECT hXRect) {
+void WINDOWS_MARK_HEAD(InvaildRect)(HWIDGE_BASE hWidgeBase,HXRECT hXRect) {
 	if (!hWidgeBase) { return; }
 	if (hXRect == NULL) {
-		//DrawInvaildRect((HXRECT)hWin);
 		GUISendDrawMsg(hWidgeBase, MSG_WIN_INVAILD_UPDATE, 0,
 			hWidgeBase->rect.x, hWidgeBase->rect.y, hWidgeBase->rect.w, hWidgeBase->rect.h
 		);
 	}
 	else {
-		//DrawInvaildRect(hXRect);
 		GUISendDrawMsg(hWidgeBase, MSG_WIN_INVAILD_UPDATE, 0,
 			hXRect->x, hXRect->y, hXRect->w, hXRect->h
 		);
@@ -185,7 +264,7 @@ void WindowsInvaildRect(HWIDGE_BASE hWidgeBase,HXRECT hXRect) {
 /*
 * 关闭窗口
 */
-void WindowsClose(HWIN hWin) {
+void WINDOWS_MARK_HEAD(Close)(HWIN hWin) {
 	if (!hWin) { return; }
 	/*在这里释放窗口中的内存*/
 	/*获取每一个控件*/
@@ -203,7 +282,7 @@ void WindowsClose(HWIN hWin) {
 	WIDGE_MARK_HEAD(Close)((HWIDGE_BASE)hWin);
 }
 /*移动窗体*/
-void WindowsMoveTo(HWIN hWin, int16 x, int16 y) {
+void WINDOWS_MARK_HEAD(MoveTo)(HWIN hWin, int16 x, int16 y) {
 	int16 dx;
 	int16 dy;
 	if (!hWin) { return; }
@@ -220,8 +299,8 @@ void WindowsMoveTo(HWIN hWin, int16 x, int16 y) {
 	/*拷贝矩形为上一次的*/
 	hWin->lastRect.x = hWin->winWidge.rect.x;
 	hWin->lastRect.y = hWin->winWidge.rect.y;
-	//hWin->lastRect.w = hWin->winWidge.rect.w;
-	//hWin->lastRect.h = hWin->winWidge.rect.h;
+	hWin->lastRect.w = hWin->winWidge.rect.w;
+	hWin->lastRect.h = hWin->winWidge.rect.h;
 	/*设置新的位置*/
 	hWin->winWidge.rect.x = x;
 	hWin->winWidge.rect.y = y;
@@ -240,19 +319,19 @@ void WindowsMoveTo(HWIN hWin, int16 x, int16 y) {
 		}
 	}
 
-	/* 更新窗口 */
-	if (hWin->winWidge.parentHWIN == NULL) {
-		WindowsInvaildRect((HWIDGE_BASE)hWin, NULL);
-	}
-	else {
-		WindowsInvaildRect((HWIDGE_BASE)(hWin->winWidge.parentHWIN), &(hWin->lastRect) );
-	}
-
+	///* 更新窗口 */
+	//if (hWin->winWidge.parentHWIN == NULL) {
+	//	WindowsInvaildRect((HWIDGE_BASE)hWin, NULL);
+	//}
+	//else {
+	WindowsInvaildRect((HWIDGE_BASE)(hWin->winWidge.parentHWIN), (HXRECT)(&(hWin->lastRect)));
+	//}
+	//(HWIDGE_BASE)(hWin->winWidge.parentHWIN)
 }
 /*设置窗口颜色*/
-void WindowsSetColor(HWIN hWin, uintColor color) {
+void WINDOWS_MARK_HEAD(SetColor)(HWIN hWin, uintColor color) {
 	if (!hWin) { return; }
-	hWin->winWidge.pencil.DrawColor = color;
+	hWin->winWidge.pencil.DrawBkColor = color;
 
 	/* 更新窗口 */
 	//if (hWin->winWidge.parentHWIN == NULL) {
@@ -264,25 +343,16 @@ void WindowsSetColor(HWIN hWin, uintColor color) {
 }
 
 /*设置是否有效*/
-void WindowsSetVisable(void* hObject, int8 isVisable) {
+void WINDOWS_MARK_HEAD(SetVisable)(void* hObject, int8 isVisable) {
 	HWIN hWin;
 	hWin = hObject;
 	if (!hWin) { return; }
-	WIDGE_MARK_HEAD(SetVisable)(hWin, isVisable);
-	//hWin->winWidge.isVisable = isVisable;
-
-	/* 更新窗口 */
-	//if (hWin->winWidge.parentHWIN == NULL) {
-	//	WindowsInvaildRect(hWin, hWin);
-	//}
-	//else {
-	//	WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)hWin);
-	//}
+	WIDGE_MARK_HEAD(SetVisable)((HWIDGE_BASE)hWin, isVisable);
 }
 /*
 *重新绘制窗口
 */
-void WindowsPaint(void *hObject) {
+void WINDOWS_MARK_HEAD(Paint)(void *hObject) {
 	HLIST cutPostionList;
 	HWIN hWin;
 	hWin = hObject;
@@ -306,15 +376,17 @@ void WindowsPaint(void *hObject) {
 	_ClrDrawAllLag(hWin);
 
 	/*设置当前绘图区域*/
-	DrawSetArea(hWin);
+	if (!DrawSetArea(hWin)) { return; }
 	/*根据是否添加了窗体边框来设置剪裁域*/
 	if (_IsDrawWinHead(hWin)) {
 		/*切换到当前剪裁域*/
 		cutPostionList=RectCutAddRectList(hWin->widgetList->next);
 	}
 	else {
-		cutPostionList = RectCutAddRectList(WindoswGetWidge(hWin,4));
+		cutPostionList = RectCutAddRectList(WindowsGetWidgeEx(hWin,5));
 	}
+
+	hWin->winWidge.pencil.DrawColor = hWin->winWidge.pencil.DrawBkColor;
 	/*画矩形*/
 	DrawCutRect(hWin, &(hWin->winWidge.rect));
 	/*重绘事件*/
@@ -343,12 +415,19 @@ void WindowsPaint(void *hObject) {
 
 }
 /*是否显示头部*/
-void WindowsSetDrawHead(HWIN hWin, int8 isEnable) {
+void WINDOWS_MARK_HEAD(SetDrawHead)(HWIN hWin, int8 isEnable) {
 	uint8 i = 0;
 
+	if (isEnable) {
+		_SetDrawWinHead(hWin);
+	}
+	else {
+		_ClrDrawWinHead(hWin);
+	}
+
 	/*前四个控件为边界和头部*/
-	for (i = 0; i < 4; i++) {
-		HLIST widge= WindoswGetWidge(hWin, i);
+	for (i = 0; i < 5; i++) {
+		HLIST widge= WindowsGetWidgeEx(hWin, i);
 		if (widge != NULL) {
 			if (isEnable) {
 				_SetVisable(widge->val);
@@ -361,62 +440,24 @@ void WindowsSetDrawHead(HWIN hWin, int8 isEnable) {
 	/* 更新窗口 */
 	WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)hWin);
 }
-///*窗口事件的处理*/
-//PRIVATE int8 WindowsEventProcess(HWIN hWin,HMSGE hMsg) {
-//	switch (hMsg->msgType) {
-//	case MSG_TOUCH:
-//		if (_IsDrawWinHead(hWin)) {
-//			switch (hMsg->msgID) {
-//			case MSG_TOUCH_PRESS:
-//				//有头才能抓取移动
-//					//被抓的是不是头
-//				if (WINDOWS_HEAD_MARK_HEAD(CallBack)(hWin->hWinHead, hMsg) == 0) {
-//					hWin->t_dx = hMsg->msgVal.rect.x - hWin->winWidge.rect.x;
-//					hWin->t_dy = hMsg->msgVal.rect.y - hWin->winWidge.rect.y;
-//					_SetWinMoveing(hWin);
-//					WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)hWin);
-//					return 0;
-//				}
-//				break;
-//			case MSG_TOUCH_MOVE:
-//				//有头才能抓取移动
-//				if (_IsWinMoving(hWin)) {
-//					/*WindowsMoveTo(hWin,
-//						hMsg->msgVal.xy.x - hWin->t_dx, hMsg->msgVal.xy.y - hWin->t_dy);*/
-//					GUISendMoveMsg(hWin, MSG_WIN, MSG_WIN_MOVE, hMsg->msgVal.rect.x - hWin->t_dx, hMsg->msgVal.rect.y - hWin->t_dy);
-//					return 0;
-//				}
-//				break;
-//			case MSG_TOUCH_RELEASE:
-//				//有头才能抓取移动
-//				_ClrWinMoveing(hWin);
-//				break;
-//			}
-//		}
-//		break;
-//	case MSG_KEY:
-//		break;
-//	}
-//	return 1;
-//}
 
 /*窗口事件处理*/
-int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
+int8 WINDOWS_MARK_HEAD(CallBack)(void* hObject,HMSGE hMsg) {
 	HWIN hWin = hObject;
-	if (!hWin || !hMsg) { return -1; }
-	if (!_GetVisable(hWin)) { return -1; }
+	if (!hWin || !hMsg) { return RES_ASSERT_ERR; }
+	if (!_GetVisable(hWin)) { return RES_ASSERT_ERR; }
 
 	if (hMsg->msgType == MSG_TOUCH) {
 		if (_IsDrawWinHead(hWin)) {
 			switch (hMsg->msgID) {
 			case MSG_TOUCH_PRESS:
 				//有头才能抓取移动
-					//被抓的是不是头
-					if (WINDOWS_HEAD_MARK_HEAD(CallBack)(hWin->hWinHead, hMsg) == 0) {
+					/*被抓的是不是头*/
+					if (WINDOWS_HEAD_MARK_HEAD(CallBack)(hWin->hWinHead, hMsg) == RES_OK) {
 						hWin->t_dx = hMsg->msgVal.rect.x - hWin->winWidge.rect.x;
 						hWin->t_dy = hMsg->msgVal.rect.y - hWin->winWidge.rect.y;
 						_SetWinMoveing(hWin);
-						WindowsInvaildRect((HWIDGE_BASE)hWin, (HXRECT)(hWin->winWidge.parentHWIN));
+						WindowsInvaildRect((HWIDGE_BASE)hWin, NULL);
 						return 0;
 					}
 				break;
@@ -430,10 +471,78 @@ int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 					}
 				break;
 			case MSG_TOUCH_RELEASE:
-				//有头才能抓取移动
-				_ClrWinMoveing(hWin);
+				if (_IsWinMoving(hWin)) {
+					//有头才能抓取移动
+					_ClrWinMoveing(hWin);
+					//return 0;
+				}
 				break;
 			}
+		}
+
+		switch (hMsg->msgID) {
+		case MSG_TOUCH_PRESS:
+			if (
+				hMsg->msgVal.rect.x >= hWin->winWidge.rect.x + hWin->winWidge.rect.w-2
+				&& hMsg->msgVal.rect.x <= hWin->winWidge.rect.x + hWin->winWidge.rect.w 
+				) {
+				hWin->t_xy = hMsg->msgVal.rect.x;
+				_SetChangeWinRHSize(hWin);
+				return 0;
+			}
+			else if (
+				hMsg->msgVal.rect.y >= hWin->winWidge.rect.y + hWin->winWidge.rect.h - 2
+				&& hMsg->msgVal.rect.y <= hWin->winWidge.rect.y + hWin->winWidge.rect.h
+				) {
+				hWin->t_xy = hMsg->msgVal.rect.y;
+				_SetChangeWinVSize(hWin);
+				return 0;
+			}
+			else if (
+				hMsg->msgVal.rect.x >= hWin->winWidge.rect.x 
+				&& hMsg->msgVal.rect.x <= hWin->winWidge.rect.x + 2
+				) {
+				hWin->t_xy = hMsg->msgVal.rect.x;
+				_SetChangeWinLHSize(hWin);
+				return 0;
+			}
+			break;
+		case MSG_TOUCH_MOVE:
+			if (_IsChangeWinRHSize(hWin)) {
+				hWin->winWidge.widgeResizeFun(hWin, ((HXRECT)hWin)->x, ((HXRECT)hWin)->y,
+					((HXRECT)hWin)->w + (hMsg->msgVal.rect.x - hWin->t_xy), ((HXRECT)hWin)->h);
+				hWin->t_xy = hMsg->msgVal.rect.x;
+				return 0;
+			}else if (_IsChangeWinVSize(hWin)) {
+				hWin->winWidge.widgeResizeFun(hWin, ((HXRECT)hWin)->x, ((HXRECT)hWin)->y,
+					((HXRECT)hWin)->w, (((HXRECT)hWin)->h + (hMsg->msgVal.rect.y - hWin->t_xy)));
+				hWin->t_xy = hMsg->msgVal.rect.y;
+				return 0;
+			}else if (_IsChangeWinLHSize(hWin)) {
+				hWin->winWidge.widgeResizeFun(hWin,
+					((HXRECT)hWin)->x + (hMsg->msgVal.rect.x - hWin->t_xy),
+					((HXRECT)hWin)->y,
+					((HXRECT)hWin)->w - (hMsg->msgVal.rect.x - hWin->t_xy),
+					((HXRECT)hWin)->h);
+				hWin->t_xy = hMsg->msgVal.rect.x;
+				return 0;
+			}
+			break;
+		case MSG_TOUCH_RELEASE:
+			if (_IsChangeWinRHSize(hWin)) {
+				_ClrChangeWinRHSize(hWin);
+				return 0;
+			}
+			if (_IsChangeWinVSize(hWin)) {
+				_ClrChangeWinVSize(hWin);
+				return 0;
+			}
+			if (_IsChangeWinLHSize(hWin)) {
+				_ClrChangeWinLHSize(hWin);
+				return 0;
+			}
+			//
+			break;
 		}
 		if (!_IsDrawCheckPoint(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y,
 			hWin->winWidge.rect.x, hWin->winWidge.rect.y, 
@@ -442,7 +551,7 @@ int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 		}
 
 		HLIST hWidgeList = hWin->widgetList;
-		if (hWidgeList == NULL) { return 1; }
+		if (hWidgeList == NULL) { return RES_FAIL; }
 
 		if (hWidgeList) {
 			int8 ret;
@@ -451,23 +560,24 @@ int8 WindowsCallBack(void* hObject,HMSGE hMsg) {
 				while (lastWidge != hWidgeList) {
 					HWIDGE_BASE hWidge = (HWIDGE_BASE)(lastWidge->val);
 
-					if ((ret = hWidge->widgeCallBackFun(hWidge, hMsg)) == 0) {
-						return 0;
+					if ((ret = hWidge->widgeCallBackFun(hWidge, hMsg)) == RES_OK) {
+						return RES_OK;
 					}
 
 					lastWidge = lastWidge->lnext;
 				}
 			}
 		}
-		return 1;
+		return RES_FAIL;
 	}
 	else if (hMsg->msgType == MSG_KEY) {
 		if (hWin->winProcessFun != NULL) {
 			hWin->winProcessFun(hWin, hWin->winWidge.arg, hMsg);
 		}
+		return RES_FAIL;
 	}
 
-	return 1;
+	return RES_FAIL;
 }
 
 

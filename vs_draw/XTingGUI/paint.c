@@ -42,11 +42,11 @@ extern unsigned int g_pix(int x, int y);
 	//XRECT_COPY(&(hXDesktop->drawArea), hXRect);
  //}
  /*设置允许绘图的窗口，是当前窗口与桌面的相交区域*/
-void DrawSetArea(void* hObject) {
+uint8 DrawSetArea(void* hObject) {
 	HWIDGE_BASE hWidgeBase;
 	XRECT rRect;
 	hWidgeBase = hObject;
-	if (!hWidgeBase) { return; }
+	if (!hWidgeBase) { return FALSE; }
 
 	/*控件矩形与桌面矩形的相交矩形即为绘图区域*/
 	GetOverLapRect(&(hXDesktop->drawArea),&(hWidgeBase->rect),&rRect);
@@ -57,6 +57,11 @@ void DrawSetArea(void* hObject) {
 
 	/*重新设置控件的有效绘图区域*/
 	XRECT_COPY(&(hWidgeBase->pencil), &rRect);
+
+	if (rRect.w == 0 || rRect.h==0) {
+		return FALSE;
+	}
+	return TRUE;
 }
 /*复位绘图区域*/
 void DrawResetArea(void* hObject) {
@@ -77,18 +82,37 @@ uint8 DrawPixel(uintColor color,int16 x, int16 y) {
 	//Vsrefresh();
 	return (uint8)1;
 }
+/*画一个透明的点*/
 uint8 DrawAPixel(uintColor aColor, int16 x, int16 y) {
 
 	uint16 lcColor = GetPixel(x, y);
-	uint8 A = C565A(aColor);
-	uint8 R = ((C565R(aColor) * A + C565R(lcColor) * (0xff - A)) >> 8) & 0xffU;
-	uint8 G = ((C565G(aColor) * A + C565G(lcColor) * (0xff - A)) >> 8) & 0xffU;
-	uint8 B = ((C565B(aColor) * A + C565B(lcColor) * (0xff - A)) >> 8) & 0xffU;
+	uint8 A = 0xff-C565A(aColor);
+	if (A == 0x00) {
+		return 1;
+	}else if(A==0xff){
+		DrawPixel(aColor, x, y);
+	}else {
+		uint8 R = ((C565R(aColor) * A + C565R(lcColor) * (0xff - A)) >> 8) & 0xff;
+		uint8 G = ((C565G(aColor) * A + C565G(lcColor) * (0xff - A)) >> 8) & 0xff;
+		uint8 B = ((C565B(aColor) * A + C565B(lcColor) * (0xff - A)) >> 8) & 0xff;
+		//uint8 R = ((C565R(aColor) * A + C565R(lcColor) * (A)) >> 8) & 0xff;
+		//uint8 G = ((C565G(aColor) * A + C565G(lcColor) * (A)) >> 8) & 0xff;
+		//uint8 B = ((C565B(aColor) * A + C565B(lcColor) * (A)) >> 8) & 0xff;
 
-	DrawPixel(RGB565(R,G,B),x,y);
+		DrawPixel(RGB565(R, G, B), x, y);
+	}
 	return (uint8)1;
 }
-
+/*画透明矩形*/
+uint8 RawDrawRect(HXRECT hRect, uintColor color) {
+	int16 i, j;
+	for (i = hRect->y; i < hRect->y + hRect->h; i++) {
+		for (j = hRect->x; j < hRect->x + hRect->w; j++) {
+			DrawPixel(color, j, i);
+		}
+	}
+	return (uint8)1;
+}
 /*画透明矩形*/
 uint8 RawDrawARect(HXRECT hRect, uintColor color) {
 	int16 i, j;
@@ -98,6 +122,28 @@ uint8 RawDrawARect(HXRECT hRect, uintColor color) {
 		}
 	}
 	return (uint8)1;
+}
+/*绘制原始图片*/
+void RawDrawBitmap(
+	int x, int y,	/*实际图片绘制的起点*/
+	int w, int h,	/*需要绘制的图片的大小*/
+	unsigned short* bitmap,
+	int x1, int y1,	/*从图片中绘制的开始位置*/
+	int w1, int h1	/*图片的大小*/
+) {
+	int i, j;
+	int endy;
+	int endx;
+	endy = h + y;
+	endx = w + x;
+	for (i = y; i < endy; i++) {
+		for (j = x; j < endx; j++) {
+			DrawPixel((bitmap[(i - y + y1) * w1 + (j - x) + x1]), j, i);
+		}
+	}
+#ifdef _X_DEBUG
+	Vsrefresh();
+#endif
 }
 /*画透明图片*/
 void RawDrawABitmap(
@@ -116,15 +162,36 @@ void RawDrawABitmap(
 	for (i = y; i < endy; i++) {
 		for (j = x; j < endx; j++) {
 			DrawAPixel((alpha << 16) | bitmap[(i - y + y1) * w1 + (j - x) + x1],j, i);
-			//d_pix(j, i, RGB565TORGB888(bitmap[(i - y + y1) * w1 + (j - x) + x1]));
 		}
 	}
 #ifdef _X_DEBUG
 	Vsrefresh();
 #endif
-	//SetBitmapBits(bmp, 1024 * 700 * 4, displayMem);
-	//// 3.一次性复制到设备DC
-	//BitBlt(hdc, 0, 0, 1024, 700, mdc, 0, 0, SRCCOPY);
+}
+/*画单独通道的透明图片ARGB8888*/
+void RawDrawARGBBitmap(
+	int16 x, int16 y,	/*实际图片绘制的起点*/
+	uint16 w, uint16 h,	/*需要绘制的图片的大小*/
+	uint32* bitmap,
+	int16 x1, int16 y1,	/*从图片中绘制的开始位置*/
+	uint16 w1, uint16 h1	/*图片的大小*/
+) {
+	int i, j;
+	int endy;
+	int endx;
+	endy = h + y;
+	endx = w + x;
+	for (i = y; i < endy; i++) {
+		for (j = x; j < endx; j++) {
+			DrawAPixel(
+				((bitmap[(i - y + y1) * w1 + (j - x) + x1]&0xff000000)>>8)|
+				BGR888T0RGB565(bitmap[(i - y + y1) * w1 + (j - x) + x1]),
+				j, i);
+		}
+	}
+#ifdef _X_DEBUG
+	Vsrefresh();
+#endif
 }
 
 uint8 DrawLineH(HPENCIL hPencil, int16 x0, int16 y, int16 x1) {
@@ -178,11 +245,7 @@ uint8 DrawARect(HPENCIL hPencil, HXRECT hXRECT) {
 	}
 	GetOverLapRect(hXRECT, (HXRECT)hPencil, &rRect);
 
-
-
 	RawDrawARect(&rRect, hPencil->DrawColor);
-	//fill_rect(rRect.x, rRect.y, rRect.w, rRect.h, RGB565TORGB888(hPencil->DrawColor));
-	//fill_rect(rRect.x, rRect.y, rRect.w, rRect.h, RGB565TORGB888(rand()%65535));
 #ifdef _X_DEBUG
 	Vsrefresh();
 #endif
@@ -196,8 +259,8 @@ uint8 DrawRect(HPENCIL hPencil, HXRECT hXRECT) {
 		return (uint8)0;
 	}
 	GetOverLapRect(hXRECT, (HXRECT)hPencil, &rRect);
-	fill_rect(rRect.x, rRect.y, rRect.w, rRect.h, RGB565TORGB888(hPencil->DrawColor));
-	//fill_rect(rRect.x, rRect.y, rRect.w, rRect.h, RGB565TORGB888(rand()%65535));
+	//fill_rect(rRect.x, rRect.y, rRect.w, rRect.h, RGB565TORGB888(hPencil->DrawColor));
+	RawDrawRect(&rRect, hPencil->DrawColor);
 #ifdef _X_DEBUG
 	Vsrefresh();
 #endif
@@ -223,14 +286,17 @@ void DrawBitmapBinary(HPENCIL hPencil, HXRECT drawBorder, HXPOINT startDrawPT, H
 					(j+startDrawPT->x);//当前像素的位置
 				pixel = hXBitmap->pixels[temp / 8]&((1<< (7 - (temp % 8))));
 				if (pixel) {
-					DrawPixel(0x0000, j+ drawBorder->x, i+ drawBorder->y);
+					DrawPixel(hPencil->DrawFrColor, j+ drawBorder->x, i+ drawBorder->y);
 				}
 				else {
-					DrawPixel(0xffff, j+ drawBorder->x, i+ drawBorder->y);
+					DrawPixel(hPencil->DrawBkColor, j+ drawBorder->x, i+ drawBorder->y);
 				}
 			}
 		}
 	}
+#ifdef _X_DEBUG
+	Vsrefresh();
+#endif
 }
 /*
 * 在规定区域内绘制图片
@@ -258,11 +324,11 @@ uint8 DrawBitmap(HPENCIL hPencil, HXRECT border,HXRECT bgBorder,HXBITMAP hXBitma
 	xPoint.x = rRect.x - bgBorder->x;
 	xPoint.y = rRect.y - bgBorder->y;
 	switch (hXBitmap->bitsPerPixel) {
-	case 1:
+	case 1:/*2位色*/
 		DrawBitmapBinary(hPencil ,&rRect1, &xPoint, hXBitmap);
 		break;
-	case 16:
-		if (hXBitmap->flag & 0x1) {
+	case 16:/*16位色*/
+		if (hXBitmap->flag & BITMAP_DRAW_ARGB) {/*统一控制透明度*/
 			RawDrawABitmap(
 				rRect1.x, rRect1.y, /*实际图片绘制的起点*/
 				rRect1.w, rRect1.h, /*需要绘制的图片的大小*/
@@ -271,9 +337,8 @@ uint8 DrawBitmap(HPENCIL hPencil, HXRECT border,HXRECT bgBorder,HXBITMAP hXBitma
 				hXBitmap->w, hXBitmap->h,
 				hXBitmap->alpha
 			);
-		}
-		else {
-			d_bmp(
+		}else {
+			RawDrawBitmap(
 				rRect1.x, rRect1.y, /*实际图片绘制的起点*/
 				rRect1.w, rRect1.h, /*需要绘制的图片的大小*/
 				hXBitmap->pixels,
@@ -282,12 +347,18 @@ uint8 DrawBitmap(HPENCIL hPencil, HXRECT border,HXRECT bgBorder,HXBITMAP hXBitma
 			);
 		}
 		break;
+	case 32:/*32位色*/
+		if (hXBitmap->flag & BITMAP_DRAW_ARGB8888) {/*单独通道控制透明度*/
+			RawDrawARGBBitmap(rRect1.x, rRect1.y, /*实际图片绘制的起点*/
+				rRect1.w, rRect1.h, /*需要绘制的图片的大小*/
+				hXBitmap->pixels,
+				rRect.x - bgBorder->x, rRect.y - bgBorder->y, /*从图片中绘制的开始位置*/
+				hXBitmap->w, hXBitmap->h);
+		}
+		break;
 	}
 	return TRUE;
 }
-
-
-
 /*
 * 在规定区域内绘制字符串
 */
@@ -320,7 +391,7 @@ uint8 DrawString(HPENCIL hPencil, HFONTF hFont, HXRECT border, int16 x, int16 y,
 						if (j >= stx) {
 							uint16 tCHData = hFont->fontInfo.perRowBytes == 2 ? ((uint16*)chData)[i - y] : chData[i - y];
 							if (_GET_BIT(tCHData, j - x)) {
-								DrawPixel(hPencil->DrawColor, j, i);
+								DrawPixel(hPencil->DrawFrColor, j, i);
 							}
 							else {
 								DrawPixel(hPencil->DrawBkColor, j, i);
@@ -358,7 +429,7 @@ static uint8 _DrawChar(HPENCIL hPencil, HXRECT hXRectArea, HFONTF hFont, HXPOINT
 					(j + startPoint->x);//当前像素的位置
 				pixel = chData[temp / 8] & ((1 << ( (temp % 8))));
 				if (pixel) {
-					DrawPixel(hPencil->DrawColor, j + hXRectArea->x, i + hXRectArea->y);
+					DrawPixel(hPencil->DrawFrColor, j + hXRectArea->x, i + hXRectArea->y);
 				}
 				else {
 					DrawPixel(hPencil->DrawBkColor, j + hXRectArea->x, i + hXRectArea->y);
@@ -399,7 +470,7 @@ uint8 _DrawCharEx(HXRECT bgRect, HXRECT drawRect, HXPOINT hStartXPoint, HFONTF h
 						(j - sDrawX);//当前像素的位置
 					pixel = chData[temp / 8] & ((1 << ((temp % 8))));
 					if (pixel) {
-						DrawPixel(hPencil->DrawColor,
+						DrawPixel(hPencil->DrawFrColor,
 							j, i );
 					}else {
 						DrawPixel(hPencil->DrawBkColor,
@@ -425,12 +496,10 @@ uint8 _DrawStringEx(HXRECT bgRect, HXRECT drawRect, HXPOINT hStartXPoint, HFONTF
 	uint16 draw_h;
 	int16 sDrawX;
 	int16 sDrawY;
-	uint16 m;
+	//uint16 m;
 	int16 lastIndex = 0;
 	int16 lastIndex1 = 0;
 	uint16 ct = -1;
-
-
 	sDrawX = bgRect->x + hStartXPoint->x;
 	sDrawY = bgRect->y + hStartXPoint->y;
 	if (hFont->fontType == 3) {/*UNICODE*/
@@ -475,15 +544,13 @@ uint8 _DrawStringEx(HXRECT bgRect, HXRECT drawRect, HXPOINT hStartXPoint, HFONTF
 				if (chData == NULL) { continue; }
 				pixel = chData[temp1+ temp/8] & ((1 << (temp % 8)));
 				if (pixel) {
-					DrawPixel(hPencil->DrawColor,j, i);
+					DrawPixel(hPencil->DrawFrColor,j, i);
 				}
-				else {
-							
+				else {	
 					DrawPixel(hPencil->DrawBkColor,j, i);
 				}
 			}
 			else {
-				//lastIndex=
 				DrawPixel(hPencil->DrawBkColor,
 					j, i);
 			}

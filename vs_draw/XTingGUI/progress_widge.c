@@ -20,7 +20,7 @@ PUBLIC HPROGRESS_WIDGE PROGRESS_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int
 	hWidge->widgeBase.widgeCallBackFun = PROGRESS_MARK_HEAD(CallBack);
 
 	hWidge->maxVal = maxVal;
-	hWidge->currentVal = 0;
+	hWidge->currentVal = maxVal / 2;
 
 	return hWidge;
 }
@@ -48,7 +48,7 @@ PUBLIC void PROGRESS_MARK_HEAD(SetColor)(HPROGRESS_WIDGE hObject, uintColor colo
 PUBLIC void PROGRESS_MARK_HEAD(SetProgressVal)(HPROGRESS_WIDGE hObject, uint16 val) {
 	if (!hObject) { return; }
 	hObject->currentVal = MIN(val, hObject->maxVal);
-	WindowsInvaildRect(hObject->widgeBase.parentHWIN, (HXRECT)hObject);
+	WindowsInvaildRect((HWIDGE_BASE)hObject, NULL);
 }
 
 /*»æÖÆ¿Ø¼þ*/

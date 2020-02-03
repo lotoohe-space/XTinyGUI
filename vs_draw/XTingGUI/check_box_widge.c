@@ -71,7 +71,7 @@ PUBLIC void CHECKBOX_MARK_HEAD(MoveTo)(HCHECKBOX_WIDGE hObject, int16 x, int16 y
 	if (!hObject) { return; }
 	hObject->widgeBase.rect.x = x;
 	hObject->widgeBase.rect.y = y;
-	WindowsInvaildRect(hObject->widgeBase.parentHWIN, (HXRECT)hObject);
+	//WindowsInvaildRect(hObject->widgeBase.parentHWIN, (HXRECT)hObject);
 }
 /*…Ë÷√∏∏¥∞ø⁄*/
 PUBLIC void CHECKBOX_MARK_HEAD(SetParentWin)(HCHECKBOX_WIDGE hObject, HWIN hWIN) {
@@ -92,7 +92,7 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 	hWidge = hObject;
 	if (!hObject) { return; }
 	if (!_GetVisable(hWidge)) { return; }
-//	if (!isGUINeedCut(hWidge)) { return; }
+	//if (!IsGUINeedCut(hWidge)) { return; }
 
 	DrawSetArea(hWidge);
 

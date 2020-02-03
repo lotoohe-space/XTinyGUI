@@ -15,6 +15,11 @@ typedef struct {
 	}fontVal;
 }*HFONT_INFO,FONT_INFO;
 
+#define ASCII_TYPE		0
+#define GB2312_TYPE		1
+#define GBK_TYPE		2
+#define UNICODE_TYPE	3
+
 typedef struct {
 	FONT_INFO fontInfo;
 	HFONT_INFO additionFont;

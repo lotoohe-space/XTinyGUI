@@ -79,6 +79,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>D:\Project\MyProject1\XTinyGUi\vs_draw\vs_draw;D:\Project\MyProject1\XTinyGUi\vs_draw\vs_draw\XTingGUI;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -148,76 +149,83 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="bitmap.h" />
-    <ClInclude Include="bitmap_widge.h" />
-    <ClInclude Include="button_widge.h" />
-    <ClInclude Include="check_box_widge.h" />
-    <ClInclude Include="color.h" />
-    <ClInclude Include="config.h" />
-    <ClInclude Include="font.h" />
-    <ClInclude Include="font_ASCII_100_100.h" />
-    <ClInclude Include="font_ASCII_12_16.h" />
-    <ClInclude Include="font_ASCII_16_16.h" />
-    <ClInclude Include="font_ASCII_8_12.h" />
-    <ClInclude Include="font_GB2312_16_16.h" />
-    <ClInclude Include="font_UNICODE_16_16.h" />
     <ClInclude Include="girl_bitmap.h" />
-    <ClInclude Include="gui.h" />
-    <ClInclude Include="list.h" />
     <ClInclude Include="NES_Simulator\6502.H" />
     <ClInclude Include="NES_Simulator\JoyPad.h" />
     <ClInclude Include="NES_Simulator\nes_datatype.h" />
     <ClInclude Include="NES_Simulator\nes_main.h" />
     <ClInclude Include="NES_Simulator\PPU.h" />
     <ClInclude Include="NES_Simulator\rom.h" />
-    <ClInclude Include="progress_widge.h" />
-    <ClInclude Include="SqQueue.h" />
-    <ClInclude Include="x_malloc.h" />
-    <ClInclude Include="msg.h" />
-    <ClInclude Include="paint.h" />
-    <ClInclude Include="paint_cut.h" />
+    <ClInclude Include="png_img.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="text_widge.h" />
-    <ClInclude Include="tool.h" />
-    <ClInclude Include="type.h" />
-    <ClInclude Include="widge.h" />
-    <ClInclude Include="xwindows.h" />
-    <ClInclude Include="xwindows_head.h" />
+    <ClInclude Include="XTingGUI\bitmap.h" />
+    <ClInclude Include="XTingGUI\bitmap_widge.h" />
+    <ClInclude Include="XTingGUI\button_widge.h" />
+    <ClInclude Include="XTingGUI\check_box_widge.h" />
+    <ClInclude Include="XTingGUI\color.h" />
+    <ClInclude Include="XTingGUI\config.h" />
+    <ClInclude Include="XTingGUI\font.h" />
+    <ClInclude Include="XTingGUI\font_ASCII_100_100.h" />
+    <ClInclude Include="XTingGUI\font_ASCII_12_16.h" />
+    <ClInclude Include="XTingGUI\font_ASCII_16_16.h" />
+    <ClInclude Include="XTingGUI\font_ASCII_8_12.h" />
+    <ClInclude Include="XTingGUI\font_GB2312_16_16.h" />
+    <ClInclude Include="XTingGUI\font_UNICODE_16_16.h" />
+    <ClInclude Include="XTingGUI\group_widge.h" />
+    <ClInclude Include="XTingGUI\gui.h" />
+    <ClInclude Include="XTingGUI\list.h" />
+    <ClInclude Include="XTingGUI\list_widge.h" />
+    <ClInclude Include="XTingGUI\msg.h" />
+    <ClInclude Include="XTingGUI\paint.h" />
+    <ClInclude Include="XTingGUI\paint_cut.h" />
+    <ClInclude Include="XTingGUI\progress_widge.h" />
+    <ClInclude Include="XTingGUI\slide_widge.h" />
+    <ClInclude Include="XTingGUI\SqQueue.h" />
+    <ClInclude Include="XTingGUI\text_widge.h" />
+    <ClInclude Include="XTingGUI\tool.h" />
+    <ClInclude Include="XTingGUI\type.h" />
+    <ClInclude Include="XTingGUI\widge.h" />
+    <ClInclude Include="XTingGUI\widge_define.h" />
+    <ClInclude Include="XTingGUI\xwindows.h" />
+    <ClInclude Include="XTingGUI\xwindows_head.h" />
+    <ClInclude Include="XTingGUI\x_malloc.h" />
     <ClInclude Include="z_malloc.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="bitmap.c" />
-    <ClCompile Include="bitmap_widge.c" />
-    <ClCompile Include="check_box_widge.c" />
-    <ClCompile Include="fonts.c" />
-    <ClCompile Include="gui.c" />
-    <ClCompile Include="list.c" />
     <ClCompile Include="NES_Simulator\6502.C" />
     <ClCompile Include="NES_Simulator\JoyPad.c" />
     <ClCompile Include="NES_Simulator\nes_main.c" />
     <ClCompile Include="NES_Simulator\PPU.c" />
     <ClCompile Include="NES_Simulator\ROM__MARIO.c" />
-    <ClCompile Include="progress_widge.c" />
-    <ClCompile Include="SqQueue.c" />
-    <ClCompile Include="x_malloc.c" />
-    <ClCompile Include="msg.c" />
-    <ClCompile Include="paint.c" />
-    <ClCompile Include="paint_cut.c" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="text_widge.c" />
-    <ClCompile Include="tool.c" />
     <ClCompile Include="vs_draw.c" />
-    <ClCompile Include="widge.c" />
-    <ClCompile Include="button_widge.c" />
-    <ClCompile Include="widge_define.h" />
-    <ClCompile Include="xwindows.c" />
-    <ClCompile Include="xwindows_head.c" />
+    <ClCompile Include="XTingGUI\bitmap.c" />
+    <ClCompile Include="XTingGUI\bitmap_widge.c" />
+    <ClCompile Include="XTingGUI\button_widge.c" />
+    <ClCompile Include="XTingGUI\check_box_widge.c" />
+    <ClCompile Include="XTingGUI\fonts.c" />
+    <ClCompile Include="XTingGUI\group_widge.c" />
+    <ClCompile Include="XTingGUI\gui.c" />
+    <ClCompile Include="XTingGUI\list.c" />
+    <ClCompile Include="XTingGUI\list_widge.c" />
+    <ClCompile Include="XTingGUI\msg.c" />
+    <ClCompile Include="XTingGUI\paint.c" />
+    <ClCompile Include="XTingGUI\paint_cut.c" />
+    <ClCompile Include="XTingGUI\progress_widge.c" />
+    <ClCompile Include="XTingGUI\slide_widge.c" />
+    <ClCompile Include="XTingGUI\SqQueue.c" />
+    <ClCompile Include="XTingGUI\text_widge.c" />
+    <ClCompile Include="XTingGUI\tool.c" />
+    <ClCompile Include="XTingGUI\widge.c" />
+    <ClCompile Include="XTingGUI\xwindows.c" />
+    <ClCompile Include="XTingGUI\xwindows_head.c" />
+    <ClCompile Include="XTingGUI\x_malloc.c" />
     <ClCompile Include="z_malloc.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

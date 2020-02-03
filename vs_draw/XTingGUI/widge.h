@@ -15,6 +15,7 @@ typedef struct {
 	WidgeMoveToFunction moveToFun;/*控件移动函数*/
 	WidgeCallBackFunction widgeCallBackFun;/*控件事件回调函数*/
 	WidgeCloseFunction widgeCloseFun;/*控件关闭函数*/
+	WidgeResizeFunction widgeResizeFun;/*控件重设大小函数*/
 
 	/*外部调用，点击事件回调函数，所有控件共有的特性*/
 	ViewClickCallBack viewClickCallBack;
@@ -54,17 +55,17 @@ typedef struct {
 
 #define _PToHWidgeBaseType(a) ((HWIDGE_BASE)a)
 
-PUBLIC HWIDGE_BASE WIDGE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h);
-PUBLIC HWIDGE_BASE WIDGE_MARK_HEAD(CreateEx)(HXRECT hXRect);
-PUBLIC void WIDGE_MARK_HEAD(Close)(HWIDGE_BASE hObject);
-PUBLIC void WIDGE_MARK_HEAD(Init)(HWIDGE_BASE hWidgeBase, int16 x, int16 y, int16 w, int16 h);
-PUBLIC void WIDGE_MARK_HEAD(SetClickBack)(HWIDGE_BASE hObject, void* arg, ViewClickCallBack viewClickCallBack);
-PUBLIC void WIDGE_MARK_HEAD(SetVisable)(HWIDGE_BASE hObject, uint8 isVisable);
-PUBLIC void WIDGE_MARK_HEAD(Resize)(HWIDGE_BASE hObject, int16 x, int16 y, uint16 w, uint16 h);
-PUBLIC void WIDGE_MARK_HEAD(SetParentWin)(HWIDGE_BASE hObject, void* hWIN);
-PUBLIC void WIDGE_MARK_HEAD(SetColor)(HWIDGE_BASE hObject, uintColor color);
-PUBLIC void WIDGE_MARK_HEAD(MoveTo)(HWIDGE_BASE hObject, int16 x, int16 y);
-PRIVATE void WIDGE_MARK_HEAD(Paint)(void* hObject);
-PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);
+PUBLIC	HWIDGE_BASE	WIDGE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h);
+PUBLIC	HWIDGE_BASE	WIDGE_MARK_HEAD(CreateEx)(HXRECT hXRect);
+PUBLIC	void		WIDGE_MARK_HEAD(Close)(HWIDGE_BASE hObject);
+PUBLIC	void		WIDGE_MARK_HEAD(Init)(HWIDGE_BASE hWidgeBase, int16 x, int16 y, int16 w, int16 h);
+PUBLIC	void		WIDGE_MARK_HEAD(SetClickBack)(HWIDGE_BASE hObject, void* arg, ViewClickCallBack viewClickCallBack);
+PUBLIC	void		WIDGE_MARK_HEAD(SetVisable)(HWIDGE_BASE hObject, uint8 isVisable);
+PUBLIC	void		WIDGE_MARK_HEAD(Resize)(HWIDGE_BASE hObject, int16 x, int16 y, uint16 w, uint16 h);
+PUBLIC	void		WIDGE_MARK_HEAD(SetParentWin)(HWIDGE_BASE hObject, void* hWIN);
+PUBLIC	void		WIDGE_MARK_HEAD(SetColor)(HWIDGE_BASE hObject, uintColor color);
+PUBLIC	void		WIDGE_MARK_HEAD(MoveTo)(HWIDGE_BASE hObject, int16 x, int16 y);
+PRIVATE void		WIDGE_MARK_HEAD(Paint)(void* hObject);
+PUBLIC	int8		WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);
 
 #endif

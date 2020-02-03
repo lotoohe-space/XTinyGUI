@@ -693,10 +693,15 @@ void NES_RenderLine(int y_axes)
 	NES_LCD_DisplayLine(y_axes, Buffer_scanline);									//启动LCD显示一行，查询或DMA传送
 }
 extern unsigned short nesImg[];
-#include "../bitmap.h"
-#include "../bitmap_widge.h"
+#include "bitmap.h"
+#include "bitmap_widge.h"
+#include "text_widge.h"
 extern XBITMAP xGirlBitmap;
 extern HBITMAP_WIDGE hBITMAP_WIDGE1;
+extern HTEXT_WIDGE fpsTextWidge;
+uint32 lastFPS = 0;
+char FPSData[10];
+uint16 FPGCount = 0;
 /*
  * PPU 将行缓存，写入LCD
  */
@@ -704,7 +709,18 @@ void NES_LCD_DisplayLine(int y_axes, uint16 *Disaplyline_buffer)
 {
 	uint32 index;
 	if (y_axes >= 239) {
+		
+		//写入了一帧的数据
 		BITMAP_MARK_HEAD(SetBitmap)(hBITMAP_WIDGE1, &xGirlBitmap);
+
+		FPGCount++;
+		if (FPGCount >= 30) {
+			sprintf(FPSData, "%dfps", (uint32)(1000 / ((GetCurrentTimeMsec() - lastFPS)/30)));
+			TextWidgeSetText(fpsTextWidge, FPSData);
+
+			lastFPS = GetCurrentTimeMsec();
+			FPGCount = 0;
+		}
 	}
 	//LCD_ConfigDispWindow(y_axes,y_axes,32,287);	
 	//LCD_SetCursor(y_axes,287);

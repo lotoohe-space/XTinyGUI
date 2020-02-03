@@ -13,7 +13,7 @@ uint8 InitQueue(SqQueue *q,uint16 size){
 	q->maxVal = size;
 	q->data = data;
 	q->front = q->rear = 0;
-
+	q->valid = TRUE;
 	return TRUE;
 }
 uint16 QueueLength(SqQueue* q) {

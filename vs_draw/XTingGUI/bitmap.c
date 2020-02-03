@@ -13,6 +13,10 @@ uint8 InitBitmap(HXBITMAP hXBitmap,uint8* pixels, uint16 w, uint16 h, uint8 colo
 	hXBitmap->alpha = 255;	/*²»Í¸Ã÷*/
 	return TRUE;
 }
+void BitmapSetFlag(HXBITMAP hXBitmap, uint8 flag) {
+	if (hXBitmap == NULL) { return ; }
+	hXBitmap->flag = flag;
+}
 uint8 InitBitmapFromFile(const char* file) {
 
 	return TRUE;

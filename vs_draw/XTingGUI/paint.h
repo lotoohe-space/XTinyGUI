@@ -7,7 +7,7 @@
 #include "bitmap.h"
 
 //void  DrawInvaildRect(HXRECT hXRect);
-void  DrawSetArea(void* hObject);
+uint8 DrawSetArea(void* hObject);
 void  DrawResetArea(void* hObject);
 uint8 DrawPixel(uintColor color, int16 x, int16 y);
 uint8 DrawLineH(HPENCIL hPencil, int16 x0, int16 y, int16 x1);
