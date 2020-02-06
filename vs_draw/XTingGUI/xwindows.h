@@ -14,6 +14,7 @@
 /*窗口结构体*/
 typedef struct {
 	WIDGE_BASE winWidge;
+	//GROUP_WIDGE groupWidge;
 
 	HLIST  widgetList;/*控件列表*/
 	HWIN_HEAD hWinHead;/*标题头控件*/

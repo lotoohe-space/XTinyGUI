@@ -10,17 +10,11 @@ PUBLIC HBITMAP_WIDGE BITMAP_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h
 	if (hBitmapWidge == NULL) {
 		return NULL;
 	}
-	WidgeInit((HWIDGE_BASE)hBitmapWidge, x, y, 0, 0);
-	hBitmapWidge->widgeBase.rect.x = x;
-	hBitmapWidge->widgeBase.rect.y = y;
-	//if (hXBitmap != NULL) {
-	//	hBitmapWidge->widgeBase.rect.w = hXBitmap->w;
-	//	hBitmapWidge->widgeBase.rect.h = hXBitmap->h;
-	//}
-	//else {
-		hBitmapWidge->widgeBase.rect.w = w;
-		hBitmapWidge->widgeBase.rect.h = h;
-	//}
+	WidgeInit((HWIDGE_BASE)hBitmapWidge, x, y, w, h);
+	//hBitmapWidge->widgeBase.rect.x = x;
+	//hBitmapWidge->widgeBase.rect.y = y;
+	//hBitmapWidge->widgeBase.rect.w = w;
+	//hBitmapWidge->widgeBase.rect.h = h;
 
 	/*设置三个回调函数*/
 	hBitmapWidge->widgeBase.paintFun = BITMAP_MARK_HEAD(Paint);

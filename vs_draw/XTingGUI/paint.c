@@ -20,27 +20,7 @@ extern unsigned int g_pix(int x, int y);
  void d_bmp(int x, int y, int w, int h, unsigned short* bitmap, int x1, int y1, int w1, int h1);
 #endif
 
- /*绘图区域*/
- //XRECT drawArea = {0,0,LCD_SCREEN_W ,LCD_SCREEN_H};//绘制区域
 
- /*设置无效区域*/
- //void DrawInvaildRect(HXRECT hXRect) {
-	// if (hXRect == NULL) {
-	//	 GUISendDrawMsg(NULL, MSG_WIN_INVAILD_UPDATE, 0, 0, 0, LCD_SCREEN_W, LCD_SCREEN_H 
-	//		// 0, 0, LCD_SCREEN_W, LCD_SCREEN_H
-	//	 );
-	// }
-	// else {
-	//	 GUISendDrawMsg(NULL, MSG_WIN_INVAILD_UPDATE, 0, hXRect->x, hXRect->y, hXRect->w, hXRect->h
-	//		 //,  hXRect->x, hXRect->y, hXRect->w, hXRect->h
-	//	 );
-	// }
-	//
- //}
- ///*事件处理程序使用*/
- //void _DrawInvaildRect(HXRECT hXRect) {
-	//XRECT_COPY(&(hXDesktop->drawArea), hXRect);
- //}
  /*设置允许绘图的窗口，是当前窗口与桌面的相交区域*/
 uint8 DrawSetArea(void* hObject) {
 	HWIDGE_BASE hWidgeBase;

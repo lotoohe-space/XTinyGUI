@@ -116,38 +116,61 @@ void WINDOWS_MARK_HEAD(SetProcessCallBack)(HWIN hObject, WinProcessCallBack winP
 /*设置窗口最小化*/
 void WINDOWS_MARK_HEAD(SetMin)(HWIN hObject) {
 	if (!hObject) { return; }
+	/*处于最大化时不能够最小化*/
+	if (_IsMaxWIN(hObject)) { return; }
+
 	if (_IsMinWIN(hObject)) {
 		_ClrMinWIN(hObject);
-		/*hObject->winWidge.rect.w = hObject->lastRect.w;
-		hObject->winWidge.rect.h = hObject->lastRect.h;*/
-
-		WindowsResize(hObject, hObject->winWidge.rect.x, hObject->winWidge.rect.y, hObject->lastRect.w, hObject->lastRect.h);
+		/*设置为上次的大小*/
+		WindowsResize(hObject, 
+			hObject->winWidge.rect.x, 
+			hObject->winWidge.rect.y, 
+			hObject->lastRect.w, 
+			hObject->lastRect.h
+		);
 	}
 	else {
 		_SetMinWIN(hObject);
+		/*保存之前的宽高*/
 		hObject->lastRect.w = hObject->winWidge.rect.w;
 		hObject->lastRect.h = hObject->winWidge.rect.h;
-		WindowsResize(hObject, hObject->winWidge.rect.x, hObject->winWidge.rect.y,
-			_PToHGroupWidgeType(hObject->hWinHead)->widgeBase.rect.w, _PToHGroupWidgeType(hObject->hWinHead)->widgeBase.rect.h);
+		/*设置为标题头的大小*/
+		WindowsResize(hObject, 
+			hObject->winWidge.rect.x, 
+			hObject->winWidge.rect.y,
+			_PToHGroupWidgeType(hObject->hWinHead)->widgeBase.rect.w, 
+			_PToHGroupWidgeType(hObject->hWinHead)->widgeBase.rect.h
+		);
 	}
 }
 /*设置窗口最大化，暂时还未全部实现*/
 void WINDOWS_MARK_HEAD(SetMax)(HWIN hObject) {
 	if (!hObject) { return; }
+
+	/*最小化时不能够最大化*/
+	if (_IsMinWIN(hObject)) {
+		return;
+	}
+
 	if (_IsMaxWIN(hObject)) {
 		_ClrMaxWIN(hObject);
 		/*还原位置*/
 		//XRECT_COPY((HXRECT)hObject,&(hObject->lastRect));
-		WindowsResize(hObject, hObject->lastRect.x, hObject->lastRect.y,
-			hObject->lastRect.w, hObject->lastRect.h);
+		WindowsResize(hObject, 
+			hObject->lastRect.x, 
+			hObject->lastRect.y,
+			hObject->lastRect.w, 
+			hObject->lastRect.h);
 	}
 	else {
 		_SetMaxWIN(hObject);
-		/*hObject->lastRect.w = hObject->winWidge.rect.w;
-		hObject->lastRect.h = hObject->winWidge.rect.h;*/
 		XRECT_COPY(&(hObject->lastRect), &(hObject->winWidge.rect));
-		WindowsResize(hObject, ((HXRECT)hObject->winWidge.parentHWIN)->x, ((HXRECT)hObject->winWidge.parentHWIN)->y,
-			((HXRECT)hObject->winWidge.parentHWIN)->w, ((HXRECT)hObject->winWidge.parentHWIN)->h);
+		WindowsResize(hObject, 
+			((HXRECT)hObject->winWidge.parentHWIN)->x, 
+			((HXRECT)hObject->winWidge.parentHWIN)->y,
+			((HXRECT)hObject->winWidge.parentHWIN)->w, 
+			((HXRECT)hObject->winWidge.parentHWIN)->h
+		);
 	}
 }
 
@@ -285,6 +308,7 @@ void WINDOWS_MARK_HEAD(Close)(HWIN hWin) {
 void WINDOWS_MARK_HEAD(MoveTo)(HWIN hWin, int16 x, int16 y) {
 	int16 dx;
 	int16 dy;
+	XRECT lastRect;
 	if (!hWin) { return; }
 	/*新位置相对于上一次移动的偏移量*/
 	dx = x - hWin->winWidge.rect.x;
@@ -295,12 +319,10 @@ void WINDOWS_MARK_HEAD(MoveTo)(HWIN hWin, int16 x, int16 y) {
 		&& y == hWin->winWidge.rect.y) {
 		return;
 	}
-
-	/*拷贝矩形为上一次的*/
+	XRECT_COPY(&lastRect, (HXRECT)hWin);
+	/*存储上一次的xy*/
 	hWin->lastRect.x = hWin->winWidge.rect.x;
 	hWin->lastRect.y = hWin->winWidge.rect.y;
-	hWin->lastRect.w = hWin->winWidge.rect.w;
-	hWin->lastRect.h = hWin->winWidge.rect.h;
 	/*设置新的位置*/
 	hWin->winWidge.rect.x = x;
 	hWin->winWidge.rect.y = y;
@@ -319,14 +341,8 @@ void WINDOWS_MARK_HEAD(MoveTo)(HWIN hWin, int16 x, int16 y) {
 		}
 	}
 
-	///* 更新窗口 */
-	//if (hWin->winWidge.parentHWIN == NULL) {
-	//	WindowsInvaildRect((HWIDGE_BASE)hWin, NULL);
-	//}
-	//else {
-	WindowsInvaildRect((HWIDGE_BASE)(hWin->winWidge.parentHWIN), (HXRECT)(&(hWin->lastRect)));
-	//}
-	//(HWIDGE_BASE)(hWin->winWidge.parentHWIN)
+	/* 更新窗口，更新的位置是上一次的位置*/
+	WindowsInvaildRect((HWIDGE_BASE)(hWin->winWidge.parentHWIN), (HXRECT)(&(lastRect)));
 }
 /*设置窗口颜色*/
 void WINDOWS_MARK_HEAD(SetColor)(HWIN hWin, uintColor color) {
@@ -368,9 +384,11 @@ void WINDOWS_MARK_HEAD(Paint)(void *hObject) {
 			hWin->winProcessFun(hWin, hWin->winWidge.arg, &msg);
 		}
 	}
-
+	/*是否需要显示*/
 	if (!_GetVisable(hWin)) { return; }
-	if (!IsGUINeedCut((HXRECT)hWin) && !_IsDrawAllLag(hWin)) { return; }
+	/*是否需要剪裁*/
+	//if (!IsGUINeedCut((HXRECT)hWin) && !_IsDrawAllLag(hWin)) { return; }
+	if (!IsGUINeedCutEx(hWin) && !_IsDrawAllLag(hWin)) { return; }
 
 	/*初次需要全部刷新*/
 	_ClrDrawAllLag(hWin);
@@ -397,7 +415,6 @@ void WINDOWS_MARK_HEAD(Paint)(void *hObject) {
 		msg.msgID = MSG_WIN_PAINT;
 		hWin->winProcessFun(hWin, hWin->winWidge.arg, &msg);
 	}
-	
 	RectCutSplitRectList(cutPostionList);
 	/*迭代每一个控件*/
 	_StartScanU(hWin->widgetList) {//开始扫描

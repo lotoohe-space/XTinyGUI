@@ -183,12 +183,91 @@ void SetMovingWin(HXRECT hXRect) {
 	hXDesktop->movingWidge.w = hXRect->w;
 	hXDesktop->movingWidge.h = hXRect->h;
 }
+
 /*当前的窗口是否需要剪裁
 	TRUE:需要剪裁
 */
-//extern void d_rect(int x, int y, int w, int h, int color);
-BOOL IsGUINeedCut(HXRECT hXRECT) {
+BOOL IsGUINeedCutEx(HWIN hWin) {
+	HXRECT hXRECT;
+	uint8 flag = 0;
+	if (hWin == NULL) { return TRUE; }
+	hXRECT = (HXRECT)(hWin);
+#if USE_ALPHA
+	/*如果透明则需要剪裁，也就是需要绘制*/
+	if (_GET_IS_DPY(hXRECT)) {
+		return TRUE;
+	}
+	/*如果当前窗口时移动窗口则刷新*/
+	if (hXRECT == &(hXDesktop->movingWidge)) {
+		return TRUE;
+	}
+	/*如果当前窗口和移动窗口产生了碰撞则刷新*/
+	if (_IsDrawCheckArea(hXDesktop->movingWidge.x
+		, hXDesktop->movingWidge.y
+		, hXDesktop->movingWidge.w
+		, hXDesktop->movingWidge.h
+		, hXRECT->x
+		, hXRECT->y
+		, hXRECT->w
+		, hXRECT->h
+	)) {
+		return TRUE;
+	}
+	if (hWin->winWidge.parentHWIN != NULL) {
+		/*如果当前窗口上面有透明窗口则刷新*/
+		_StartScanU(((HWIN)(hWin->winWidge.parentHWIN))->widgetList)
+			HXRECT hItemRect = (HXRECT)(val);
+		if (flag == 1)
+		{
+			if (_GET_IS_DPY(hItemRect)) {
+				return _IsDrawCheckArea(
+					hItemRect->x
+					, hItemRect->y
+					, hItemRect->w
+					, hItemRect->h
+					, hXRECT->x
+					, hXRECT->y
+					, hXRECT->w
+					, hXRECT->h
+				);
+			}
+		}
+		if (tempItem->val == hWin) {/**/
+			flag = 1;
+		}
+		_EndScanU()
+	}
 
+	return TRUE;
+#else
+	/*如果透明则需要剪裁，也就是需要绘制*/
+	if (_GET_IS_DPY(hXRECT)) {
+		return TRUE;
+	}
+
+	if (hXRECT == &(hXDesktop->movingWidge)) {
+		return TRUE;
+}
+	return _IsDrawCheckArea(hXDesktop->movingWidge.x
+		, hXDesktop->movingWidge.y
+		, hXDesktop->movingWidge.w
+		, hXDesktop->movingWidge.h
+		, hXRECT->x
+		, hXRECT->y
+		, hXRECT->w
+		, hXRECT->h
+	);
+
+#endif
+
+}
+
+/*当前的窗口是否需要剪裁
+	TRUE:需要剪裁
+*/
+BOOL IsGUINeedCut(HWIDGE_BASE hWidgeBase) {
+	HXRECT hXRECT;
+	hXRECT = (HXRECT)hWidgeBase;
 #if USE_ALPHA
 	/*暂时这么写*/
 	return TRUE;
@@ -199,19 +278,18 @@ BOOL IsGUINeedCut(HXRECT hXRECT) {
 	if (_GET_IS_DPY(hXRECT)) {
 		return TRUE;
 	}
-
-		if (hXRECT == &(hXDesktop->movingWidge)) {
-			return TRUE;
-		}
-		return _IsDrawCheckArea(hXDesktop->movingWidge.x
-			, hXDesktop->movingWidge.y
-			, hXDesktop->movingWidge.w
-			, hXDesktop->movingWidge.h
-			, hXRECT->x
-			, hXRECT->y
-			, hXRECT->w
-			, hXRECT->h
-		);
+	if (hXRECT == &(hXDesktop->movingWidge)) {
+		return TRUE;
+	}
+	return _IsDrawCheckArea(hXDesktop->movingWidge.x
+		, hXDesktop->movingWidge.y
+		, hXDesktop->movingWidge.w
+		, hXDesktop->movingWidge.h
+		, hXRECT->x
+		, hXRECT->y
+		, hXRECT->w
+		, hXRECT->h
+	);
 #endif
 
 }

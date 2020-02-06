@@ -5,11 +5,11 @@
 #include "type.h"
 #include "paint.h"
 
-/*是否开启透明通道*/
-#define USE_ALPHA	0
+/*是否开启透明通道,开启透明通道会降低运行速度*/
+#define USE_ALPHA		0
 /*显示屏的大小*/
-#define LCD_SCREEN_W 800
-#define LCD_SCREEN_H 480
+#define LCD_SCREEN_W	800
+#define LCD_SCREEN_H	480
 
 /*********返回的事件说明********/
 #define RES_ASSERT_ERR		-1
@@ -25,15 +25,15 @@ typedef struct {
 	XRECT drawArea;
 	/*最顶上的窗体*/
 	HWIN topWin;
-	/*正在移动的窗口*/
+	/*正在移动的控件*/
 	XRECT movingWidge;
 }*HXDESKTOP, XDESKTOP;
 extern HXDESKTOP hXDesktop;
 
 /*当前控件坐标转换为相对坐标*/
 /*即当前坐标相对于父控件的偏移*/
-#define CDE2OPPOSITE_X(a)	(((HXRECT)(((HWIDGE_BASE)(a))->parentHWIN))->x - ((HXRECT)(a))->x)
-#define CDE2OPPOSITE_Y(a)	(((HXRECT)(((HWIDGE_BASE)(a))->parentHWIN))->y - ((HXRECT)(a))->y)
+#define CDE2OPPOSITE_X(a)		(((HXRECT)(((HWIDGE_BASE)(a))->parentHWIN))->x - ((HXRECT)(a))->x)
+#define CDE2OPPOSITE_Y(a)		(((HXRECT)(((HWIDGE_BASE)(a))->parentHWIN))->y - ((HXRECT)(a))->y)
 
 /*得到当前坐标相对于控件坐标的相对坐标*/
 #define P_CDE2OPPOSITE_X(a,b)	((b) - ((HXRECT)((HWIDGE_BASE)(a)))->x)
@@ -44,10 +44,10 @@ extern HXDESKTOP hXDesktop;
 #define _OPPOSITE2CDE_Y(a,b)	(((HXRECT)(((HWIDGE_BASE)(a))->parentHWIN))->y - (b))
 
 /*得到控件的坐标与大小*/
-#define WIDGE_X(a) (((HXRECT)(a))->x)
-#define WIDGE_Y(a) (((HXRECT)(a))->y)
-#define WIDGE_W(a) (((HXRECT)(a))->w)
-#define WIDGE_H(a) (((HXRECT)(a))->h)
+#define WIDGE_X(a)				(((HXRECT)(a))->x)
+#define WIDGE_Y(a)				(((HXRECT)(a))->y)
+#define WIDGE_W(a)				(((HXRECT)(a))->w)
+#define WIDGE_H(a)				(((HXRECT)(a))->h)
 
 void GUIExec(void);
 int8 WinListAdd(HWIN hWin);
@@ -56,7 +56,8 @@ HWIN WinGetFocus(void);
 HXDESKTOP GUIInit(void);
 void GUIEvent(void);
 void WinMoveTop(void* hObject);
-BOOL IsGUINeedCut(HXRECT hXRECT);
+BOOL IsGUINeedCut(HWIDGE_BASE hWidgeBase);
+BOOL IsGUINeedCutEx(HWIN hWin);
 void SetMovingWin(HXRECT hXRect);
 
 
