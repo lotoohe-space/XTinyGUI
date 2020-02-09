@@ -82,7 +82,7 @@ PUBLIC void LIST_WIDGE_MARK_HEAD(Paint)(void* hObject) {
 	if (!hBaseWidge) { return; }
 	if (!_GetVisable(hBaseWidge)) { return; }
 	if (!IsGUINeedCut((HXRECT)hBaseWidge)) { return; }
-	DrawSetArea(hBaseWidge);//计算得到当前绘图区域
+	if (!DrawSetArea(hBaseWidge)) { return; }//计算得到当前绘图区域
 	//计算得到剪裁区域
 	cutPostionList = RectCutAddRectList(_PToHGroupWidgeType(hBaseWidge)->widgetList->next);
 	DrawCutRect(hBaseWidge,

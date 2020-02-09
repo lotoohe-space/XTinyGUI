@@ -62,7 +62,7 @@ PRIVATE void PROGRESS_MARK_HEAD(Paint)(void* hObject) {
 	if (!_GetVisable(hWidge)) { return; }
 	//if (!isGUINeedCut(hWidge)) { return; }
 
-	DrawSetArea(hWidge);
+	if (!DrawSetArea(hWidge)) { return; }
 
 	progressing = (hWidge->currentVal / (float)(hWidge->maxVal));
 	/*ªÊ÷∆«∞∞ÎΩÿ*/

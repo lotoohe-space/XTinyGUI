@@ -21,38 +21,7 @@ extern unsigned int g_pix(int x, int y);
 #endif
 
 
- /*设置允许绘图的窗口，是当前窗口与桌面的相交区域*/
-uint8 DrawSetArea(void* hObject) {
-	HWIDGE_BASE hWidgeBase;
-	XRECT rRect;
-	hWidgeBase = hObject;
-	if (!hWidgeBase) { return FALSE; }
-
-	/*控件矩形与桌面矩形的相交矩形即为绘图区域*/
-	GetOverLapRect(&(hXDesktop->drawArea),&(hWidgeBase->rect),&rRect);
-	//GetOverLapRect(&(((HWIDGE_BASE)(hWidgeBase->parentHWIN))->pencil),&(hWidgeBase->rect),&rRect);
-
-	/*重新设置绘图区域*/
-	XRECT_COPY(&(hXDesktop->drawArea), &rRect);
-
-	/*重新设置控件的有效绘图区域*/
-	XRECT_COPY(&(hWidgeBase->pencil), &rRect);
-
-	if (rRect.w == 0 || rRect.h==0) {
-		return FALSE;
-	}
-	return TRUE;
-}
-/*复位绘图区域*/
-void DrawResetArea(void* hObject) {
-	HWIDGE_BASE hWidgeBase;
-	HPENCIL hPencil;
-	hWidgeBase = hObject;
-	if (!hWidgeBase) { return; }
-	hPencil = &(hWidgeBase->pencil);
-
-	XRECT_COPY(&(hXDesktop->drawArea), hPencil);
-}
+ 
 uintColor GetPixel(int16 x, int16 y) {
 	return RGB888T0RGB565(g_pix(x, y));
 }

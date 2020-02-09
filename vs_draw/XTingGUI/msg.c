@@ -11,6 +11,8 @@
 SqQueue eventMsg;
 /*重绘队列*/
 SqQueue drawMsg;
+/*窗口移动队列*/
+SqQueue moveMsg;
 
 /*
 * GUI初始化
@@ -25,14 +27,22 @@ uint8 GUIMsgEventInit(void) {
 		DestroyQueue(&eventMsg); 
 		return FALSE;
 	}
+	res = InitQueue(&moveMsg, MSG_EVENT_MAX_VAL);
+	if (!res) {
+		DestroyQueue(&eventMsg);
+		DestroyQueue(&drawMsg);
+		return FALSE;
+	}
 	eventMsg.valid = FALSE;
 	drawMsg.valid = FALSE;
+	moveMsg.valid = FALSE;
 
 	return TRUE;
 }
 void GUIEventValid(void) {
 	eventMsg.valid = TRUE;
 	drawMsg.valid = TRUE;
+	moveMsg.valid = TRUE;
 }
 /*获取消息*/
 HMSGE GUIGetMsg(void) {
@@ -122,7 +132,7 @@ void GUIDelDrawMsg(HMSGE hMsg) {
 int GUISendMoveMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y) {
 	HMSGE hMsg;
 	//if (hWin == NULL) { return FALSE; }
-	if (eventMsg.valid == FALSE) { return FALSE; }
+	if (moveMsg.valid == FALSE) { return FALSE; }
 	hMsg = xMalloc(sizeof(MSGE));
 	if (hMsg == NULL) { return FALSE; }
 
@@ -133,7 +143,27 @@ int GUISendMoveMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y) {
 	hMsg->msgVal.rect.x = x;
 	hMsg->msgVal.rect.y = y;
 
-	enQueue(&eventMsg, hMsg);
+	enQueue(&moveMsg, hMsg);
 
 	return TRUE;
+}
+HMSGE GUIGetMoveMsg(void) {
+	QueueDateType e,e1;
+next:	
+	if (deQueue(&moveMsg, &e)) {
+		if (getTailQueue(&moveMsg, &e1) == FALSE) {
+			return  (HMSGE)e;
+		}
+		if (((HMSGE)e)->msgSrc == ((HMSGE)e1)->msgSrc) {
+			goto next;
+		}
+		else {
+			return (HMSGE)e;
+		}
+	}
+
+	return NULL;
+}
+void GUIDelMoveMsg(HMSGE hMsg) {
+	xFree(hMsg);
 }

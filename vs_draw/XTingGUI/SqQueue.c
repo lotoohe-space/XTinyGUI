@@ -37,11 +37,19 @@ uint8 enQueue(SqQueue* q, QueueDateType e) {
 	return TRUE;
 }
 uint8 deQueue(SqQueue* q, QueueDateType *e) {
-	if (q->front == q->rear) {
+	if (q->front == q->rear) { /*空了，则返回错误*/
 		return FALSE;
 	}
 	q->front = (q->front + 1) % q->maxVal;
 	*e = q->data[q->front];
+	return TRUE;
+}
+/*获取队尾的元素*/
+uint8 getTailQueue(SqQueue* q, QueueDateType* e) {
+	if (q->front == q->rear) { /*空了，则返回错误*/
+		return FALSE;
+	}
+	*e = q->data[(q->front + 1) % q->maxVal];
 	return TRUE;
 }
 

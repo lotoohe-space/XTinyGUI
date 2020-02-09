@@ -103,7 +103,7 @@ HMSGE GUIGetDrawMsg(void);
 void GUIDelDrawMsg(HMSGE hMsg);
 
 int GUISendMoveMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y);
-//HMSGE GUIGetMoveMsg(void);
-//void GUIDelMoveMsg(HMSGE hMsg);
+HMSGE GUIGetMoveMsg(void);
+void GUIDelMoveMsg(HMSGE hMsg);
 
 #endif

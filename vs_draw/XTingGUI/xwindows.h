@@ -13,10 +13,10 @@
 
 /*窗口结构体*/
 typedef struct {
-	WIDGE_BASE winWidge;
-	//GROUP_WIDGE groupWidge;
+	//WIDGE_BASE winWidge;
+	GROUP_WIDGE groupWidge;
 
-	HLIST  widgetList;/*控件列表*/
+	//HLIST  widgetList;/*控件列表*/
 	HWIN_HEAD hWinHead;/*标题头控件*/
 	/*临时偏移量，窗口在移动的时候，需要得到一个偏移量，用这个偏移量来偏移内部的每一个控件*/
 	int16 t_dx;
@@ -94,7 +94,7 @@ void		WINDOWS_MARK_HEAD(SetVisable)(void* hObject, int8 isVisable);
 void		WINDOWS_MARK_HEAD(Paint)(void *hObject);
 void		WINDOWS_MARK_HEAD(MoveTo)(HWIN hWin, int16 x, int16 y);
 void		WINDOWS_MARK_HEAD(SetColor)(HWIN hWin, uintColor color);
-int8		WINDOWS_MARK_HEAD(WidgeAdd)(HWIN hWin, void *widge);
+int8		WINDOWS_MARK_HEAD(Add)(HWIN hWin, void *widge);
 int8		WINDOWS_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg);
 void		WINDOWS_MARK_HEAD(SetDrawHead)(HWIN hWin, int8 isEnable);
 void		WINDOWS_MARK_HEAD(InvaildRect)(HWIDGE_BASE hWidgeBase, HXRECT hXRect);

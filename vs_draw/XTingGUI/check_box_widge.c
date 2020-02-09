@@ -94,7 +94,7 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 	if (!_GetVisable(hWidge)) { return; }
 	//if (!IsGUINeedCut(hWidge)) { return; }
 
-	DrawSetArea(hWidge);
+	if (!DrawSetArea(hWidge)) { return; }
 
 	drawW = hWidge->widgeBase.rect.h;
 

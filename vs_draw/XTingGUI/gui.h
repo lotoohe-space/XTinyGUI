@@ -26,7 +26,7 @@ typedef struct {
 	/*最顶上的窗体*/
 	HWIN topWin;
 	/*正在移动的控件*/
-	XRECT movingWidge;
+	XRECT movingRect;
 }*HXDESKTOP, XDESKTOP;
 extern HXDESKTOP hXDesktop;
 
@@ -49,17 +49,23 @@ extern HXDESKTOP hXDesktop;
 #define WIDGE_W(a)				(((HXRECT)(a))->w)
 #define WIDGE_H(a)				(((HXRECT)(a))->h)
 
+/*获得控件的父控件*/
+#define WIDGE_PARENT(a)			((HWIDGE_BASE)(((HWIDGE_BASE)(a))->parentHWIN))
+
 void GUIExec(void);
-int8 WinListAdd(HWIN hWin);
-HWIN WinGetTop(void);
-HWIN WinGetFocus(void);
+int8 WinListAdd(HWIDGE_BASE hWidgeBase);
+HWIDGE_BASE WinGetTop(void);
 HXDESKTOP GUIInit(void);
 void GUIEvent(void);
 void WinMoveTop(void* hObject);
 BOOL IsGUINeedCut(HWIDGE_BASE hWidgeBase);
 BOOL IsGUINeedCutEx(HWIN hWin);
-void SetMovingWin(HXRECT hXRect);
+void SetMovingRect(HXRECT hXRect);
 
+/*设置绘图区域*/
+uint8 DrawSetArea(HWIDGE_BASE hWidgeBase);
+/*取消设置*/
+void DrawResetArea(HWIDGE_BASE hWidgeBase);
 
 #endif
 

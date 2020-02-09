@@ -18,6 +18,7 @@ void DestroyQueue(SqQueue* q);
 uint8 QueueEmpty(SqQueue* q);
 uint8 enQueue(SqQueue* q, QueueDateType e);
 uint8 deQueue(SqQueue* q, QueueDateType* e);
+uint8 getTailQueue(SqQueue* q, QueueDateType* e);
 
 #endif
 

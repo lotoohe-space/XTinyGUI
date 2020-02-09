@@ -123,7 +123,7 @@ PUBLIC void TEXT_MARK_HEAD(Paint)(void * hObject) {
 	if (!_GetVisable(hTextWidge)) { return ; }
 	//if (!isGUINeedCut((HXRECT)hTextWidge)) { return; }
 
-	DrawSetArea(hTextWidge);
+	if (!DrawSetArea(hTextWidge)) { return; }
 	TEXT_MARK_HEAD(GetPOIByTextMode)(hTextWidge, &startPoint);
 	/*»æÖÆ¼ô²Ã×Ö·û´®*/
 	DrawCutString(hTextWidge, hTextWidge->hFont, 

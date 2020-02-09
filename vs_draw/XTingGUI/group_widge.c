@@ -24,10 +24,15 @@ PUBLIC uint8 GROUP_MARK_HEAD(Init)(HGROUP_WIDGE hBaseWidge, int16 x, int16 y, ui
 	hBaseWidge->widgeBase.moveToFun = GROUP_MARK_HEAD(MoveTo);
 	hBaseWidge->widgeBase.widgeCallBackFun = GROUP_MARK_HEAD(CallBack);
 	hBaseWidge->widgeBase.widgeResizeFun = GROUP_MARK_HEAD(Resize);
+	hBaseWidge->widgeBase.widgeCloseFun = GROUP_MARK_HEAD(Close);
 
 	hBaseWidge->widgeLength = 0;
 
 	return TRUE;
+}
+PUBLIC void GROUP_MARK_HEAD(Close)(HWIDGE_BASE hObject) {
+	if (!hObject) { return NULL; }
+	/*还没有写*/
 }
 /*获取某个位置的控件*/
 PUBLIC HWIDGE_BASE GROUP_MARK_HEAD(GetWidge)(HGROUP_WIDGE hObject, uint16 index) {
@@ -95,7 +100,7 @@ PUBLIC void GROUP_MARK_HEAD(Paint)(void* hObject) {
 	if (!hBaseWidge) { return; }
 	if (!_GetVisable(hBaseWidge)) { return; }
 	//if (!IsGUINeedCut(hWinHead)) { return; }
-	DrawSetArea(hBaseWidge);//计算得到当前绘图区域
+	if (!DrawSetArea(hBaseWidge)) { return; }//计算得到当前绘图区域
 	//计算得到剪裁区域
 	cutPostionList = RectCutAddRectList(hBaseWidge->widgetList->next);
 	DrawCutRect(hBaseWidge,

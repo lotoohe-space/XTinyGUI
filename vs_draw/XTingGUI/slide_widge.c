@@ -36,7 +36,7 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void* hObject) {
 	if (!_GetVisable(hWidgeBase)) { return; }
 	//if (!IsGUINeedCut(hWidgeBase)) { return; }
 
-	DrawSetArea(hWidgeBase);
+	if (!DrawSetArea(hWidgeBase)) { return; }
 
 	uint16 barH;
 	uint16 slideBlockH;

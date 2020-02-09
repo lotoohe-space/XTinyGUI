@@ -187,7 +187,7 @@ PRIVATE void WINDOWS_HEAD_MARK_HEAD(Paint)(void * hObject){
 	if (!hWinHead) { return; }
 	if (!_GetVisable(hWinHead)) { return; }
 	//if (!isGUINeedCut(hWinHead)) { return; }
-	DrawSetArea(hWinHead);//计算得到当前绘图区域
+	if (!DrawSetArea(hWinHead)) { return; }//计算得到当前绘图区域
 	//计算得到剪裁区域
 	cutPostionList=RectCutAddRectList(_PToHGroupWidgeType(hWinHead)->widgetList->next);
 	DrawCutRect(hWinHead, 
