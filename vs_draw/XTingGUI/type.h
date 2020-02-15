@@ -67,5 +67,10 @@ typedef struct {
 #define PUBLIC 
 #define PRIVATE static
 
+#ifdef WIN32
+#define _INLINE_	_inline
+#else
+#define _INLINE_	inline
+#endif
 
 #endif

@@ -32,6 +32,7 @@ void BitmapSetFlag(HXBITMAP hXBitmap, uint8 flag);
 #define X_______	0x80
 
 
+
 #define ______XX _______X|______X_
 #define _____XX_ _____X__|______X_
 #define ____XX__ _____X__|____X___
@@ -39,6 +40,20 @@ void BitmapSetFlag(HXBITMAP hXBitmap, uint8 flag);
 #define __XX____ __X_____|___X____
 #define _XX_____ _X______|__X_____
 #define XX______ X_______|_X______
+
+#define _____XXX ______XX|_____X__
+#define ____XXXX _____XXX|____X___
+#define ___XXXXX ____XXXX|___X____
+#define __XXXXXX ___XXXXX|__X_____
+#define _XXXXXXX __XXXXXX|_X______
+#define XXXXXXXX _XXXXXXX|X_______
+
+#define XXX_____ XX______|__X_____
+#define XXXX____ XXX_____|___X____
+#define XXXXX___ XXXX____|____X___
+#define XXXXXX__ XXXXX___|_____X__
+#define XXXXXXX_ XXXXXX__|______X_
+//#define XXXXXXXX XXXXXXX_|_______X
 
 
 #define ________________	0X0000
@@ -58,6 +73,7 @@ void BitmapSetFlag(HXBITMAP hXBitmap, uint8 flag);
 #define __X_____________	0x2000
 #define _X______________	0x4000
 #define X_______________	0x8000
+
 
 
 #define __X_______X_____	(___________X____|__X_____________)

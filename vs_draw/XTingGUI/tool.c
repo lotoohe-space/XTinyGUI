@@ -38,7 +38,7 @@ uint32 UStrlen(uint16* str) {
 	return i;
 }
 //获取GBK字符串长度
-uint32 TStrlen(char *str) {
+uint32 TStrlen(const char *str) {
 	uint16 i = 0;
 	uint16 len = 0;
 	if (!str) { return 0; }
@@ -58,7 +58,7 @@ uint32 TStrlen(char *str) {
 /**
 	* 判断两矩形是否相交
 	*/
-int8 _inline isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+int8 _INLINE_ isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
 	// 矩形A位于矩形B的右侧
 	if (x1 >= x2 && x1 >= x2 + w2) {
 		return FALSE;
@@ -77,7 +77,7 @@ int8 _inline isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, 
 }
 
 //获得两个矩形的重叠部分
-BOOL  _inline GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res) {
+BOOL  _INLINE_ GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res) {
 	//	assert(r1 != NULL && r2 != NULL && res!=NULL);
 
 	res->x = MAX(r1->x, r2->x);

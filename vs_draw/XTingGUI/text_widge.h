@@ -25,7 +25,7 @@ typedef struct {
 	WIDGE_BASE baseWidge;
 
 	HFONTF hFont;			/*字体*/
-	char *text;
+	const char *text;
 
 	TextMode textMode;			/*文字显示模式 0:左对齐 1:居中对齐 2:右对齐*/
 
@@ -33,8 +33,8 @@ typedef struct {
 
 #define _PToHTextWidgeType(a) ((HTEXT_WIDGE)a)
 
-PUBLIC HTEXT_WIDGE	TEXT_MARK_HEAD(Create)(char* text, int16 x, int16 y, uint16 w, uint16 h);
-PUBLIC void			TEXT_MARK_HEAD(Init)(HTEXT_WIDGE hObject, char* text, int16 x, int16 y, uint16 w, uint16 h);
+PUBLIC HTEXT_WIDGE	TEXT_MARK_HEAD(Create)(const char* text, int16 x, int16 y, uint16 w, uint16 h);
+PUBLIC void			TEXT_MARK_HEAD(Init)(HTEXT_WIDGE hObject, const char* text, int16 x, int16 y, uint16 w, uint16 h);
 /*根据模式得到文字绘制的起始位置*/
 PUBLIC HXPOINT		TEXT_MARK_HEAD(GetPOIByTextMode)(HTEXT_WIDGE hTextWidge, HXPOINT startPoint);
 PUBLIC void			TEXT_MARK_HEAD(SetTextMode)(HTEXT_WIDGE hOjbect, uint8 textMode);

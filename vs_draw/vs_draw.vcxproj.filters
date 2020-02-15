@@ -156,6 +156,24 @@
     <ClInclude Include="XTingGUI\xwindows_head.h">
       <Filter>头文件\XTinyGUI</Filter>
     </ClInclude>
+    <ClInclude Include="imgs.h">
+      <Filter>源文件\img</Filter>
+    </ClInclude>
+    <ClInclude Include="XTingGUI\switch_button_widge.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="XTingGUI\radio_button_widge.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="XTingGUI\GUI_timeout.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="XTingGUI\mem_dev.h">
+      <Filter>头文件\XTinyGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="XTingGUI\GUI_interface_extern.h">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -243,6 +261,36 @@
       <Filter>源文件\xTinyGUI</Filter>
     </ClCompile>
     <ClCompile Include="XTingGUI\xwindows_head.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\13587\Pictures\img_item_2.c">
+      <Filter>源文件\img</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\13587\Pictures\img_item_0.c">
+      <Filter>源文件\img</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\13587\Pictures\img_item_1.c">
+      <Filter>源文件\img</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\13587\Pictures\pause.c">
+      <Filter>源文件\img</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\13587\Pictures\play.c">
+      <Filter>源文件\img</Filter>
+    </ClCompile>
+    <ClCompile Include="XTingGUI\switch_button_widge.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="XTingGUI\radio_button_widge.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="XTingGUI\GUI_timeout.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="XTingGUI\mem_dev.c">
+      <Filter>源文件\xTinyGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="XTingGUI\GUI_interface_extern.c">
       <Filter>源文件\xTinyGUI</Filter>
     </ClCompile>
   </ItemGroup>

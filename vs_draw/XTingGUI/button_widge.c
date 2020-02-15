@@ -15,13 +15,25 @@ PUBLIC HXBUTTON BUTTON_MARK_HEAD(Create)(const char *text, int16 x, int16 y, int
 	_PToHWidgeBaseType(hXButton)->widgeCallBackFun = BUTTON_MARK_HEAD(CallBack);
 
 	_PToHTextWidgeType(hXButton)->hFont = (HFONTF)& fontGB231216_16;
+	hXButton->flag = 0;
+
+	hXButton->downBitmap = NULL;
+	hXButton->upBitmap = NULL;
+
 	hXButton->downColor = _DefaultButtonDownColor;
 	hXButton->upColor = _DefaultButtonUpColor;
 
 	_PToHTextWidgeType(hXButton)->textMode = TEXT_CENTER_ALIGN;
-	//_PToHTextWidgeType(hXButton)->text = text;
 
 	return hXButton;
+}
+PUBLIC void BUTTON_MARK_HEAD(SetDownBitmap)(HXBUTTON hObject, HXBITMAP hBitmap) {
+	if (hObject == NULL) { return; }
+	hObject->downBitmap = hBitmap;
+}
+PUBLIC void BUTTON_MARK_HEAD(SetUpBitmap)(HXBUTTON hObject, HXBITMAP hBitmap) {
+	if (hObject == NULL) { return; }
+	hObject->upBitmap = hBitmap;
 }
 /*设置Buttton文字*/
 PUBLIC void BUTTON_MARK_HEAD(SetText)(HXBUTTON hObject,const char* text) {
@@ -40,130 +52,60 @@ PUBLIC void BUTTON_MARK_HEAD(MoveTo)(HXBUTTON hObject, int16 x, int16 y) {
 /*绘制窗口*/
 PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
 	HXBUTTON hXButton;
-	XRECT xRECT;
+//	XRECT xRECT;
 	hXButton = hObject;
 	if (!hObject) { return; }
-	//if (!IsGUINeedCut((HXRECT)hXButton)) { return; }
-	if (!DrawSetArea(hXButton)) { return; }
+	if (!DrawSetArea((HWIDGE_BASE)hXButton)) { return; }
+	//if (!IsGUINeedCut(hXButton)) { return ; }
 
-	//xRECT.x = _PToHWidgeBaseType(hXButton)->rect.x;
-	//xRECT.y = _PToHWidgeBaseType(hXButton)->rect.y;
-	//xRECT.w = _PToHWidgeBaseType(hXButton)->rect.w;
-	//xRECT.h = 1;
-	//DrawCutRect(hXButton, &xRECT);
-
-	//xRECT.x = _PToHWidgeBaseType(hXButton)->rect.x;
-	//xRECT.y = _PToHWidgeBaseType(hXButton)->rect.y + _PToHWidgeBaseType(hXButton)->rect.h - 1;
-	//xRECT.w = _PToHWidgeBaseType(hXButton)->rect.w;
-	//xRECT.h = 1;
-	//DrawCutRect(hXButton, &xRECT);
-
-	//xRECT.x =_PToHWidgeBaseType(hXButton)->rect.x;
-	//xRECT.y =_PToHWidgeBaseType(hXButton)->rect.y;
-	//xRECT.w = 1;
-	//xRECT.h = _PToHWidgeBaseType(hXButton)->rect.h;
-	//DrawCutRect(hXButton, &xRECT);
-
-	//xRECT.x = _PToHWidgeBaseType(hXButton)->rect.x + _PToHWidgeBaseType(hXButton)->rect.w - 1;
-	//xRECT.y = _PToHWidgeBaseType(hXButton)->rect.y;
-	//xRECT.w = 1;
-	//xRECT.h = _PToHWidgeBaseType(hXButton)->rect.h;
-	//DrawCutRect(hXButton,&xRECT);
-
-
-	//xRECT.x = _PToHWidgeBaseType(hXButton)->rect.x + _PToHWidgeBaseType(hXButton)->rect.w - 2;
-	//xRECT.y = _PToHWidgeBaseType(hXButton)->rect.y + 1;
-	//xRECT.w = 1;
-	//xRECT.h = _PToHWidgeBaseType(hXButton)->rect.h - 2;
-	//DrawCutRect(hXButton,&xRECT);
-
-	//xRECT.x = _PToHWidgeBaseType(hXButton)->rect.x + 1;
-	//xRECT.y = _PToHWidgeBaseType(hXButton)->rect.y + _PToHWidgeBaseType(hXButton)->rect.h - 2;
-	//xRECT.w = _PToHWidgeBaseType(hXButton)->rect.w - 2;
-	//xRECT.h = 1;
-	//DrawCutRect(hXButton, &xRECT);
-
-	//_PToHWidgeBaseType(hXButton)->pencil.DrawColor = RGB565(255, 255, 255);
-
-	//xRECT.x = _PToHWidgeBaseType(hXButton)->rect.x + 1;
-	//xRECT.y = _PToHWidgeBaseType(hXButton)->rect.y + 1;
-	//xRECT.w = _PToHWidgeBaseType(hXButton)->rect.w - 2;
-	//xRECT.h = 1;
-	//DrawCutRect(hXButton,&xRECT);
-
-	//xRECT.x = _PToHWidgeBaseType(hXButton)->rect.x + 1;
-	//xRECT.y = _PToHWidgeBaseType(hXButton)->rect.y + 1;
-	//xRECT.w = 1;
-	//xRECT.h = _PToHWidgeBaseType(hXButton)->rect.h - 2;
-	//DrawCutRect(hXButton, &xRECT);
-
-	//if (!_GetBtnStatus(hXButton)) {
-	//	XPOINT startPoint ;
-	//	xRECT.x = _PToHWidgeBaseType(hXButton)->rect.x + 2;
-	//	xRECT.y = _PToHWidgeBaseType(hXButton)->rect.y + 2;
-	//	xRECT.w = _PToHWidgeBaseType(hXButton)->rect.w - 4;
-	//	xRECT.h = _PToHWidgeBaseType(hXButton)->rect.h - 4;
-	//	_PToHWidgeBaseType(hXButton)->pencil.DrawBkColor = _DefaultButtonUpColor;
-	//	_PToHWidgeBaseType(hXButton)->pencil.DrawFrColor = _DefaultButtonFontColor;
-
-	//	TEXT_MARK_HEAD(GetPOIByTextMode)((HTEXT_WIDGE)hXButton, &startPoint);
-	//	DrawCutString(hXButton, 
-	//		_PToHTextWidgeType(hXButton)->hFont,
-	//		&xRECT,
-	//		&startPoint,
-	//		_PToHTextWidgeType(hXButton)->text);
-	//}
-	//else {
-	//	XPOINT startPoint;
-	//	xRECT.x =_PToHWidgeBaseType(hXButton)->rect.x + 3;
-	//	xRECT.y =_PToHWidgeBaseType(hXButton)->rect.y + 3;
-	//	xRECT.w =_PToHWidgeBaseType(hXButton)->rect.w - 4;
-	//	xRECT.h =_PToHWidgeBaseType(hXButton)->rect.h - 4;
-
-	//	_PToHWidgeBaseType(hXButton)->pencil.DrawBkColor = _DefaultButtonDownColor;
-	//	_PToHWidgeBaseType(hXButton)->pencil.DrawFrColor = _DefaultButtonFontColor;
-
-	//	TEXT_MARK_HEAD(GetPOIByTextMode)((HTEXT_WIDGE)hXButton, &startPoint);
-	//	DrawCutString(hXButton, 
-	//		_PToHTextWidgeType(hXButton)->hFont,
-	//		&xRECT,
-	//		&startPoint,
-	//		_PToHTextWidgeType(hXButton)->text);
-	//}
-
-	if (!_GetBtnStatus(hXButton)) {
+	if (!_GetBtnStatus(hXButton)) {/*按键松开*/
 		XPOINT startPoint;
-		/*xRECT.x = _PToHWidgeBaseType(hXButton)->rect.x;
-		xRECT.y = _PToHWidgeBaseType(hXButton)->rect.y;
-		xRECT.w = _PToHWidgeBaseType(hXButton)->rect.w;
-		xRECT.h = _PToHWidgeBaseType(hXButton)->rect.h;*/
 		_PToHWidgeBaseType(hXButton)->pencil.DrawBkColor = _DefaultButtonUpColor;
 		_PToHWidgeBaseType(hXButton)->pencil.DrawFrColor = _DefaultButtonFontColor;
-
-		TEXT_MARK_HEAD(GetPOIByTextMode)((HTEXT_WIDGE)hXButton, &startPoint);
-		DrawCutString(hXButton,
-			_PToHTextWidgeType(hXButton)->hFont,
-			&(_PToHWidgeBaseType(hXButton)->rect),
-			&startPoint,
-			_PToHTextWidgeType(hXButton)->text);
+		if (!_GetBtnMode(hXButton)) {/*文本模式*/
+			TEXT_MARK_HEAD(GetPOIByTextMode)((HTEXT_WIDGE)hXButton, &startPoint);
+			/*根据模式确定起点*/
+			DrawCutString(hXButton,
+				_PToHTextWidgeType(hXButton)->hFont,
+				&(_PToHWidgeBaseType(hXButton)->rect),
+				&startPoint,
+				_PToHTextWidgeType(hXButton)->text);
+		}
+		else {/*图片模式*/
+			if (hXButton->upBitmap == NULL) {
+				_PToHWidgeBaseType(hXButton)->pencil.DrawColor = _DefaultButtonUpColor;
+				DrawCutRect(hXButton, _PToHXRECTType(hXButton));
+			}
+			else {
+				DrawCutBitmap(hXButton, _PToHXRECTType(hXButton), hXButton->upBitmap);
+			}
+		}
 	}
-	else {
+	else {/*按键按下*/
 		XPOINT startPoint;
-		/*xRECT.x = _PToHWidgeBaseType(hXButton)->rect.x;
-		xRECT.y = _PToHWidgeBaseType(hXButton)->rect.y;
-		xRECT.w = _PToHWidgeBaseType(hXButton)->rect.w;
-		xRECT.h = _PToHWidgeBaseType(hXButton)->rect.h;*/
-
 		_PToHWidgeBaseType(hXButton)->pencil.DrawBkColor = _DefaultButtonDownColor;
 		_PToHWidgeBaseType(hXButton)->pencil.DrawFrColor = _DefaultButtonFontColor;
-
-		TEXT_MARK_HEAD(GetPOIByTextMode)((HTEXT_WIDGE)hXButton, &startPoint);
-		DrawCutString(hXButton,
-			_PToHTextWidgeType(hXButton)->hFont,
-			&(_PToHWidgeBaseType(hXButton)->rect),
-			&startPoint,
-			_PToHTextWidgeType(hXButton)->text);
+		if (!_GetBtnMode(hXButton)) {/*文本模式*/		
+			/*根据模式确定起点*/
+			TEXT_MARK_HEAD(GetPOIByTextMode)((HTEXT_WIDGE)hXButton, &startPoint);
+			DrawCutString(hXButton,
+				_PToHTextWidgeType(hXButton)->hFont,
+				&(_PToHWidgeBaseType(hXButton)->rect),
+				&startPoint,
+				_PToHTextWidgeType(hXButton)->text);
+		}
+		else {/*图片模式``*/
+			if (hXButton->upBitmap == NULL) {
+				_PToHWidgeBaseType(hXButton)->pencil.DrawColor = _DefaultButtonDownColor;
+				DrawCutRect(hXButton, _PToHXRECTType(hXButton));
+			}
+			else {
+				DrawCutBitmap(hXButton, _PToHXRECTType(hXButton), hXButton->downBitmap);
+			}
+		}
 	}
+	/*恢复绘图区域*/
+	DrawResetArea((HWIDGE_BASE)hXButton);
 }
 /*事件回调*/
 PRIVATE int8 BUTTON_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {

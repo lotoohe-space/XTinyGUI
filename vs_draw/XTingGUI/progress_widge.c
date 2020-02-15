@@ -62,7 +62,7 @@ PRIVATE void PROGRESS_MARK_HEAD(Paint)(void* hObject) {
 	if (!_GetVisable(hWidge)) { return; }
 	//if (!isGUINeedCut(hWidge)) { return; }
 
-	if (!DrawSetArea(hWidge)) { return; }
+	if (!DrawSetArea((HWIDGE_BASE)hWidge)) { return; }
 
 	progressing = (hWidge->currentVal / (float)(hWidge->maxVal));
 	/*绘制前半截*/
@@ -79,7 +79,8 @@ PRIVATE void PROGRESS_MARK_HEAD(Paint)(void* hObject) {
 	xRect.w = hWidge->widgeBase.rect.w - (uint16)(hWidge->widgeBase.rect.w * progressing);
 	DrawCutRect(hWidge, &xRect);
 	hWidge->widgeBase.pencil.DrawColor = color;
-
+	/*恢复绘图区域*/
+	DrawResetArea((HWIDGE_BASE)hWidge);
 }
 /*事件回调*/
 PRIVATE int8 PROGRESS_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {

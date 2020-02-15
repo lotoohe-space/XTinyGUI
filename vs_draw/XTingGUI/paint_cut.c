@@ -80,8 +80,8 @@ HXRECT RectCutFind(void) {
 	XPOINT pointEnd;
 //	HLIST tempRectCutlist;
 
-	uint16 temp_w = 0;
-	uint16 val = bgRect.y + bgRect.h;
+	int16 temp_w = 0;
+	int16 val = bgRect.y + bgRect.h;
 	//int val1 = bgRect.y + bgRect.h;
 	
 	pointEnd.x = bgRect.w + bgRect.x;

@@ -27,7 +27,7 @@
 
 //Ä¬ÈÏµÄ±³¾°ÑÕÉ«
 #define _DefaultFrColor RGB565(80, 80, 80)
-#define _DefaultBKColor RGB565(255, 255, 0)
+#define _DefaultBKColor RGB565(230,235,230)
 
 #endif
 

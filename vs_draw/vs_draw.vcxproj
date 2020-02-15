@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="girl_bitmap.h" />
+    <ClInclude Include="imgs.h" />
     <ClInclude Include="NES_Simulator\6502.H" />
     <ClInclude Include="NES_Simulator\JoyPad.h" />
     <ClInclude Include="NES_Simulator\nes_datatype.h" />
@@ -174,14 +175,19 @@
     <ClInclude Include="XTingGUI\font_UNICODE_16_16.h" />
     <ClInclude Include="XTingGUI\group_widge.h" />
     <ClInclude Include="XTingGUI\gui.h" />
+    <ClInclude Include="XTingGUI\GUI_interface_extern.h" />
+    <ClInclude Include="XTingGUI\GUI_timeout.h" />
     <ClInclude Include="XTingGUI\list.h" />
     <ClInclude Include="XTingGUI\list_widge.h" />
+    <ClInclude Include="XTingGUI\mem_dev.h" />
     <ClInclude Include="XTingGUI\msg.h" />
     <ClInclude Include="XTingGUI\paint.h" />
     <ClInclude Include="XTingGUI\paint_cut.h" />
     <ClInclude Include="XTingGUI\progress_widge.h" />
+    <ClInclude Include="XTingGUI\radio_button_widge.h" />
     <ClInclude Include="XTingGUI\slide_widge.h" />
     <ClInclude Include="XTingGUI\SqQueue.h" />
+    <ClInclude Include="XTingGUI\switch_button_widge.h" />
     <ClInclude Include="XTingGUI\text_widge.h" />
     <ClInclude Include="XTingGUI\tool.h" />
     <ClInclude Include="XTingGUI\type.h" />
@@ -193,6 +199,11 @@
     <ClInclude Include="z_malloc.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="C:\Users\13587\Pictures\img_item_0.c" />
+    <ClCompile Include="C:\Users\13587\Pictures\img_item_1.c" />
+    <ClCompile Include="C:\Users\13587\Pictures\img_item_2.c" />
+    <ClCompile Include="C:\Users\13587\Pictures\pause.c" />
+    <ClCompile Include="C:\Users\13587\Pictures\play.c" />
     <ClCompile Include="NES_Simulator\6502.C" />
     <ClCompile Include="NES_Simulator\JoyPad.c" />
     <ClCompile Include="NES_Simulator\nes_main.c" />
@@ -212,14 +223,19 @@
     <ClCompile Include="XTingGUI\fonts.c" />
     <ClCompile Include="XTingGUI\group_widge.c" />
     <ClCompile Include="XTingGUI\gui.c" />
+    <ClCompile Include="XTingGUI\GUI_interface_extern.c" />
+    <ClCompile Include="XTingGUI\GUI_timeout.c" />
     <ClCompile Include="XTingGUI\list.c" />
     <ClCompile Include="XTingGUI\list_widge.c" />
+    <ClCompile Include="XTingGUI\mem_dev.c" />
     <ClCompile Include="XTingGUI\msg.c" />
     <ClCompile Include="XTingGUI\paint.c" />
     <ClCompile Include="XTingGUI\paint_cut.c" />
     <ClCompile Include="XTingGUI\progress_widge.c" />
+    <ClCompile Include="XTingGUI\radio_button_widge.c" />
     <ClCompile Include="XTingGUI\slide_widge.c" />
     <ClCompile Include="XTingGUI\SqQueue.c" />
+    <ClCompile Include="XTingGUI\switch_button_widge.c" />
     <ClCompile Include="XTingGUI\text_widge.c" />
     <ClCompile Include="XTingGUI\tool.c" />
     <ClCompile Include="XTingGUI\widge.c" />

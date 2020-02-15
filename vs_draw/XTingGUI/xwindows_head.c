@@ -24,24 +24,36 @@ PUBLIC HWIN_HEAD WINDOWS_HEAD_MARK_HEAD(Create)(char *title ,int16 x,int16 y,int
 	}
 	hTextWidge->baseWidge.pencil.DrawBkColor = RGB565(255, 255, 255);
 
-	hWinHead->hXButtonMin = BUTTON_MARK_HEAD(Create)(L"▽",
+	hWinHead->hXButtonMin = BUTTON_MARK_HEAD(Create)("-",
 		w- h, 0,h, h);
 	
 	if (hWinHead->hXButtonMin == NULL) {
 		xFree(hWinHead);
-		xFree(hTextWidge);
+		_PToHWidgeBaseType(hTextWidge)->widgeCloseFun(hTextWidge);
 		return NULL;
 	}
-	_PToHTextWidgeType(hWinHead->hXButtonMin)->hFont = (HFONTF)& fontUNICODE16_16;
+	//_PToHTextWidgeType(hWinHead->hXButtonMin)->hFont = (HFONTF)& fontUNICODE16_16;
 
-	hWinHead->hXButtonMax = BUTTON_MARK_HEAD(Create)(L"□",
+	hWinHead->hXButtonMax = BUTTON_MARK_HEAD(Create)("*",
 		w - 2*h, 0, h, h);
 	if (hWinHead->hXButtonMax == NULL) {
 		xFree(hWinHead);
-		xFree(hTextWidge);
+		_PToHWidgeBaseType(hTextWidge)->widgeCloseFun(hTextWidge);
+		_PToHWidgeBaseType(hWinHead->hXButtonMin)->widgeCloseFun(hTextWidge);
 		return NULL;
 	}
-	_PToHTextWidgeType(hWinHead->hXButtonMax)->hFont = (HFONTF)& fontUNICODE16_16;
+	//_PToHTextWidgeType(hWinHead->hXButtonMax)->hFont = (HFONTF)& fontUNICODE16_16;
+
+	hWinHead->hXButtonClose = BUTTON_MARK_HEAD(Create)("+",
+		w - 3 * h, 0, h, h);
+	if (hWinHead->hXButtonClose == NULL) {
+		xFree(hWinHead);
+		_PToHWidgeBaseType(hTextWidge)->widgeCloseFun(hTextWidge);
+		_PToHWidgeBaseType(hWinHead->hXButtonMin)->widgeCloseFun(hTextWidge);
+		_PToHWidgeBaseType(hWinHead->hXButtonMax)->widgeCloseFun(hTextWidge);
+		return NULL;
+	}
+	//_PToHTextWidgeType(hWinHead->hXButtonClose)->hFont = (HFONTF)& fontUNICODE16_16;
 
 	//控件列表
 	_PToHGroupWidgeType(hWinHead)->widgetList = ListNew();
@@ -65,6 +77,7 @@ PUBLIC HWIN_HEAD WINDOWS_HEAD_MARK_HEAD(Create)(char *title ,int16 x,int16 y,int
 	WINDOWS_HEAD_MARK_HEAD(Add)(hWinHead, hWinHead->hXButtonMin);
 	/*添加最大化BUTTON*/
 	WINDOWS_HEAD_MARK_HEAD(Add)(hWinHead, hWinHead->hXButtonMax);
+	WINDOWS_HEAD_MARK_HEAD(Add)(hWinHead, hWinHead->hXButtonClose);
 
 	return hWinHead;
 }
@@ -99,6 +112,11 @@ PUBLIC void WINDOWS_HEAD_MARK_HEAD(Resize)(HWIN_HEAD hObject, int16 x, int16 y, 
 	hWidgeBase = WINDOWS_HEAD_MARK_HEAD(GetWidge)(hObject, 2);
 	if (hWidgeBase == NULL) { return; }
 	WIDGE_MARK_HEAD(Resize)(hWidgeBase, x+(w - 2 * h), y, h, h);
+
+	/*最大化按钮*/
+	hWidgeBase = WINDOWS_HEAD_MARK_HEAD(GetWidge)(hObject, 3);
+	if (hWidgeBase == NULL) { return; }
+	WIDGE_MARK_HEAD(Resize)(hWidgeBase, x + (w - 3 * h), y, h, h);
 	
 	/*刷新父窗口*/
 	WindowsInvaildRect(((HWIDGE_BASE)hObject)->parentHWIN, NULL);
@@ -107,19 +125,11 @@ PUBLIC void WINDOWS_HEAD_MARK_HEAD(Resize)(HWIN_HEAD hObject, int16 x, int16 y, 
 PUBLIC void WINDOWS_HEAD_MARK_HEAD(Close)(HWIN_HEAD hWinHead) {
 	if (!hWinHead) { return; }
 	/*在这里释放窗口中的内存*/
-	/*获取每一个控件*/
-	HLIST hWidgeList = _PToHGroupWidgeType(hWinHead)->widgetList;
-	if (hWidgeList != NULL) {
-		hWidgeList = hWidgeList->next;
-		while (hWidgeList) {
-			HWIDGE_BASE hWidge = (HWIDGE_BASE)(hWidgeList->val);
-			/*调用每一个控件的关闭函数*/
-			hWidge->widgeCloseFun(hWidge);
 
-			hWidgeList = hWidgeList->next;
-		}
-	}
-	WIDGE_MARK_HEAD(Close)((HWIDGE_BASE)hWinHead);
+	/*释放本类中的占用的内存*/
+
+	/*调用父类的关闭函数*/
+	GROUP_MARK_HEAD(Close)((HGROUP_WIDGE)hWinHead);
 }
 //添加一个控件
 PUBLIC int8 WINDOWS_HEAD_MARK_HEAD(Add)(HWIN_HEAD hWinHead, void *widge) {
@@ -145,6 +155,10 @@ PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetMinimumBtnClickBack)(HWIN_HEAD hObject,voi
 /*设置最大化按钮的回调接口*/
 PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetMaximumBtnClickBack)(HWIN_HEAD hObject, void* arg, ViewClickCallBack viewClickCallBack) {
 	WIDGE_MARK_HEAD(SetClickBack)((HWIDGE_BASE)(hObject->hXButtonMax), arg, viewClickCallBack);
+}
+/*设置关闭按钮的回调接口*/
+PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetCloseBtnClickBack)(HWIN_HEAD hObject, void* arg, ViewClickCallBack viewClickCallBack) {
+	WIDGE_MARK_HEAD(SetClickBack)((HWIDGE_BASE)(hObject->hXButtonClose), arg, viewClickCallBack);
 }
 PUBLIC void WINDOWS_HEAD_MARK_HEAD(MoveTo)(HWIN_HEAD hObject, int16 x, int16 y) {
 	int16 dx=0;
@@ -187,7 +201,7 @@ PRIVATE void WINDOWS_HEAD_MARK_HEAD(Paint)(void * hObject){
 	if (!hWinHead) { return; }
 	if (!_GetVisable(hWinHead)) { return; }
 	//if (!isGUINeedCut(hWinHead)) { return; }
-	if (!DrawSetArea(hWinHead)) { return; }//计算得到当前绘图区域
+	if (!DrawSetArea((HWIDGE_BASE)hWinHead)) { return; }//计算得到当前绘图区域
 	//计算得到剪裁区域
 	cutPostionList=RectCutAddRectList(_PToHGroupWidgeType(hWinHead)->widgetList->next);
 	DrawCutRect(hWinHead, 
@@ -198,11 +212,12 @@ PRIVATE void WINDOWS_HEAD_MARK_HEAD(Paint)(void * hObject){
 		cutPostionList = RectCutAddRectList(tempItem->next);//加入遮盖的剪切矩形
 		_PToHWidgeBaseType(val)->paintFun(_PToHWidgeBaseType(val));//绘制并计算绘图区域
 		RectCutSplitRectList(cutPostionList);//去掉遮盖的剪切矩形
-		DrawResetArea(hWinHead);//恢复绘图区域
+		//DrawResetArea(hWinHead);//恢复绘图区域
 	}
 	_EndScanU();	//结束扫描
 	
-
+	/*恢复绘图区域*/
+	DrawResetArea((HWIDGE_BASE)hWinHead);
 }
 PUBLIC int8 WINDOWS_HEAD_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 	HWIN_HEAD hWinHead = hObject;

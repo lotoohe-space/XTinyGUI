@@ -36,7 +36,7 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void* hObject) {
 	if (!_GetVisable(hWidgeBase)) { return; }
 	//if (!IsGUINeedCut(hWidgeBase)) { return; }
 
-	if (!DrawSetArea(hWidgeBase)) { return; }
+	if (!DrawSetArea((HWIDGE_BASE)hWidgeBase)) { return; }
 
 	uint16 barH;
 	uint16 slideBlockH;
@@ -60,8 +60,8 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void* hObject) {
 	/*横栏的位置*/
 	drawY = (h - barH) >> 1;
 	/*块的位置*/
-	posBCK = (w - slideBlockW) *
-		((float)(hWidgeBase->currentVal) / (float)(hWidgeBase->maxVal));
+	posBCK = (int16)((w - slideBlockW) *
+		((float)(hWidgeBase->currentVal) / (float)(hWidgeBase->maxVal)));
 	/*中间的条*/
 	XRECT drawRect;
 	drawRect.x = WIDGE_X(hWidgeBase);
@@ -112,8 +112,11 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void* hObject) {
 	drawRect.y = WIDGE_Y(hWidgeBase);
 	drawRect.w = slideBlockW;
 	drawRect.h = WIDGE_H(hWidgeBase);
-	hWidgeBase->baseWidge.pencil.DrawColor = _DefaultBKColor;
+	hWidgeBase->baseWidge.pencil.DrawColor = hWidgeBase->baseWidge.pencil.DrawFrColor;
 	DrawCutRect(hWidgeBase, &drawRect);
+
+	/*恢复绘图区域*/
+	DrawResetArea((HWIDGE_BASE)hWidgeBase);
 }
 
 /*事件回调*/
@@ -137,8 +140,8 @@ PUBLIC int8 SLIDE_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
 
 				Dx = P_CDE2OPPOSITE_X(hBaseWidge, hMsg->msgVal.rect.x);
 				//Dy = P_CDE2OPPOSITE_Y(hBaseWidge, hMsg->msgVal.rect.y);
-				hBaseWidge->currentVal = ((float)Dx / (float)WIDGE_W(hBaseWidge)) *
-					(hBaseWidge->maxVal );
+				hBaseWidge->currentVal = (uint16)(((float)Dx / (float)WIDGE_W(hBaseWidge)) *
+					(hBaseWidge->maxVal ));
 				WindowsInvaildRect(hObject, NULL);
 
 			}

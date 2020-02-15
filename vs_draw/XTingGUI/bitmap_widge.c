@@ -11,10 +11,6 @@ PUBLIC HBITMAP_WIDGE BITMAP_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h
 		return NULL;
 	}
 	WidgeInit((HWIDGE_BASE)hBitmapWidge, x, y, w, h);
-	//hBitmapWidge->widgeBase.rect.x = x;
-	//hBitmapWidge->widgeBase.rect.y = y;
-	//hBitmapWidge->widgeBase.rect.w = w;
-	//hBitmapWidge->widgeBase.rect.h = h;
 
 	/*设置三个回调函数*/
 	hBitmapWidge->widgeBase.paintFun = BITMAP_MARK_HEAD(Paint);
@@ -54,8 +50,11 @@ PUBLIC void BITMAP_MARK_HEAD(Paint)(void* hObject) {
 	if (!hObject) { return; }
 	if (!_GetVisable(hBitmapWidge)) { return; }
 	//if (!IsGUINeedCut(hBitmapWidge)) { return; }
-	if (!DrawSetArea(hBitmapWidge)) { return; }
+	if (!DrawSetArea((HWIDGE_BASE)hBitmapWidge)) { return; }
+
 	DrawCutBitmap(hBitmapWidge, (HXRECT)hBitmapWidge, hBitmapWidge->bitmap);
+	/*恢复绘图区域*/
+	DrawResetArea((HWIDGE_BASE)hBitmapWidge);
 }
 
 int8 BITMAP_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {

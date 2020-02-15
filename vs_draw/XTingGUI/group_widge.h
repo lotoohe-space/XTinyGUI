@@ -17,9 +17,11 @@ typedef struct {
 
 PUBLIC HGROUP_WIDGE GROUP_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, uint16 h);
 PUBLIC uint8		GROUP_MARK_HEAD(Init)(HGROUP_WIDGE hBaseWidge, int16 x, int16 y, uint16 w, uint16 h);
-PUBLIC void			GROUP_MARK_HEAD(Close)(HWIDGE_BASE hObject);
+PUBLIC void			GROUP_MARK_HEAD(Close)(HGROUP_WIDGE hObject);
 PUBLIC HWIDGE_BASE	GROUP_MARK_HEAD(GetWidge)(HGROUP_WIDGE hObject, uint16 index);
 PUBLIC void			GROUP_MARK_HEAD(Resize)(HGROUP_WIDGE hObject, int16 x, int16 y, uint16 w, uint16 h);
+/*É¾³ýÒ»¸ö¿Ø¼þ*/
+PUBLIC uint8		GROUP_MARK_HEAD(Del)(HGROUP_WIDGE hBaseWidge, HWIDGE_BASE widge);
 PUBLIC uint8		GROUP_MARK_HEAD(Add)(HGROUP_WIDGE hBaseWidge, HWIDGE_BASE widge);
 PUBLIC void			GROUP_MARK_HEAD(Paint)(void* hObject);
 PUBLIC void			GROUP_MARK_HEAD(MoveTo)(HGROUP_WIDGE hObject, int16 x, int16 y);

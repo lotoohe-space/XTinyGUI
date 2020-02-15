@@ -30,9 +30,27 @@ PUBLIC uint8 GROUP_MARK_HEAD(Init)(HGROUP_WIDGE hBaseWidge, int16 x, int16 y, ui
 
 	return TRUE;
 }
-PUBLIC void GROUP_MARK_HEAD(Close)(HWIDGE_BASE hObject) {
-	if (!hObject) { return NULL; }
-	/*还没有写*/
+PUBLIC void GROUP_MARK_HEAD(Close)(HGROUP_WIDGE hObject) {
+	if (!hObject) { return ; }
+	/*在这里释放窗口中的内存*/
+
+	/*迭代每一个控件*/
+	_StartScanU(_PToHGroupWidgeType(hObject)->widgetList) {//开始扫描
+		HWIDGE_BASE hWidge = val;
+		/*调用每一个控件的关闭函数*/
+		hWidge->widgeCloseFun(hWidge);
+	}
+	/*结束扫描*/
+	_EndScanU();
+
+	/*释放掉List*/
+	ListClear(_PToHGroupWidgeType(hObject)->widgetList);
+	_PToHGroupWidgeType(hObject)->widgeLength = 0;
+	/*删除List头*/
+	ListDel(_PToHGroupWidgeType(hObject)->widgetList);
+
+	/*调用父控件释放函数*/
+	WIDGE_MARK_HEAD(Close)((HWIDGE_BASE)hObject);
 }
 /*获取某个位置的控件*/
 PUBLIC HWIDGE_BASE GROUP_MARK_HEAD(GetWidge)(HGROUP_WIDGE hObject, uint16 index) {
@@ -70,6 +88,17 @@ PUBLIC void GROUP_MARK_HEAD(Resize)(HGROUP_WIDGE hObject, int16 x, int16 y, uint
 	/*改变窗口大小必须刷新父控件*/
 	WindowsInvaildRect(((HWIDGE_BASE)hObject)->parentHWIN, NULL);
 }
+/*删除一个控件*/
+PUBLIC uint8 GROUP_MARK_HEAD(Del)(HGROUP_WIDGE hBaseWidge, HWIDGE_BASE widge) {
+	if (hBaseWidge == NULL || widge == NULL) { return FALSE; }
+	/*在list中删除*/
+	if (ListDelByVal(hBaseWidge->widgetList, widge) == FALSE) { return FALSE; }
+	hBaseWidge->widgeLength--;
+	/*调用控件的关闭函数*/
+	widge->widgeCloseFun(widge);
+	WindowsInvaildRect(((HWIDGE_BASE)hBaseWidge), NULL);
+	return TRUE;
+}
 /*添加一个控件*/
 PUBLIC uint8 GROUP_MARK_HEAD(Add)(HGROUP_WIDGE hBaseWidge, HWIDGE_BASE widge) {
 	if (!hBaseWidge || !widge) { return FALSE; }
@@ -100,7 +129,7 @@ PUBLIC void GROUP_MARK_HEAD(Paint)(void* hObject) {
 	if (!hBaseWidge) { return; }
 	if (!_GetVisable(hBaseWidge)) { return; }
 	//if (!IsGUINeedCut(hWinHead)) { return; }
-	if (!DrawSetArea(hBaseWidge)) { return; }//计算得到当前绘图区域
+	if (!DrawSetArea((HWIDGE_BASE)hBaseWidge)) { return; }//计算得到当前绘图区域
 	//计算得到剪裁区域
 	cutPostionList = RectCutAddRectList(hBaseWidge->widgetList->next);
 	DrawCutRect(hBaseWidge,
@@ -111,9 +140,11 @@ PUBLIC void GROUP_MARK_HEAD(Paint)(void* hObject) {
 		cutPostionList = RectCutAddRectList(tempItem->next);/*加入遮盖的剪切矩形*/
 		_PToHWidgeBaseType(val)->paintFun(_PToHWidgeBaseType(val));/*绘制并计算绘图区域*/
 		RectCutSplitRectList(cutPostionList);/*去掉遮盖的剪切矩形*/
-		DrawResetArea(hBaseWidge);/*恢复绘图区域*/
 	}
 	_EndScanU();	/*结束扫描*/
+
+	/*恢复绘图区域*/
+	DrawResetArea((HWIDGE_BASE)hBaseWidge);
 }
 PUBLIC void GROUP_MARK_HEAD(MoveTo)(HGROUP_WIDGE hObject, int16 x, int16 y) {
 	int16 dx = 0;

@@ -10,7 +10,9 @@
 #define MAX(a,b) ((a)>(b)?(a):(b))
 #define MIN(a,b) ((a)<(b)?(a):(b))
 
-extern int8 _inline isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2);
+extern int8 _INLINE_ isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2);
+extern BOOL _INLINE_ GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res);
+
 
 	
 //某个范围内内的垂直线是否与下方的横线相交
@@ -35,15 +37,13 @@ rRect.w-=rRect.x;rRect.h-=rRect.y;\
 }
 void   TMemcpy(void *dst, void *src, uint32 len);
 /*获取gbk或者gb2312的长度*/
-uint32 TStrlen(char *str);
+uint32 TStrlen(const char *str);
 /*获取UNICODE的长度*/
 uint32 UStrlen(uint16* str);
 const char* TCharGet(const char* str, uint16 index);
 
 //矩形复制函数
 #define XRECT_COPY(a,b) TMemcpy((a), (b), sizeof(XRECT))
-
-extern BOOL  _inline GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res);
 
 
 

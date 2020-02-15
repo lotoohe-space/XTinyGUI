@@ -96,6 +96,26 @@ void ListDelInx(HLIST list_m,int index){
 		temp_lm=temp_lm->next;
 	}
 }
+/*通过Val值删除一个元素*/
+int ListDelByVal(HLIST hList, void* val) {
+	HLIST temp_lm;
+	HLIST back_lm;
+	int len = 0;
+	if (!hList) { return FALSE; }
+	back_lm = hList;
+	temp_lm = hList->next;
+	while (temp_lm) {
+		if (temp_lm->val == val) {
+			/*找到了这个元素，删除它*/
+			back_lm->next = temp_lm->next;
+			xFree(temp_lm);
+			return TRUE;
+		}
+		back_lm = temp_lm;
+		temp_lm = temp_lm->next;
+	}
+	return FALSE;
+}
 /*清空list*/
 void ListClear(HLIST list_m){
 	HLIST temp_list_m=list_m;

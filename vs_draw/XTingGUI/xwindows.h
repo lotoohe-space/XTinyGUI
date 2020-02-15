@@ -13,10 +13,8 @@
 
 /*窗口结构体*/
 typedef struct {
-	//WIDGE_BASE winWidge;
-	GROUP_WIDGE groupWidge;
+	GROUP_WIDGE groupWidge;/*继承GROUP_WIDGE*/
 
-	//HLIST  widgetList;/*控件列表*/
 	HWIN_HEAD hWinHead;/*标题头控件*/
 	/*临时偏移量，窗口在移动的时候，需要得到一个偏移量，用这个偏移量来偏移内部的每一个控件*/
 	int16 t_dx;

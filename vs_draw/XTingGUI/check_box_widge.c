@@ -15,14 +15,16 @@ const uint8 checkBoxDefuImg0[] = {
 	________,  _____XX_,//4
 	________,  ____XX__,//5
 	________,  ____XX__,//6
-	________,  ___XX___,//8
-	_XX_____,  ___XX___,//9
-	__XX____,  __XX____,//10
-	___XX___,  __XX____,//11
-	____XX__,  _XX_____,//12
-	_____XX_,  _XX_____,//13
-	______XX,  XX______,//14
+	________,  ___XX___,//7
+	_XX_____,  ___XX___,//8
+	__XX____,  __XX____,//9
+	___XX___,  __XX____,//10
+	____XX__,  _XX_____,//11
+	_____XX_,  _XX_____,//12
+	______XX,  XX______,//13
+	_______X,  X_______,//14
 	_______X,  X_______,//15
+
 };
 
 /*创建函数*/
@@ -34,19 +36,18 @@ PUBLIC HCHECKBOX_WIDGE CHECKBOX_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int
 	WidgeInit((HWIDGE_BASE)hWidge, x, y, w, h);
 
 	/*设置三个回调函数*/
-	hWidge->widgeBase.paintFun = CHECKBOX_MARK_HEAD(Paint);
-	hWidge->widgeBase.moveToFun = CHECKBOX_MARK_HEAD(MoveTo);
-	hWidge->widgeBase.widgeCallBackFun = CHECKBOX_MARK_HEAD(CallBack);
+	_PToHTextWidgeType(hWidge)->baseWidge.paintFun = CHECKBOX_MARK_HEAD(Paint);
+	_PToHTextWidgeType(hWidge)->baseWidge.moveToFun = CHECKBOX_MARK_HEAD(MoveTo);
+	_PToHTextWidgeType(hWidge)->baseWidge.widgeCallBackFun = CHECKBOX_MARK_HEAD(CallBack);
 	//hWidge->widgeBase.widgeCloseFun = CHECKBOX_MARK_HEAD(Close);
 
-	/*设置颜色*/
+	_PToHTextWidgeType(hWidge)->text = text;
+	_PToHTextWidgeType(hWidge)->hFont = (HFONTF)&fontGB231216_16;
+	hWidge->flag = 0;
 
 	/*初始化图片*/
 	InitBitmap(&(hWidge->checkedImg), (uint8*)checkBoxDefuImg0, 16, 16, 1);
 
-	hWidge->flag = 0;
-	hWidge->text = text;
-	hWidge->hFONTF = &fontGB231216_16;
 	return hWidge;
 }
 /*设置点击回调*/
@@ -59,7 +60,7 @@ void CHECKBOX_MARK_HEAD(SetClickBack)(HCHECKBOX_WIDGE hObject, void* arg,ViewCli
 PRIVATE void CHECKBOX_MARK_HEAD(SetStatus)(HCHECKBOX_WIDGE hObject, uint8 status) {
 	if (!hObject) { return; }
 	hObject->flag = status & 0x3;
-	WindowsInvaildRect(hObject->widgeBase.parentHWIN, (HXRECT)hObject);
+	WindowsInvaildRect(WIDGE_PARENT(hObject), (HXRECT)hObject);
 }
 /*过去状态*/
 PUBLIC uint8 CHECKBOX_MARK_HEAD(GetStatus)(HCHECKBOX_WIDGE hObject){
@@ -69,19 +70,19 @@ PUBLIC uint8 CHECKBOX_MARK_HEAD(GetStatus)(HCHECKBOX_WIDGE hObject){
 /*移动函数*/
 PUBLIC void CHECKBOX_MARK_HEAD(MoveTo)(HCHECKBOX_WIDGE hObject, int16 x, int16 y) {
 	if (!hObject) { return; }
-	hObject->widgeBase.rect.x = x;
-	hObject->widgeBase.rect.y = y;
+	_PToHTextWidgeType(hObject)->baseWidge.rect.x = x;
+	_PToHTextWidgeType(hObject)->baseWidge.rect.y = y;
 	//WindowsInvaildRect(hObject->widgeBase.parentHWIN, (HXRECT)hObject);
 }
 /*设置父窗口*/
-PUBLIC void CHECKBOX_MARK_HEAD(SetParentWin)(HCHECKBOX_WIDGE hObject, HWIN hWIN) {
+PUBLIC void CHECKBOX_MARK_HEAD(SetParentWin)(HCHECKBOX_WIDGE hObject, HWIDGE_BASE parentWidge) {
 	if (!hObject) { return; }
-	hObject->widgeBase.parentHWIN = hWIN;
+	_PToHTextWidgeType(hObject)->baseWidge.parentHWIN = parentWidge;
 }
 /*设置颜色*/
 PUBLIC void CHECKBOX_MARK_HEAD(SetColor)(HCHECKBOX_WIDGE hObject, uintColor color) {
 	if (!hObject) { return; }
-	hObject->widgeBase.pencil.DrawColor = color;
+	_PToHTextWidgeType(hObject)->baseWidge.pencil.DrawColor = color;
 }
 /*绘制控件*/
 PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
@@ -94,58 +95,57 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 	if (!_GetVisable(hWidge)) { return; }
 	//if (!IsGUINeedCut(hWidge)) { return; }
 
-	if (!DrawSetArea(hWidge)) { return; }
+	if (!DrawSetArea((HWIDGE_BASE)hWidge)) { return; }
 
-	drawW = hWidge->widgeBase.rect.h;
+	_PToHTextWidgeType(hObject)->baseWidge.pencil.DrawColor = _PToHTextWidgeType(hObject)->baseWidge.pencil.DrawFrColor;
+
+	drawW = WIDGE_H(hWidge);
 
 	/*画边框*/
-	xRect.x = hWidge->widgeBase.rect.x;
-	xRect.y = hWidge->widgeBase.rect.y;
+	xRect.x = WIDGE_X(hWidge);
+	xRect.y = WIDGE_Y(hWidge);
 	xRect.w = drawW;
 	xRect.h = 1;
 	DrawCutRect(hWidge, &xRect);
 
-	xRect.x = hWidge->widgeBase.rect.x;
-	xRect.y = hWidge->widgeBase.rect.y + hWidge->widgeBase.rect.h - 1;
+	xRect.x = WIDGE_X(hWidge);
+	xRect.y = WIDGE_Y(hWidge) + WIDGE_H(hWidge) - 1;
 	xRect.w = drawW;
 	xRect.h = 1;
 	DrawCutRect(hWidge, &xRect);
 
-	xRect.x = hWidge->widgeBase.rect.x;
-	xRect.y = hWidge->widgeBase.rect.y;
+	xRect.x = WIDGE_X(hWidge);
+	xRect.y = WIDGE_Y(hWidge);
 	xRect.w = 1;
-	xRect.h = hWidge->widgeBase.rect.h;
+	xRect.h = WIDGE_H(hWidge);
 	DrawCutRect(hWidge, &xRect);
 
-	xRect.x = hWidge->widgeBase.rect.x + drawW - 1;
-	xRect.y = hWidge->widgeBase.rect.y;
+	xRect.x = WIDGE_X(hWidge) + drawW - 1;
+	xRect.y = WIDGE_Y(hWidge);
 	xRect.w = 1;
-	xRect.h = hWidge->widgeBase.rect.h;
+	xRect.h = WIDGE_H(hWidge);
 	DrawCutRect(hWidge, &xRect);
 	
 	/*画勾*/
-	xRect.x = hWidge->widgeBase.rect.x + 1;
-	xRect.y = hWidge->widgeBase.rect.y + 1;
+	xRect.x = WIDGE_X(hWidge) + 1;
+	xRect.y = WIDGE_Y(hWidge) + 1;
 	xRect.w = drawW - 2;
-	xRect.h = hWidge->widgeBase.rect.h - 2;
+	xRect.h = WIDGE_H(hWidge) - 2;
 	switch (CHECKBOX_MARK_HEAD(GetStatus)(hWidge)) {
 	case 0:/*未选择状态*/
 	{
-		uintColor color;
-		color = hWidge->widgeBase.pencil.DrawColor;
-		hWidge->widgeBase.pencil.DrawColor = 0xffff;
+		_PToHTextWidgeType(hObject)->baseWidge.pencil.DrawColor = _PToHTextWidgeType(hObject)->baseWidge.pencil.DrawBkColor;
 		DrawCutRect(hWidge, &xRect);
-		hWidge->widgeBase.pencil.DrawColor = color;
 		XPOINT xPoint;
 		xPoint.x = 0;
 		xPoint.y = 0;
 		XRECT xRect;
-		xRect.x = hWidge->widgeBase.rect.x+ drawW;
-		xRect.y = hWidge->widgeBase.rect.y;
-		xRect.w = hWidge->widgeBase.rect.w- drawW;
-		xRect.h = hWidge->widgeBase.rect.h;
+		xRect.x = WIDGE_X(hWidge) + drawW;
+		xRect.y = WIDGE_Y(hWidge);
+		xRect.w = WIDGE_W(hWidge) - drawW;
+		xRect.h = WIDGE_H(hWidge);
 		//DrawCutChar(hWidge, hWidge->hFONTF, &xRect, &xPoint, 'S');
-		DrawCutString(hWidge, hWidge->hFONTF, &xRect, &xPoint, hWidge->text);
+		DrawCutString(hWidge, _PToHTextWidgeType(hObject)->hFont, &xRect, &xPoint, _PToHTextWidgeType(hObject)->text);
 	}
 		break;
 	case 1:/*点击状态*/
@@ -154,17 +154,18 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void* hObject) {
 		xPoint.x = 0;
 		xPoint.y = 0;
 		XRECT xRect;
-		xRect.x = hWidge->widgeBase.rect.x + drawW;
-		xRect.y = hWidge->widgeBase.rect.y;
-		xRect.w = hWidge->widgeBase.rect.w - drawW;
-		xRect.h = hWidge->widgeBase.rect.h;
+		xRect.x = WIDGE_X(hWidge) + drawW;
+		xRect.y = WIDGE_Y(hWidge);
+		xRect.w = WIDGE_W(hWidge) - drawW;
+		xRect.h = WIDGE_H(hWidge);
 		//DrawCutChar(hWidge, hWidge->hFONTF, &xRect, &xPoint, 'S');
-		DrawCutString(hWidge, hWidge->hFONTF, &xRect, &xPoint, hWidge->text);
+		DrawCutString(hWidge, _PToHTextWidgeType(hObject)->hFont, &xRect, &xPoint, _PToHTextWidgeType(hObject)->text);
 		break;
 	case 2:
 		break;
 	}
-	
+	/*恢复绘图区域*/
+	DrawResetArea((HWIDGE_BASE)hWidge);
 }
 /*事件回调*/
 int8 CHECKBOX_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
@@ -183,15 +184,15 @@ int8 CHECKBOX_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
 			case MSG_TOUCH_RELEASE:
 				if (CHECKBOX_MARK_HEAD(GetStatus)((HCHECKBOX_WIDGE)hWidgeBase)==1) {
 					CHECKBOX_MARK_HEAD(SetStatus)((HCHECKBOX_WIDGE)hWidgeBase,0);
-					if (((HCHECKBOX_WIDGE)hWidgeBase)->widgeBase.viewClickCallBack != NULL) {
-						((HCHECKBOX_WIDGE)hWidgeBase)->widgeBase.viewClickCallBack(hWidgeBase, hWidgeBase->arg,
+					if (_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack != NULL) {
+						_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack(hWidgeBase, hWidgeBase->arg,
 							CHECKBOX_MARK_HEAD(GetStatus)((HCHECKBOX_WIDGE)hWidgeBase));
 					}
 				}
 				else if (CHECKBOX_MARK_HEAD(GetStatus)((HCHECKBOX_WIDGE)hWidgeBase) == 0) {
 					CHECKBOX_MARK_HEAD(SetStatus)((HCHECKBOX_WIDGE)hWidgeBase,1);
-					if (((HCHECKBOX_WIDGE)hWidgeBase)->widgeBase.viewClickCallBack != NULL) {
-						((HCHECKBOX_WIDGE)hWidgeBase)->widgeBase.viewClickCallBack(hWidgeBase, hWidgeBase->arg,
+					if (_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack != NULL) {
+						_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack(hWidgeBase, hWidgeBase->arg,
 							CHECKBOX_MARK_HEAD(GetStatus)((HCHECKBOX_WIDGE)hWidgeBase));
 					}
 				}

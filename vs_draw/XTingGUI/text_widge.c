@@ -5,7 +5,7 @@
 #include "gui.h"
 #include "paint_cut.h"
 
-PUBLIC HTEXT_WIDGE TEXT_MARK_HEAD(Create)(char *text, int16 x, int16 y,uint16 w, uint16 h) {
+PUBLIC HTEXT_WIDGE TEXT_MARK_HEAD(Create)(const char *text, int16 x, int16 y,uint16 w, uint16 h) {
 	HTEXT_WIDGE hObject = (HTEXT_WIDGE)(xMalloc( sizeof(TEXT_WIDGE)));
 	if (hObject == NULL) {
 		return NULL;
@@ -13,7 +13,7 @@ PUBLIC HTEXT_WIDGE TEXT_MARK_HEAD(Create)(char *text, int16 x, int16 y,uint16 w,
 	TEXT_MARK_HEAD(Init)(hObject, text, x, y, w, h);
 	return hObject;
 }
-PUBLIC void TEXT_MARK_HEAD(Init)(HTEXT_WIDGE hObject, char* text, int16 x, int16 y, uint16 w, uint16 h) {
+PUBLIC void TEXT_MARK_HEAD(Init)(HTEXT_WIDGE hObject, const char* text, int16 x, int16 y, uint16 w, uint16 h) {
 	if (hObject == NULL) {
 		return ;
 	}
@@ -58,7 +58,7 @@ PUBLIC HXPOINT TEXT_MARK_HEAD(GetPOIByTextMode)(HTEXT_WIDGE hTextWidge, HXPOINT 
 	startPoint->y = 0;
 
 	if (hTextWidge->hFont->fontType == UNICODE_TYPE) {
-		textW = UStrlen(hTextWidge->text) * hTextWidge->hFont->fontInfo.w;
+		textW = UStrlen((uint16*)(hTextWidge->text)) * hTextWidge->hFont->fontInfo.w;
 	}
 	else {
 		textW = TStrlen(hTextWidge->text) * hTextWidge->hFont->fontInfo.w;
@@ -123,13 +123,16 @@ PUBLIC void TEXT_MARK_HEAD(Paint)(void * hObject) {
 	if (!_GetVisable(hTextWidge)) { return ; }
 	//if (!isGUINeedCut((HXRECT)hTextWidge)) { return; }
 
-	if (!DrawSetArea(hTextWidge)) { return; }
+	if (!DrawSetArea((HWIDGE_BASE)hTextWidge)) { return; }
 	TEXT_MARK_HEAD(GetPOIByTextMode)(hTextWidge, &startPoint);
 	/*»æÖÆ¼ô²Ã×Ö·û´®*/
 	DrawCutString(hTextWidge, hTextWidge->hFont, 
 		&(hTextWidge->baseWidge.rect),
 		&startPoint,
-		hTextWidge->text);
+		(uint8 * )(hTextWidge->text));
+
+	/*»Ö¸´»æÍ¼ÇøÓò*/
+	DrawResetArea((HWIDGE_BASE)hTextWidge);
 }
 PUBLIC int8 TEXT_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 	HTEXT_WIDGE hTextWidge = hObject;

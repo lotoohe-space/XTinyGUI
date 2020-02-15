@@ -64,6 +64,7 @@
 #define MSG_WIN_INVAILD_UPDATE	1
 #define MSG_WIN_CREATE			2
 #define MSG_WIN_PAINT			3
+#define MSG_WIN_DEL_WIDGE		4
 /*************************************************/
 
 typedef struct {
@@ -87,23 +88,23 @@ typedef struct {
 	
 }*HMSGE, MSGE;
 
-uint8 GUIMsgEventInit(void);
-void GUIEventValid(void);
-HMSGE GUIGetMsg(void);
-void GUIDelMsg(HMSGE hMsg);
-int8 GUISendKeyMsg(uint8 ID, uint8 status);
-//int8 GUISendMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h);
-int8 GUISendTouchMsg(int ID, int16 x, int16 y);
+uint8	GUIMsgEventInit(void);
+void	GUIEventValid(void);
+HMSGE	GUIGetMsg(void);
+void	GUIDelMsg(HMSGE hMsg);
+int8	GUISendKeyMsg(uint8 ID, uint8 status);
+int8	GUISendTouchMsg(int ID, int16 x, int16 y);
 
-int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h
-	//, 
-	//int16 x1, int16 y1, uint16 w1, uint16 h1
-);
-HMSGE GUIGetDrawMsg(void);
-void GUIDelDrawMsg(HMSGE hMsg);
+int		GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h);
+HMSGE	GUIGetDrawMsg(void);
+void	GUIDelDrawMsg(HMSGE hMsg);
 
-int GUISendMoveMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y);
-HMSGE GUIGetMoveMsg(void);
-void GUIDelMoveMsg(HMSGE hMsg);
+int		GUISendMoveMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y);
+HMSGE	GUIGetMoveMsg(void);
+void	GUIDelMoveMsg(HMSGE hMsg);
+
+int8	GUISendWINDelMsg(void* msgSrc, void* delItem);
+HMSGE	GUIGetWINDelMsg(void);
+void	GUIDelWinDelMsg(HMSGE hMsg);
 
 #endif

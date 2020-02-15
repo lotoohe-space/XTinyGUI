@@ -12,12 +12,10 @@
 
 typedef struct {
 	GROUP_WIDGE groupWidge;/*继承GROUP_WIDGE控件*/
-	//WIDGE_BASE widgeBase;
 
-	//HLIST	widgetList;//控件列表
 	HXBUTTON hXButtonMin;/*最小化按钮，该按钮被添加到widgetList中*/
 	HXBUTTON hXButtonMax;/*最大化按钮，该按钮被添加到widgetList中*/
-	//char	*title;/*窗口的text*/
+	HXBUTTON hXButtonClose;/*最大化按钮，该按钮被添加到widgetList中*/
 
 }*HWIN_HEAD, WIN_HEAD;
 
@@ -32,6 +30,7 @@ PUBLIC void WINDOWS_HEAD_MARK_HEAD(Close)(HWIN_HEAD hWinHead);
 PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetVisable)(void* hObject, int8 isVisable);
 PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetMaximumBtnClickBack)(HWIN_HEAD hObject, void* arg, ViewClickCallBack viewClickCallBack);
 PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetMinimumBtnClickBack)(HWIN_HEAD hObject, void* arg, ViewClickCallBack viewClickCallBack);
+PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetCloseBtnClickBack)(HWIN_HEAD hObject, void* arg, ViewClickCallBack viewClickCallBack);
 PUBLIC void WINDOWS_HEAD_MARK_HEAD(MoveTo)(HWIN_HEAD hObject, int16 x, int16 y);
 PRIVATE void WINDOWS_HEAD_MARK_HEAD(Paint)(void* hObject);
 PUBLIC int8 WINDOWS_HEAD_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg);

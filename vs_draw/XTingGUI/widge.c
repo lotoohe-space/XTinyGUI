@@ -90,7 +90,7 @@ PUBLIC void WIDGE_MARK_HEAD(Resize)(HWIDGE_BASE hObject, int16 x, int16 y, uint1
 	WindowsInvaildRect(((HWIDGE_BASE)hObject)->parentHWIN, NULL);
 }
 /*设置父控件*/
-PUBLIC void WIDGE_MARK_HEAD(SetParentWin)(HWIDGE_BASE hObject, HWIN hWIN) {
+PUBLIC void WIDGE_MARK_HEAD(SetParentWin)(HWIDGE_BASE hObject, void* hWIN) {
 	if (!hObject) { return; }
 	hObject->parentHWIN = hWIN;
 }
@@ -113,14 +113,17 @@ PRIVATE void WIDGE_MARK_HEAD(Paint)(void *hObject) {
 	hWidgeBase = hObject;
 	if (!hObject) { return; }
 	if (!_GetVisable(hWidgeBase)) { return; }
-	//if (!isGUINeedCut(hWidgeBase)) { return; }
+	//if (!IsGUINeedCutEx(hWidgeBase)) { return; }
 
-	DrawSetArea(hWidgeBase);
+	if (!DrawSetArea(hWidgeBase)) { return; }
 	hWidgeBase->pencil.DrawColor = hWidgeBase->pencil.DrawBkColor;
 	//绘制底色
 	RECT_CUT_INIT(&(hWidgeBase->rect)) {
 		DrawRect(&(hWidgeBase->pencil), nextCutRect);
 	}RECT_CUT_END()
+
+	/*恢复绘图区域*/
+	DrawResetArea(hWidgeBase);
 }
 /*事件回调函数*/
 PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
@@ -139,7 +142,7 @@ PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 					hWidgeBase->viewClickCallBack(hWidgeBase,hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
 				}
 				_SetBtnPress(hWidgeBase);
-				WindowsInvaildRect(hWidgeBase->parentHWIN, (HXRECT)hWidgeBase);
+				WindowsInvaildRect(WIDGE_PARENT(hWidgeBase), (HXRECT)hWidgeBase);
 				break;
 			case MSG_TOUCH_RELEASE:
 				/*松开*/
@@ -148,7 +151,7 @@ PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 						hWidgeBase->viewClickCallBack(hWidgeBase, hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
 					}
 					_SetBtnRelease(hWidgeBase);
-					WindowsInvaildRect(hWidgeBase->parentHWIN, (HXRECT)hWidgeBase);
+					WindowsInvaildRect(WIDGE_PARENT(hWidgeBase), (HXRECT)hWidgeBase);
 				}
 				break;
 			}
@@ -161,7 +164,7 @@ PUBLIC int8 WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 					hWidgeBase->viewClickCallBack(hWidgeBase, hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
 				}
 				_SetBtnRelease(hWidgeBase);
-				WindowsInvaildRect(hWidgeBase->parentHWIN, (HXRECT)hWidgeBase);
+				WindowsInvaildRect(WIDGE_PARENT(hWidgeBase), (HXRECT)hWidgeBase);
 			}
 		}
 	}
