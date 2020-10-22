@@ -14,7 +14,7 @@ PUBLIC HXBUTTON BUTTON_MARK_HEAD(Create)(const char *text, int16 x, int16 y, int
 	_PToHWidgeBaseType(hXButton)->moveToFun = BUTTON_MARK_HEAD(MoveTo);
 	_PToHWidgeBaseType(hXButton)->widgeCallBackFun = BUTTON_MARK_HEAD(CallBack);
 
-	_PToHTextWidgeType(hXButton)->hFont = (HFONTF)& fontGB231216_16;
+	//_PToHTextWidgeType(hXButton)->hFont = (HFONTF)& fontGB231216_16;
 	hXButton->flag = 0;
 
 	hXButton->downBitmap = NULL;
@@ -42,12 +42,12 @@ PUBLIC void BUTTON_MARK_HEAD(SetText)(HXBUTTON hObject,const char* text) {
 }
 /*设置点击回调*/
 PUBLIC void BUTTON_MARK_HEAD(SetClickBack)(HXBUTTON hObject, void* arg,ViewClickCallBack viewClickCallBack) {
-	WIDGE_MARK_HEAD(SetClickBack)((HWIDGE_BASE)hObject, arg, viewClickCallBack);
+	_WIDGET(SetClickBack)((HWIDGET_BASE)hObject, arg, viewClickCallBack);
 }
 /*移动控件到指定位置*/
 PUBLIC void BUTTON_MARK_HEAD(MoveTo)(HXBUTTON hObject, int16 x, int16 y) {
 	if (!hObject) { return; }
-	WIDGE_MARK_HEAD(MoveTo)((HWIDGE_BASE)hObject, x, y);
+	_WIDGET(MoveTo)((HWIDGET_BASE)hObject, x, y);
 }
 /*绘制窗口*/
 PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
@@ -55,7 +55,7 @@ PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
 //	XRECT xRECT;
 	hXButton = hObject;
 	if (!hObject) { return; }
-	if (!DrawSetArea((HWIDGE_BASE)hXButton)) { return; }
+	if (!DrawSetArea((HWIDGET_BASE)hXButton)) { return; }
 	//if (!IsGUINeedCut(hXButton)) { return ; }
 
 	if (!_GetBtnStatus(hXButton)) {/*按键松开*/
@@ -105,7 +105,7 @@ PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
 		}
 	}
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGE_BASE)hXButton);
+	DrawResetArea((HWIDGET_BASE)hXButton);
 }
 /*事件回调*/
 PRIVATE int8 BUTTON_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
@@ -114,7 +114,7 @@ PRIVATE int8 BUTTON_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 	if (!hXButton || !hMsg) { return RES_ASSERT_ERR; }
 	if (!_GetVisable(hXButton)) { return RES_ASSERT_ERR; }
 
-	ret = WIDGE_MARK_HEAD(CallBack)(hXButton, hMsg);
+	ret = _WIDGET(CallBack)(hXButton, hMsg);
 	if (ret == RES_OK) {
 		if (_GetBtnStatus(hXButton)) {
 			_PToHWidgeBaseType(hXButton)->pencil.DrawColor = hXButton->downColor;

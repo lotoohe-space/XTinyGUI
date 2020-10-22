@@ -57,8 +57,9 @@ typedef enum {
 #define _GetSlideState(a)		(_GET_BIT(((HLIST_WIDGE)(a))->flag,LIST_SLIDING))
 
 PUBLIC HLIST_WIDGE LIST_WIDGE_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, uint16 h);
-PUBLIC uint8 LIST_WIDGE_MARK_HEAD(Add)(HLIST_WIDGE hBaseWidge, HWIDGE_BASE widge);
+PUBLIC uint8 LIST_WIDGE_MARK_HEAD(Add)(HLIST_WIDGE hBaseWidge, HWIDGET_BASE widge);
 PUBLIC void LIST_WIDGE_MARK_HEAD(Paint)(void* hObject);
+PUBLIC void LIST_WIDGE_MARK_HEAD(Close)(HLIST_WIDGE hObject);
 PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg);
 
 PUBLIC void LIST_WIDGE_MARK_HEAD(SetFlag)(HLIST_WIDGE hBaseWidge, LIST_WIDGE_FLAG flagBisPoi, BOOL status);

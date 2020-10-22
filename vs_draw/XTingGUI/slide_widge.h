@@ -6,7 +6,7 @@
 
 /*按钮的管理结构体*/
 typedef struct {
-	WIDGE_BASE	baseWidge;	/*继承WIDGE_BASE控件*/
+	WIDGET_BASE	baseWidge;	/*继承WIDGE_BASE控件*/
 
 	int16		maxVal;		/*最大值*/
 	uint16		currentVal;	/*当前值*/

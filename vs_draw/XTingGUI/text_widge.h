@@ -22,7 +22,7 @@ typedef enum {
 }TextMode;
 
 typedef struct {
-	WIDGE_BASE baseWidge;
+	WIDGET_BASE baseWidge;
 
 	HFONTF hFont;			/*×ÖÌå*/
 	const char *text;

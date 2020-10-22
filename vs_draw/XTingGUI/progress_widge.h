@@ -8,7 +8,7 @@
 
 typedef struct {
 
-	WIDGE_BASE widgeBase;
+	WIDGET_BASE widgeBase;
 
 	uint16 maxVal;/*最大值*/
 	uint16 currentVal;/*当前值*/

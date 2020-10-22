@@ -36,7 +36,7 @@ PRIVATE void WINDOWS_HEAD_MARK_HEAD(Paint)(void* hObject);
 PUBLIC int8 WINDOWS_HEAD_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg);
 
 /*需要抽象出来*/
-PUBLIC HWIDGE_BASE WINDOWS_HEAD_MARK_HEAD(GetWidge)(HWIN_HEAD hObject, uint16 index);
+PUBLIC HWIDGET_BASE WINDOWS_HEAD_MARK_HEAD(GetWidge)(HWIN_HEAD hObject, uint16 index);
 PUBLIC void WINDOWS_HEAD_MARK_HEAD(Resize)(HWIN_HEAD hObject, int16 x, int16 y, uint16 w, uint16 h);
 
 PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetArea)(HWIN_HEAD hObject, int16 x, int16 y, int16 w, int16 h);

@@ -27,7 +27,7 @@ typedef struct {
 
 PUBLIC HSWITCH_BUTTON_WIDGE	SWITCH_BUTTON_WIDGE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, const char* onText, const char* offText);
 PUBLIC	void				SWITCH_BUTTON_WIDGE_MARK_HEAD(MoveTo)(HSWITCH_BUTTON_WIDGE hObject, int16 x, int16 y);
-PUBLIC	void				SWITCH_BUTTON_WIDGE_MARK_HEAD(SetParentWin)(HSWITCH_BUTTON_WIDGE hObject, HWIDGE_BASE parentWidge);
+PUBLIC	void				SWITCH_BUTTON_WIDGE_MARK_HEAD(SetParentWin)(HSWITCH_BUTTON_WIDGE hObject, HWIDGET_BASE parentWidge);
 PUBLIC	void				SWITCH_BUTTON_WIDGE_MARK_HEAD(SetColor)(HSWITCH_BUTTON_WIDGE hObject, uintColor color);
 PUBLIC	void				SWITCH_BUTTON_WIDGE_MARK_HEAD(Paint)(void* hObject);
 PUBLIC	int8				SWITCH_BUTTON_WIDGE_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg);

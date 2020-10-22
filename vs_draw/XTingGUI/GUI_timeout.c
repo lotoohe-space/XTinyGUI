@@ -15,7 +15,7 @@ PRIVATE HGUITIME_OUT GUITimeoutNew(void) {
 	}
 	return NULL;
 }
-PRIVATE void GUITimeoutFree(HGUITIME_OUT hGUITimeout) {
+PUBLIC void GUITimeoutFree(HGUITIME_OUT hGUITimeout) {
 	if (hGUITimeout == NULL) { return; }
 	_ClrTimeoutUse(hGUITimeout);
 }

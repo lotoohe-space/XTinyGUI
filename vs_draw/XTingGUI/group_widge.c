@@ -1,7 +1,7 @@
 #include "group_widge.h"
 #include "paint_cut.h"
 #include "x_malloc.h"
-
+#include "radio_button_widge.h"
 
 PUBLIC HGROUP_WIDGE GROUP_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, uint16 h) {
 	HGROUP_WIDGE hObject;
@@ -14,7 +14,7 @@ PUBLIC HGROUP_WIDGE GROUP_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, uint16 h
 	return hObject;
 }
 PUBLIC uint8 GROUP_MARK_HEAD(Init)(HGROUP_WIDGE hBaseWidge, int16 x, int16 y, uint16 w, uint16 h) {
-	WIDGE_MARK_HEAD(Init)((HWIDGE_BASE)hBaseWidge, x, y, w, h);
+	_WIDGET(Init)((HWIDGET_BASE)hBaseWidge, x, y, w, h);
 	/*控件列表*/
 	hBaseWidge->widgetList = ListNew();
 	if (hBaseWidge->widgetList == NULL) {
@@ -36,7 +36,7 @@ PUBLIC void GROUP_MARK_HEAD(Close)(HGROUP_WIDGE hObject) {
 
 	/*迭代每一个控件*/
 	_StartScanU(_PToHGroupWidgeType(hObject)->widgetList) {//开始扫描
-		HWIDGE_BASE hWidge = val;
+		HWIDGET_BASE hWidge = val;
 		/*调用每一个控件的关闭函数*/
 		hWidge->widgeCloseFun(hWidge);
 	}
@@ -50,14 +50,14 @@ PUBLIC void GROUP_MARK_HEAD(Close)(HGROUP_WIDGE hObject) {
 	ListDel(_PToHGroupWidgeType(hObject)->widgetList);
 
 	/*调用父控件释放函数*/
-	WIDGE_MARK_HEAD(Close)((HWIDGE_BASE)hObject);
+	_WIDGET(Close)((HWIDGET_BASE)hObject);
 }
 /*获取某个位置的控件*/
-PUBLIC HWIDGE_BASE GROUP_MARK_HEAD(GetWidge)(HGROUP_WIDGE hObject, uint16 index) {
+PUBLIC HWIDGET_BASE GROUP_MARK_HEAD(GetWidge)(HGROUP_WIDGE hObject, uint16 index) {
 	if (!hObject) { return NULL; }
 	HLIST hlist = ListGet(hObject->widgetList, index);
 	if (hlist != NULL) {
-		return (HWIDGE_BASE)(hlist->val);
+		return (HWIDGET_BASE)(hlist->val);
 	}
 	else {
 		return NULL;
@@ -72,7 +72,7 @@ PUBLIC void GROUP_MARK_HEAD(Resize)(HGROUP_WIDGE hObject, int16 x, int16 y, uint
 	dx = x - ((HXRECT)hObject)->x;
 	dy = y - ((HXRECT)hObject)->y;
 
-	WIDGE_MARK_HEAD(Resize)((HWIDGE_BASE)hObject, x, y, w, h);
+	_WIDGET(Resize)((HWIDGET_BASE)hObject, x, y, w, h);
 
 	/*迭代每一个控件*/
 	_StartScanU(hObject->widgetList) {//开始扫描
@@ -86,21 +86,21 @@ PUBLIC void GROUP_MARK_HEAD(Resize)(HGROUP_WIDGE hObject, int16 x, int16 y, uint
 	/*结束扫描*/
 	_EndScanU();
 	/*改变窗口大小必须刷新父控件*/
-	WindowsInvaildRect(((HWIDGE_BASE)hObject)->parentHWIN, NULL);
+	//WindowsInvaildRect(((HWIDGET_BASE)hObject)->parentHWIN, NULL);
 }
 /*删除一个控件*/
-PUBLIC uint8 GROUP_MARK_HEAD(Del)(HGROUP_WIDGE hBaseWidge, HWIDGE_BASE widge) {
+PUBLIC uint8 GROUP_MARK_HEAD(Del)(HGROUP_WIDGE hBaseWidge, HWIDGET_BASE widge) {
 	if (hBaseWidge == NULL || widge == NULL) { return FALSE; }
 	/*在list中删除*/
 	if (ListDelByVal(hBaseWidge->widgetList, widge) == FALSE) { return FALSE; }
 	hBaseWidge->widgeLength--;
 	/*调用控件的关闭函数*/
 	widge->widgeCloseFun(widge);
-	WindowsInvaildRect(((HWIDGE_BASE)hBaseWidge), NULL);
+	WindowsInvaildRect(((HWIDGET_BASE)hBaseWidge), NULL);
 	return TRUE;
 }
 /*添加一个控件*/
-PUBLIC uint8 GROUP_MARK_HEAD(Add)(HGROUP_WIDGE hBaseWidge, HWIDGE_BASE widge) {
+PUBLIC uint8 GROUP_MARK_HEAD(Add)(HGROUP_WIDGE hBaseWidge, HWIDGET_BASE widge) {
 	if (!hBaseWidge || !widge) { return FALSE; }
 	HLIST addItem = ListNew();
 	if (!addItem) { return FALSE; }
@@ -122,6 +122,22 @@ PUBLIC uint8 GROUP_MARK_HEAD(Add)(HGROUP_WIDGE hBaseWidge, HWIDGE_BASE widge) {
 	hBaseWidge->widgeLength++;
 	return TRUE;
 }
+PUBLIC void GROUP_MARK_HEAD(GroupProcess)(HGROUP_WIDGE hBaseWidge,HWIDGET_BASE currentWidge) {
+	if (hBaseWidge == NULL) { return; }
+	_StartScanU(hBaseWidge->widgetList) {/*开始扫描*/
+		HWIDGET_BASE hWidgeBase = (HWIDGET_BASE)(val);
+
+		if (_GET_GROUP_CTRL(hWidgeBase)) {
+			/*需要联动控制*/
+			if (currentWidge != hWidgeBase) {
+				/*调用RADIO_BUTTON的函数*/
+				RADIO_BUTTON_MARK_HEAD(SetStatus)((HRADIO_BUTTON_WIDGE)hWidgeBase,FALSE);
+			}
+		}
+
+	}
+	_EndScanU();	/*结束扫描*/
+}
 PUBLIC void GROUP_MARK_HEAD(Paint)(void* hObject) {
 	HGROUP_WIDGE hBaseWidge;
 	HLIST cutPostionList;
@@ -129,22 +145,22 @@ PUBLIC void GROUP_MARK_HEAD(Paint)(void* hObject) {
 	if (!hBaseWidge) { return; }
 	if (!_GetVisable(hBaseWidge)) { return; }
 	//if (!IsGUINeedCut(hWinHead)) { return; }
-	if (!DrawSetArea((HWIDGE_BASE)hBaseWidge)) { return; }//计算得到当前绘图区域
-	//计算得到剪裁区域
+	if (!DrawSetArea((HWIDGET_BASE)hBaseWidge)) { return; }//计算得到当前绘图区域
+	/*计算得到剪裁区域*/
 	cutPostionList = RectCutAddRectList(hBaseWidge->widgetList->next);
 	DrawCutRect(hBaseWidge,
 		&(hBaseWidge->widgeBase.rect));
 	RectCutSplitRectList(cutPostionList);
 
-	_StartScanU(hBaseWidge->widgetList) {/*开始扫描*/
+	_StartScanU(hBaseWidge->widgetList) {					/*开始扫描*/
 		cutPostionList = RectCutAddRectList(tempItem->next);/*加入遮盖的剪切矩形*/
 		_PToHWidgeBaseType(val)->paintFun(_PToHWidgeBaseType(val));/*绘制并计算绘图区域*/
-		RectCutSplitRectList(cutPostionList);/*去掉遮盖的剪切矩形*/
+		RectCutSplitRectList(cutPostionList);				/*去掉遮盖的剪切矩形*/
 	}
 	_EndScanU();	/*结束扫描*/
 
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGE_BASE)hBaseWidge);
+	DrawResetArea((HWIDGET_BASE)hBaseWidge);
 }
 PUBLIC void GROUP_MARK_HEAD(MoveTo)(HGROUP_WIDGE hObject, int16 x, int16 y) {
 	int16 dx = 0;
@@ -161,7 +177,7 @@ PUBLIC void GROUP_MARK_HEAD(MoveTo)(HGROUP_WIDGE hObject, int16 x, int16 y) {
 	if (hWidgeList != NULL) {
 		hWidgeList = hWidgeList->next;
 		while (hWidgeList) {
-			HWIDGE_BASE hWidge = (HWIDGE_BASE)(hWidgeList->val);
+			HWIDGET_BASE hWidge = (HWIDGET_BASE)(hWidgeList->val);
 			/*重新设置每一个控件的位置*/
 			hWidge->moveToFun(hWidge, hWidge->rect.x + dx, hWidge->rect.y + dy);
 
@@ -183,7 +199,7 @@ PUBLIC int8 GROUP_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
 				HLIST lastWidge = ListGetLast(hWidgeList);
 				if (lastWidge != NULL) {
 					while (lastWidge != hWidgeList) {
-						HWIDGE_BASE hWidge = (HWIDGE_BASE)(lastWidge->val);
+						HWIDGET_BASE hWidge = (HWIDGET_BASE)(lastWidge->val);
 						if ((ret = hWidge->widgeCallBackFun(hWidge, hMsg)) == 0) {
 							return 0;
 						}

@@ -23,6 +23,7 @@ typedef struct {
 #define _CloseTimeout(a)	(_CLR_BIT(((a))->flag,1))
 #define _GetTimeout(a)		(_GET_BIT(((a))->flag,1))
 
+void			GUITimeoutFree(HGUITIME_OUT hGUITimeout);
 HGUITIME_OUT	GUITimeoutCreate(uint16 timeoutPeriod, void* arg, GUITimeoutCallback timoutCallBackFun);
 void			GUITimeoutOpen(HGUITIME_OUT hGUITimeOut);
 void			GUITimeoutClose(HGUITIME_OUT hGUITimeOut);

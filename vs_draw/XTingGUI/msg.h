@@ -7,7 +7,12 @@
 #define MSG_TOUCH				0
 #define MSG_KEY					1
 #define MSG_WIN					2
+#define MSG_CURSOR				3	
 /*************************************************/
+
+/********游标事件********/
+#define MSG_CURSOR_MOVE			0	/*游标改变位置*/
+/************************/
 
 /***************MSG_KEY 消息ID********************/
 #define MSG_KEY_LEFT			37
@@ -92,6 +97,7 @@ uint8	GUIMsgEventInit(void);
 void	GUIEventValid(void);
 HMSGE	GUIGetMsg(void);
 void	GUIDelMsg(HMSGE hMsg);
+
 int8	GUISendKeyMsg(uint8 ID, uint8 status);
 int8	GUISendTouchMsg(int ID, int16 x, int16 y);
 
@@ -107,4 +113,7 @@ int8	GUISendWINDelMsg(void* msgSrc, void* delItem);
 HMSGE	GUIGetWINDelMsg(void);
 void	GUIDelWinDelMsg(HMSGE hMsg);
 
+int8	GUISendCursorMsg(uint16 ID, int16 x, int16 y);
+void	GUIDelCursorMsg(HMSGE hMsg);
+HMSGE	GUIGetCursorMsg(void);
 #endif

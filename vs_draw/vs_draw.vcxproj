@@ -159,6 +159,7 @@
     <ClInclude Include="NES_Simulator\rom.h" />
     <ClInclude Include="png_img.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="table_view_widget.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="XTingGUI\bitmap.h" />
     <ClInclude Include="XTingGUI\bitmap_widge.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="XTingGUI\font_UNICODE_16_16.h" />
     <ClInclude Include="XTingGUI\group_widge.h" />
     <ClInclude Include="XTingGUI\gui.h" />
+    <ClInclude Include="XTingGUI\GUI_cursor.h" />
     <ClInclude Include="XTingGUI\GUI_interface_extern.h" />
     <ClInclude Include="XTingGUI\GUI_timeout.h" />
     <ClInclude Include="XTingGUI\list.h" />
@@ -215,6 +217,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="table_view_widget.c" />
     <ClCompile Include="vs_draw.c" />
     <ClCompile Include="XTingGUI\bitmap.c" />
     <ClCompile Include="XTingGUI\bitmap_widge.c" />
@@ -223,6 +226,7 @@
     <ClCompile Include="XTingGUI\fonts.c" />
     <ClCompile Include="XTingGUI\group_widge.c" />
     <ClCompile Include="XTingGUI\gui.c" />
+    <ClCompile Include="XTingGUI\GUI_cursor.c" />
     <ClCompile Include="XTingGUI\GUI_interface_extern.c" />
     <ClCompile Include="XTingGUI\GUI_timeout.c" />
     <ClCompile Include="XTingGUI\list.c" />

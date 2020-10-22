@@ -8,11 +8,12 @@
 #include "bitmap.h"
 #include "text_widge.h"
 #include "mem_dev.h"
+#include "GUI_cursor.h"
 #include "GUI_interface_extern.h"
 #include <stdlib.h>
 
 /*读点*/
-uintColor GetPixel(int16 x, int16 y) {
+uintColor _GetPixel(int16 x, int16 y) {
 #if USE_MEM_DEV
 	int16 rX = x - hXDesktop->hMemDev->rect.x;
 	int16 rY = y - hXDesktop->hMemDev->rect.y;
@@ -27,14 +28,21 @@ void DrawPixel(uintColor color,int16 x, int16 y) {
 	int16 rX = x - hXDesktop->hMemDev->rect.x;
 	int16 rY = y - hXDesktop->hMemDev->rect.y;
 	MemDevDrawPT(hXDesktop->hMemDev,rX,rY,color);
-#else
+#else	/*USE_MEM_DEV*/
+#if	USE_CURSOR
+	if (!GUICursorDrawMem(x, y, color)) {/*写入失败则写入到屏幕，否则写入到缓存中*/
+		GUIDrawPixel(x, y, color);
+	}
+#else /*USE_CURSOR*/
 	GUIDrawPixel(x, y, color);
-#endif
+#endif /*USE_CURSOR*/
+#endif	/*USE_MEM_DEV*/
 }
+
 /*画一个透明的点*/
 void DrawAPixel(uintColor aColor, int16 x, int16 y) {
 
-	uint16 lcColor = GetPixel(x, y);
+	uint16 lcColor = _GetPixel(x, y);
 	uint8 A = 0xFF - C565A(aColor);
 	if (A == 0x00) {
 //		DrawPixel(lcColor, x, y);
@@ -200,16 +208,19 @@ uint8 DrawARect(HPENCIL hPencil, HXRECT hXRECT) {
 uint8 DrawRect(HPENCIL hPencil, HXRECT hXRECT) {
 	XRECT rRect;
 	if (!hPencil) {
-		return (uint8)0;
+		return FALSE;
 	}
-	GetOverLapRect(hXRECT, (HXRECT)hPencil, &rRect);
+	if (GetOverLapRect(hXRECT, (HXRECT)hPencil, &rRect) == FALSE) { return FALSE; }
 
+#if USE_MEM_DEV
 	RawDrawRect(&rRect, hPencil->DrawColor);
-
+#else
+	GUIDrawRect(rRect.x, rRect.y, rRect.w, rRect.h, hPencil->DrawColor);
+#endif
 #ifdef _X_DEBUG
 	Vsrefresh();
 #endif
-	return (uint8)1;
+	return TRUE;
 }
 
 /*
@@ -514,7 +525,7 @@ uint8 DrawChar(HPENCIL hPencil, HFONTF hFont,HXRECT border, HXRECT bgBorder, cha
 
 /*字绘制*/
 uint8 DrawCutChar(void* hObject, HFONTF hFont, HXRECT bgRect, HXPOINT hStartXPoint, char ch) {
-	HWIDGE_BASE hWidgeBase = hObject;
+	HWIDGET_BASE hWidgeBase = hObject;
 	if (!hWidgeBase) { return (uint8)FALSE; }
 	RECT_CUT_INIT(bgRect) {
 		DrawCharEx(bgRect, nextCutRect, hStartXPoint, hFont, ch, &(hWidgeBase->pencil));
@@ -526,7 +537,7 @@ uint8 DrawCutChar(void* hObject, HFONTF hFont, HXRECT bgRect, HXPOINT hStartXPoi
 /*字符串剪裁绘制*/
 uint8 DrawCutString(void* hObject, HFONTF hFont, HXRECT border, HXPOINT hXPoint, const char* text) {
 	XPOINT startPoint;
-	HWIDGE_BASE hWidgeBase = hObject;
+	HWIDGET_BASE hWidgeBase = hObject;
 	if (!hWidgeBase) { return (uint8)FALSE; }
 
 	startPoint.x = 0;
@@ -543,7 +554,7 @@ uint8 DrawCutString(void* hObject, HFONTF hFont, HXRECT border, HXPOINT hXPoint,
 
 /*图片剪裁绘制*/
 uint8 DrawCutBitmap(void* hObject, HXRECT border, HXBITMAP hXBitmap) {
-	HWIDGE_BASE hWidgeBase = hObject;
+	HWIDGET_BASE hWidgeBase = hObject;
 	if (!hWidgeBase || !border || !hXBitmap) { return (uint8)0; }
 	/*循环绘制剪裁后的矩形*/
 	RECT_CUT_INIT(border) {
@@ -555,7 +566,7 @@ uint8 DrawCutBitmap(void* hObject, HXRECT border, HXBITMAP hXBitmap) {
 }
 /*矩形剪裁绘制*/
 uint8 DrawCutRect(void* hObject, HXRECT hXRECT) {
-	HWIDGE_BASE hWidgeBase = hObject;
+	HWIDGET_BASE hWidgeBase = hObject;
 	if (!hWidgeBase) { return (uint8)0; }
 	/*循环绘制剪裁后的矩形*/
 	RECT_CUT_INIT(hXRECT) {

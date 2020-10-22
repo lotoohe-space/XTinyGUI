@@ -16,6 +16,8 @@ PUBLIC HLIST_WIDGE LIST_WIDGE_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, uint
 	_PToHGroupWidgeType(hObject)->widgeBase.paintFun = LIST_WIDGE_MARK_HEAD(Paint);
 	//_PToHGroupWidgeType(hObject)->widgeBase.moveToFun = GROUP_MARK_HEAD(MoveTo);
 	_PToHGroupWidgeType(hObject)->widgeBase.widgeCallBackFun = LIST_WIDGE_MARK_HEAD(CallBack);
+	_PToHGroupWidgeType(hObject)->widgeBase.widgeCloseFun = LIST_WIDGE_MARK_HEAD(Close);
+
 
 	_PToHWidgeBaseType(hObject)->pencil.DrawColor = _PToHWidgeBaseType(hObject)->pencil.DrawBkColor;
 
@@ -42,8 +44,13 @@ PUBLIC void LIST_WIDGE_MARK_HEAD(SetFlag)(HLIST_WIDGE hBaseWidge, LIST_WIDGE_FLA
 
 	hBaseWidge->flag = ((hBaseWidge->flag) & (~(1 << flagBisPoi))) | ((status&0x01) << flagBisPoi);
 }
+PUBLIC void LIST_WIDGE_MARK_HEAD(Close)(HLIST_WIDGE hObject) {
+	if (!hObject) { return; }
+	GUITimeoutFree(hObject->hGUITimeout);
+	GROUP_MARK_HEAD(Close)((HGROUP_WIDGE)hObject);
+}
 /*添加一个控件*/
-PUBLIC uint8 LIST_WIDGE_MARK_HEAD(Add)(HLIST_WIDGE hBaseWidge, HWIDGE_BASE widge) {
+PUBLIC uint8 LIST_WIDGE_MARK_HEAD(Add)(HLIST_WIDGE hBaseWidge, HWIDGET_BASE widge) {
 	uint16 widgeLength;
 	if (hBaseWidge == NULL || widge == NULL) { return FALSE; }
 
@@ -86,7 +93,7 @@ PUBLIC uint8 LIST_WIDGE_MARK_HEAD(Add)(HLIST_WIDGE hBaseWidge, HWIDGE_BASE widge
 	}
 	
 	/*刷新*/
-	WindowsInvaildRect((HWIDGE_BASE)hBaseWidge, NULL);
+	WindowsInvaildRect((HWIDGET_BASE)hBaseWidge, NULL);
 	return TRUE;
 }
 /*ListWidge内部控件的位置滑动*/
@@ -128,7 +135,7 @@ PRIVATE uint8 LIST_WIDGE_MARK_HEAD(ListSlide)(HLIST_WIDGE hBaseWidge, int16 dXY)
 		}
 	}
 	_EndScanU();	/*结束扫描*/
-	WindowsInvaildRect(WIDGE_PARENT(hBaseWidge), (HXRECT)hBaseWidge);
+	WindowsInvaildRect(_PToHWidgeBaseType(hBaseWidge), (HXRECT)hBaseWidge);
 	return TRUE;
 }
 static void GUITimeoutCb(void* arg) {
@@ -163,8 +170,8 @@ PUBLIC void LIST_WIDGE_MARK_HEAD(Paint)(void* hObject) {
 	hBaseWidge = hObject;
 	if (!hBaseWidge) { return; }
 	if (!_GetVisable(hBaseWidge)) { return; }
-	if (!IsGUINeedCut((HWIDGE_BASE)hBaseWidge)) { return; }
-	if (!DrawSetArea((HWIDGE_BASE)hBaseWidge)) { return; }//计算得到当前绘图区域
+	if (!IsGUINeedCut((HWIDGET_BASE)hBaseWidge)) { return; }
+	if (!DrawSetArea((HWIDGET_BASE)hBaseWidge)) { return; }//计算得到当前绘图区域
 
 	//计算得到剪裁区域
 	cutPostionList = RectCutAddRectList(_PToHGroupWidgeType(hBaseWidge)->widgetList->next);
@@ -181,7 +188,7 @@ PUBLIC void LIST_WIDGE_MARK_HEAD(Paint)(void* hObject) {
 	_EndScanU();	/*结束扫描*/
 
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGE_BASE)hBaseWidge);
+	DrawResetArea((HWIDGET_BASE)hBaseWidge);
 }
 /*事件回调函数*/
 PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
@@ -266,7 +273,7 @@ PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
 				HLIST lastWidge = ListGetLast(hWidgeList);
 				if (lastWidge != NULL) {
 					while (lastWidge != hWidgeList) {
-						HWIDGE_BASE hWidge = (HWIDGE_BASE)(lastWidge->val);
+						HWIDGET_BASE hWidge = (HWIDGET_BASE)(lastWidge->val);
 						if ((ret = hWidge->widgeCallBackFun(hWidge, hMsg)) == 0) {
 							return 0;
 						}

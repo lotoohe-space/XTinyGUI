@@ -8,7 +8,7 @@
 #define BITMAP_MARK_HEAD(a) BitmapWidge##a
 
 typedef struct {
-	WIDGE_BASE widgeBase;
+	WIDGET_BASE widgeBase;
 	
 	HXBITMAP bitmap;/*œ‘ æµƒÕº∆¨*/
 

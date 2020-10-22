@@ -22,7 +22,7 @@ PUBLIC HSWITCH_BUTTON_WIDGE SWITCH_BUTTON_WIDGE_MARK_HEAD(Create)(int16 x, int16
 	//hWidge->widgeBase.widgeCloseFun = SWITCH_BUTTON_WIDGE_MARK_HEAD(Close);
 
 	_PToHTextWidgeType(hWidge)->text = "";
-	_PToHTextWidgeType(hWidge)->hFont = (HFONTF )(&fontGB231216_16);
+	_PToHTextWidgeType(hWidge)->hFont = (HFONTF )(&fontASCII16_16);
 	hWidge->flag = 0;
 	hWidge->onText = onText ? onText : "ON";
 	hWidge->offText = offText ? offText : "OFF";
@@ -53,7 +53,7 @@ PUBLIC void SWITCH_BUTTON_WIDGE_MARK_HEAD(SetOffBitmap)(HSWITCH_BUTTON_WIDGE hOb
 }
 /*设置点击回调*/
 PUBLIC void SWITCH_BUTTON_WIDGE_MARK_HEAD(SetClickBack)(HSWITCH_BUTTON_WIDGE hObject, void* arg, ViewClickCallBack viewClickCallBack) {
-	WIDGE_MARK_HEAD(SetClickBack)((HWIDGE_BASE)hObject, arg, viewClickCallBack);
+	_WIDGET(SetClickBack)((HWIDGET_BASE)hObject, arg, viewClickCallBack);
 }
 /*设置状态，内部调用的函数*/
 PRIVATE void SWITCH_BUTTON_WIDGE_MARK_HEAD(SetStatus)(HSWITCH_BUTTON_WIDGE hObject, uint8 status) {
@@ -75,7 +75,7 @@ PUBLIC void SWITCH_BUTTON_WIDGE_MARK_HEAD(MoveTo)(HSWITCH_BUTTON_WIDGE hObject, 
 	//WindowsInvaildRect(hObject->widgeBase.parentHWIN, (HXRECT)hObject);
 }
 /*设置父窗口*/
-PUBLIC void SWITCH_BUTTON_WIDGE_MARK_HEAD(SetParentWin)(HSWITCH_BUTTON_WIDGE hObject, HWIDGE_BASE parentWidge) {
+PUBLIC void SWITCH_BUTTON_WIDGE_MARK_HEAD(SetParentWin)(HSWITCH_BUTTON_WIDGE hObject, HWIDGET_BASE parentWidge) {
 	if (!hObject) { return; }
 	_PToHTextWidgeType(hObject)->baseWidge.parentHWIN = parentWidge;
 }
@@ -92,7 +92,7 @@ PUBLIC void SWITCH_BUTTON_WIDGE_MARK_HEAD(Paint)(void* hObject) {
 	if (!hObject) { return; }
 	if (!_GetVisable(hWidge)) { return; }
 	//if (!IsGUINeedCut(hWidge)) { return; }
-	if (!DrawSetArea((HWIDGE_BASE)hWidge)) { return; }
+	if (!DrawSetArea((HWIDGET_BASE)hWidge)) { return; }
 
 	switch (SWITCH_BUTTON_WIDGE_MARK_HEAD(GetStatus)(hWidge)) {
 	case 0:/*未选择状态*/
@@ -131,11 +131,11 @@ PUBLIC void SWITCH_BUTTON_WIDGE_MARK_HEAD(Paint)(void* hObject) {
 		break;
 	}
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGE_BASE)hWidge);
+	DrawResetArea((HWIDGET_BASE)hWidge);
 }
 /*事件回调*/
 int8 SWITCH_BUTTON_WIDGE_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
-	HWIDGE_BASE hWidgeBase = hObject;
+	HWIDGET_BASE hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg) { return -1; }
 	if (!_GetVisable(hWidgeBase)) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {

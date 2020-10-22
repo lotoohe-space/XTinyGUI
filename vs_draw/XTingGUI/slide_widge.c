@@ -9,7 +9,7 @@ PUBLIC HSLIDE_WIDGE SLIDE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h) 
 	if (hWidgeBase == NULL) {
 		return NULL;
 	}
-	WIDGE_MARK_HEAD(Init)((HWIDGE_BASE)hWidgeBase, x, y, w, h);
+	_WIDGET(Init)((HWIDGET_BASE)hWidgeBase, x, y, w, h);
 	
 	/*设置三个回调函数*/
 	_PToHWidgeBaseType(hWidgeBase)->paintFun = SLIDE_MARK_HEAD(Paint);
@@ -36,7 +36,7 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void* hObject) {
 	if (!_GetVisable(hWidgeBase)) { return; }
 	//if (!IsGUINeedCut(hWidgeBase)) { return; }
 
-	if (!DrawSetArea((HWIDGE_BASE)hWidgeBase)) { return; }
+	if (!DrawSetArea((HWIDGET_BASE)hWidgeBase)) { return; }
 
 	uint16 barH;
 	uint16 slideBlockH;
@@ -116,7 +116,7 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void* hObject) {
 	DrawCutRect(hWidgeBase, &drawRect);
 
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGE_BASE)hWidgeBase);
+	DrawResetArea((HWIDGET_BASE)hWidgeBase);
 }
 
 /*事件回调*/
@@ -126,7 +126,7 @@ PUBLIC int8 SLIDE_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
 	if (!hBaseWidge || !hMsg) { return -1; }
 	if (!_GetVisable(hBaseWidge)) { return -1; }
 
-	ret = WIDGE_MARK_HEAD(CallBack)(hBaseWidge, hMsg);
+	ret = _WIDGET(CallBack)(hBaseWidge, hMsg);
 
 	if (ret == RES_OK) {
 		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, (HXRECT)hBaseWidge)) {

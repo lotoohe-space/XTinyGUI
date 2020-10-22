@@ -17,30 +17,30 @@ PUBLIC void TEXT_MARK_HEAD(Init)(HTEXT_WIDGE hObject, const char* text, int16 x,
 	if (hObject == NULL) {
 		return ;
 	}
-	WidgeInit((HWIDGE_BASE)hObject, x, y, w, h);
+	_WIDGET(Init)((HWIDGET_BASE)hObject, x, y, w, h);
 
 	hObject->baseWidge.paintFun = TEXT_MARK_HEAD(Paint);
 	hObject->baseWidge.moveToFun = TEXT_MARK_HEAD(MoveTo);
 	hObject->baseWidge.widgeCallBackFun = TEXT_MARK_HEAD(CallBack);
 
-	hObject->hFont = (HFONTF)& fontUNICODE16_16;
-	hObject->text = text ? text : "ÇëÉèÖÃ";
+	hObject->hFont = (HFONTF)& fontASCII16_16;
+	hObject->text = text ? text : "None";
 	hObject->textMode = TEXT_CENTER_ALIGN;
 }
 PUBLIC void TEXT_MARK_HEAD(SetTextMode)(HTEXT_WIDGE hOjbect, uint8 textMode) {
 	if (hOjbect == NULL) { return; }
 	hOjbect->textMode = textMode;
-	WindowsInvaildRect((HWIDGE_BASE)hOjbect, NULL);
+	WindowsInvaildRect((HWIDGET_BASE)hOjbect, NULL);
 }
 PUBLIC void TEXT_MARK_HEAD(SetFont)(HTEXT_WIDGE hObject, HFONTF hFont) {
 	if (hObject == NULL) { return; }
 	hObject->hFont = hFont;
-	WindowsInvaildRect((HWIDGE_BASE)hObject, NULL);
+	WindowsInvaildRect((HWIDGET_BASE)hObject, NULL);
 }
 PUBLIC void TEXT_MARK_HEAD(SetText)(HTEXT_WIDGE hObject, const char* text) {
 	if (hObject == NULL) { return; }
 	hObject->text = text;
-	WindowsInvaildRect((HWIDGE_BASE)hObject, NULL);
+	WindowsInvaildRect((HWIDGET_BASE)hObject, NULL);
 }
 PUBLIC void TEXT_MARK_HEAD(MoveTo)(HTEXT_WIDGE hObject, int16 x, int16 y) {
 	if (!hObject) { return; }
@@ -123,7 +123,7 @@ PUBLIC void TEXT_MARK_HEAD(Paint)(void * hObject) {
 	if (!_GetVisable(hTextWidge)) { return ; }
 	//if (!isGUINeedCut((HXRECT)hTextWidge)) { return; }
 
-	if (!DrawSetArea((HWIDGE_BASE)hTextWidge)) { return; }
+	if (!DrawSetArea((HWIDGET_BASE)hTextWidge)) { return; }
 	TEXT_MARK_HEAD(GetPOIByTextMode)(hTextWidge, &startPoint);
 	/*»æÖÆ¼ô²Ã×Ö·û´®*/
 	DrawCutString(hTextWidge, hTextWidge->hFont, 
@@ -132,7 +132,7 @@ PUBLIC void TEXT_MARK_HEAD(Paint)(void * hObject) {
 		(uint8 * )(hTextWidge->text));
 
 	/*»Ö¸´»æÍ¼ÇøÓò*/
-	DrawResetArea((HWIDGE_BASE)hTextWidge);
+	DrawResetArea((HWIDGET_BASE)hTextWidge);
 }
 PUBLIC int8 TEXT_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
 	HTEXT_WIDGE hTextWidge = hObject;

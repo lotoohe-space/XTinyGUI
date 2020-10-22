@@ -10,7 +10,7 @@ PUBLIC HBITMAP_WIDGE BITMAP_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h
 	if (hBitmapWidge == NULL) {
 		return NULL;
 	}
-	WidgeInit((HWIDGE_BASE)hBitmapWidge, x, y, w, h);
+	_WIDGET(Init)((HWIDGET_BASE)hBitmapWidge, x, y, w, h);
 
 	/*设置三个回调函数*/
 	hBitmapWidge->widgeBase.paintFun = BITMAP_MARK_HEAD(Paint);
@@ -27,10 +27,10 @@ PUBLIC void BITMAP_MARK_HEAD(SetBitmap)(HBITMAP_WIDGE hObject, HXBITMAP hXBitmap
 	if (!hObject) { return; }
 	/*设置显示的图片*/
 	hObject->bitmap = hXBitmap;
-	WindowsInvaildRect((HWIDGE_BASE)hObject, NULL);
+	WindowsInvaildRect((HWIDGET_BASE)hObject, NULL);
 }
 PUBLIC void BITMAP_MARK_HEAD(MoveTo)(HBITMAP_WIDGE hObject, int16 x, int16 y) {
-	WIDGE_MARK_HEAD(MoveTo)((HWIDGE_BASE)hObject, x, y);
+	_WIDGET(MoveTo)((HWIDGET_BASE)hObject, x, y);
 	//if (!hObject) { return; }
 	//hObject->widgeBase.rect.x = x;
 	//hObject->widgeBase.rect.y = y;
@@ -50,15 +50,15 @@ PUBLIC void BITMAP_MARK_HEAD(Paint)(void* hObject) {
 	if (!hObject) { return; }
 	if (!_GetVisable(hBitmapWidge)) { return; }
 	//if (!IsGUINeedCut(hBitmapWidge)) { return; }
-	if (!DrawSetArea((HWIDGE_BASE)hBitmapWidge)) { return; }
+	if (!DrawSetArea((HWIDGET_BASE)hBitmapWidge)) { return; }
 
 	DrawCutBitmap(hBitmapWidge, (HXRECT)hBitmapWidge, hBitmapWidge->bitmap);
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGE_BASE)hBitmapWidge);
+	DrawResetArea((HWIDGET_BASE)hBitmapWidge);
 }
 
 int8 BITMAP_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
-	HWIDGE_BASE hWidgeBase = hObject;
+	HWIDGET_BASE hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg) { return -1; }
 	if (!_GetVisable(hWidgeBase)) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {

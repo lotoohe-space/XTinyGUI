@@ -15,6 +15,8 @@ SqQueue drawMsg;
 SqQueue moveMsg;
 /*删除*/
 SqQueue winDelMsg;
+/*鼠标移动*/
+SqQueue cursorMsg;
 
 /*
 * GUI初始化
@@ -42,10 +44,19 @@ uint8 GUIMsgEventInit(void) {
 		DestroyQueue(&moveMsg);
 		return FALSE;
 	}
+	res = InitQueue(&cursorMsg, MSG_EVENT_MAX_VAL);
+	if (!res) {
+		DestroyQueue(&eventMsg);
+		DestroyQueue(&drawMsg);
+		DestroyQueue(&moveMsg);
+		DestroyQueue(&winDelMsg);
+		return FALSE;
+	}
 	eventMsg.valid = FALSE;
 	drawMsg.valid = FALSE;
 	moveMsg.valid = FALSE;
 	winDelMsg.valid = FALSE;
+	cursorMsg.valid = FALSE;
 
 	return TRUE;
 }
@@ -54,6 +65,7 @@ void GUIEventValid(void) {
 	drawMsg.valid = TRUE;
 	moveMsg.valid = TRUE;
 	winDelMsg.valid = TRUE;
+	cursorMsg.valid = TRUE;
 }
 /*获取消息*/
 HMSGE GUIGetMsg(void) {
@@ -204,4 +216,34 @@ HMSGE GUIGetWINDelMsg(void) {
 }
 void GUIDelWinDelMsg(HMSGE hMsg) {
 	xFree(hMsg);
+}
+
+int8 GUISendCursorMsg(uint16 ID, int16 x, int16 y) {
+	HMSGE hMsg;
+	if (cursorMsg.valid == FALSE) { return FALSE; }
+	hMsg = xMalloc(sizeof(MSGE));
+	if (hMsg == NULL) { return FALSE; }
+
+	hMsg->msgSrc = NULL;
+	hMsg->msgType = MSG_CURSOR;
+	hMsg->msgID = ID;
+	hMsg->msgVal.rect.x = x;
+	hMsg->msgVal.rect.y = y;
+	//hMsg->msgVal.what = keyVal;
+
+	enQueue(&cursorMsg, hMsg);
+	//GUIPostEvent(&Msg);
+	return TRUE;
+}
+void GUIDelCursorMsg(HMSGE hMsg) {
+	xFree(hMsg);
+}
+/*获取消息*/
+HMSGE GUIGetCursorMsg(void) {
+	QueueDateType e;
+	if (deQueue(&cursorMsg, &e)) {
+		return  (HMSGE)e;
+	}
+
+	return NULL;
 }

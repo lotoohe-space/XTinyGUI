@@ -25,6 +25,7 @@ extern BOOL isEnd;
 	{HXRECT nextCutRect;\
 	RectCutStart(a);\
 	while (((nextCutRect = RectCutFind()) != NULL)){
+	
 #define RECT_CUT_END() \
 		if(isEnd){break;}\
 	}\

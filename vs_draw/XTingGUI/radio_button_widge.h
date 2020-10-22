@@ -16,7 +16,8 @@ typedef struct {
 
 PUBLIC HRADIO_BUTTON_WIDGE	RADIO_BUTTON_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, const char* text);
 PUBLIC	void				RADIO_BUTTON_MARK_HEAD(MoveTo)(HRADIO_BUTTON_WIDGE hObject, int16 x, int16 y);
-PUBLIC	void				RADIO_BUTTON_MARK_HEAD(SetParentWin)(HRADIO_BUTTON_WIDGE hObject, HWIDGE_BASE parentWidge);
+PUBLIC	void				RADIO_BUTTON_MARK_HEAD(SetParentWin)(HRADIO_BUTTON_WIDGE hObject, HWIDGET_BASE parentWidge);
+PUBLIC	void				RADIO_BUTTON_MARK_HEAD(SetStatus)(HRADIO_BUTTON_WIDGE hObject, uint8 status);
 PUBLIC	void				RADIO_BUTTON_MARK_HEAD(SetColor)(HRADIO_BUTTON_WIDGE hObject, uintColor color);
 PUBLIC	void				RADIO_BUTTON_MARK_HEAD(Paint)(void* hObject);
 PUBLIC	int8				RADIO_BUTTON_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg);

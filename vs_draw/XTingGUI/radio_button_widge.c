@@ -49,7 +49,7 @@ PUBLIC HRADIO_BUTTON_WIDGE RADIO_BUTTON_MARK_HEAD(Create)(int16 x, int16 y, int1
 	if (hWidge == NULL) {
 		return NULL;
 	}
-	WidgeInit((HWIDGE_BASE)hWidge, x, y, w, h);
+	_WIDGET(Init)((HWIDGET_BASE)hWidge, x, y, w, h);
 
 	/*设置三个回调函数*/
 	_PToHTextWidgeType(hWidge)->baseWidge.paintFun = RADIO_BUTTON_MARK_HEAD(Paint);
@@ -58,9 +58,10 @@ PUBLIC HRADIO_BUTTON_WIDGE RADIO_BUTTON_MARK_HEAD(Create)(int16 x, int16 y, int1
 	//hWidge->widgeBase.widgeCloseFun = RADIO_BUTTON_MARK_HEAD(Close);
 
 	_PToHTextWidgeType(hWidge)->text = text;
-	_PToHTextWidgeType(hWidge)->hFont = (HFONTF)&fontGB231216_16;
+	_PToHTextWidgeType(hWidge)->hFont = (HFONTF)& fontASCII16_16;
 	hWidge->flag = 0;
 
+	_SET_GROUP_CTRL(hWidge);
 	/*初始化图片*/
 	InitBitmap(&(hWidge->checkedImg), (uint8*)radioButtonImg0, 16, 16, 1);
 
@@ -68,14 +69,17 @@ PUBLIC HRADIO_BUTTON_WIDGE RADIO_BUTTON_MARK_HEAD(Create)(int16 x, int16 y, int1
 }
 /*设置点击回调*/
 void RADIO_BUTTON_MARK_HEAD(SetClickBack)(HRADIO_BUTTON_WIDGE hObject, void* arg, ViewClickCallBack viewClickCallBack) {
-	WIDGE_MARK_HEAD(SetClickBack)((HWIDGE_BASE)hObject, arg, viewClickCallBack);
+	_WIDGET(SetClickBack)((HWIDGET_BASE)hObject, arg, viewClickCallBack);
 	/*if (!hObject) { return; }
 	hObject->viewClickCallBack = viewClickCallBack;*/
 }
 /*设置状态，内部调用的函数*/
-PRIVATE void RADIO_BUTTON_MARK_HEAD(SetStatus)(HRADIO_BUTTON_WIDGE hObject, uint8 status) {
+PUBLIC void RADIO_BUTTON_MARK_HEAD(SetStatus)(HRADIO_BUTTON_WIDGE hObject, uint8 status) {
 	if (!hObject) { return; }
 	hObject->flag = status & 0x3;
+	if (status == TRUE) {
+		GROUP_MARK_HEAD(GroupProcess)((HGROUP_WIDGE)(WIDGE_PARENT(hObject)), (HWIDGET_BASE)hObject);
+	}
 	WindowsInvaildRect(WIDGE_PARENT(hObject), (HXRECT)hObject);
 }
 /*过去状态*/
@@ -91,7 +95,7 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(MoveTo)(HRADIO_BUTTON_WIDGE hObject, int16 x,
 	//WindowsInvaildRect(hObject->widgeBase.parentHWIN, (HXRECT)hObject);
 }
 /*设置父窗口*/
-PUBLIC void RADIO_BUTTON_MARK_HEAD(SetParentWin)(HRADIO_BUTTON_WIDGE hObject, HWIDGE_BASE parentWidge) {
+PUBLIC void RADIO_BUTTON_MARK_HEAD(SetParentWin)(HRADIO_BUTTON_WIDGE hObject, HWIDGET_BASE parentWidge) {
 	if (!hObject) { return; }
 	_PToHTextWidgeType(hObject)->baseWidge.parentHWIN = parentWidge;
 }
@@ -111,7 +115,7 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(Paint)(void* hObject) {
 	if (!_GetVisable(hWidge)) { return; }
 	//if (!IsGUINeedCut(hWidge)) { return; }
 
-	if (!DrawSetArea((HWIDGE_BASE)hWidge)) { return; }
+	if (!DrawSetArea((HWIDGET_BASE)hWidge)) { return; }
 
 	drawW = 16;
 
@@ -161,11 +165,11 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(Paint)(void* hObject) {
 		break;
 	}
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGE_BASE)hWidge);
+	DrawResetArea((HWIDGET_BASE)hWidge);
 }
 /*事件回调*/
 int8 RADIO_BUTTON_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
-	HWIDGE_BASE hWidgeBase = hObject;
+	HWIDGET_BASE hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg) { return -1; }
 	if (!_GetVisable(hWidgeBase)) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
