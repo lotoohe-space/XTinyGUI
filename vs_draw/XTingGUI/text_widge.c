@@ -5,8 +5,8 @@
 #include "gui.h"
 #include "paint_cut.h"
 
-PUBLIC HTEXT_WIDGE TEXT_MARK_HEAD(Create)(const char *text, int16 x, int16 y,uint16 w, uint16 h) {
-	HTEXT_WIDGE hObject = (HTEXT_WIDGE)(xMalloc( sizeof(TEXT_WIDGE)));
+PUBLIC HTEXT_WIDGE TEXT_MARK_HEAD(Create)(const char* text, int16 x, int16 y, uint16 w, uint16 h) {
+	HTEXT_WIDGE hObject = (HTEXT_WIDGE)(xMalloc(sizeof(TEXT_WIDGE)));
 	if (hObject == NULL) {
 		return NULL;
 	}
@@ -15,7 +15,7 @@ PUBLIC HTEXT_WIDGE TEXT_MARK_HEAD(Create)(const char *text, int16 x, int16 y,uin
 }
 PUBLIC void TEXT_MARK_HEAD(Init)(HTEXT_WIDGE hObject, const char* text, int16 x, int16 y, uint16 w, uint16 h) {
 	if (hObject == NULL) {
-		return ;
+		return;
 	}
 	_WIDGET(Init)((HWIDGET_BASE)hObject, x, y, w, h);
 
@@ -23,7 +23,7 @@ PUBLIC void TEXT_MARK_HEAD(Init)(HTEXT_WIDGE hObject, const char* text, int16 x,
 	hObject->baseWidge.moveToFun = TEXT_MARK_HEAD(MoveTo);
 	hObject->baseWidge.widgeCallBackFun = TEXT_MARK_HEAD(CallBack);
 
-	hObject->hFont = (HFONTF)& fontASCII16_16;
+	hObject->hFont = (HFONTF)&fontASCII16_16;
 	hObject->text = text ? text : "None";
 	hObject->textMode = TEXT_CENTER_ALIGN;
 }
@@ -80,7 +80,7 @@ PUBLIC HXPOINT TEXT_MARK_HEAD(GetPOIByTextMode)(HTEXT_WIDGE hTextWidge, HXPOINT 
 	case TEXT_TOP_RIGHT_ALIGN: {
 		startPoint->x = (WIDGE_W(hTextWidge) - textW);
 	}
-	break;
+							 break;
 	case TEXT_BOTTOM_LEFT_ALIGN:
 	{
 		startPoint->y = WIDGE_H(hTextWidge) - textH;
@@ -115,31 +115,31 @@ PUBLIC HXPOINT TEXT_MARK_HEAD(GetPOIByTextMode)(HTEXT_WIDGE hTextWidge, HXPOINT 
 
 	return startPoint;
 }
-PUBLIC void TEXT_MARK_HEAD(Paint)(void * hObject) {
+PUBLIC void TEXT_MARK_HEAD(Paint)(void* hObject) {
 	XPOINT startPoint;
 	HTEXT_WIDGE hTextWidge;
 	hTextWidge = hObject;
 	if (!hObject) { return; }
-	if (!_GetVisable(hTextWidge)) { return ; }
+	if (!_GetVisable(hTextWidge)) { return; }
 	//if (!isGUINeedCut((HXRECT)hTextWidge)) { return; }
 
 	if (!DrawSetArea((HWIDGET_BASE)hTextWidge)) { return; }
 	TEXT_MARK_HEAD(GetPOIByTextMode)(hTextWidge, &startPoint);
 	/*»æÖÆ¼ô²Ã×Ö·û´®*/
-	DrawCutString(hTextWidge, hTextWidge->hFont, 
+	DrawCutString(hTextWidge, hTextWidge->hFont,
 		&(hTextWidge->baseWidge.rect),
 		&startPoint,
-		(uint8 * )(hTextWidge->text));
+		(uint8*)(hTextWidge->text));
 
 	/*»Ö¸´»æÍ¼ÇøÓò*/
 	DrawResetArea((HWIDGET_BASE)hTextWidge);
 }
-PUBLIC int8 TEXT_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
+PUBLIC int8 TEXT_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
 	HTEXT_WIDGE hTextWidge = hObject;
 	if (!hTextWidge || !hMsg) { return -1; }
 	if (!_GetVisable(hTextWidge)) { return -1; }
 	if (hMsg->msgType == MSG_TOUCH) {
-		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, 
+		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y,
 			&(hTextWidge->baseWidge.rect))) {
 			return 0;
 		}

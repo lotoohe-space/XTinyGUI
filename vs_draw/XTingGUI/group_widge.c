@@ -31,7 +31,7 @@ PUBLIC uint8 GROUP_MARK_HEAD(Init)(HGROUP_WIDGE hBaseWidge, int16 x, int16 y, ui
 	return TRUE;
 }
 PUBLIC void GROUP_MARK_HEAD(Close)(HGROUP_WIDGE hObject) {
-	if (!hObject) { return ; }
+	if (!hObject) { return; }
 	/*在这里释放窗口中的内存*/
 
 	/*迭代每一个控件*/
@@ -122,7 +122,7 @@ PUBLIC uint8 GROUP_MARK_HEAD(Add)(HGROUP_WIDGE hBaseWidge, HWIDGET_BASE widge) {
 	hBaseWidge->widgeLength++;
 	return TRUE;
 }
-PUBLIC void GROUP_MARK_HEAD(GroupProcess)(HGROUP_WIDGE hBaseWidge,HWIDGET_BASE currentWidge) {
+PUBLIC void GROUP_MARK_HEAD(GroupProcess)(HGROUP_WIDGE hBaseWidge, HWIDGET_BASE currentWidge) {
 	if (hBaseWidge == NULL) { return; }
 	_StartScanU(hBaseWidge->widgetList) {/*开始扫描*/
 		HWIDGET_BASE hWidgeBase = (HWIDGET_BASE)(val);
@@ -131,7 +131,7 @@ PUBLIC void GROUP_MARK_HEAD(GroupProcess)(HGROUP_WIDGE hBaseWidge,HWIDGET_BASE c
 			/*需要联动控制*/
 			if (currentWidge != hWidgeBase) {
 				/*调用RADIO_BUTTON的函数*/
-				RADIO_BUTTON_MARK_HEAD(SetStatus)((HRADIO_BUTTON_WIDGE)hWidgeBase,FALSE);
+				RADIO_BUTTON_MARK_HEAD(SetStatus)((HRADIO_BUTTON_WIDGE)hWidgeBase, FALSE);
 			}
 		}
 

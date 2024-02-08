@@ -24,7 +24,7 @@ HGUITIME_OUT GUITimeoutCreate(uint16 timeoutPeriod, void* arg, GUITimeoutCallbac
 	HGUITIME_OUT hGUITimeOut = GUITimeoutNew();
 	if (hGUITimeOut == NULL) { return NULL; }
 
-	
+
 	hGUITimeOut->timeoutTick = GUIGetTick();
 	hGUITimeOut->timeoutPeriod = timeoutPeriod;
 	hGUITimeOut->timoutCallBackFun = timoutCallBackFun;
@@ -33,12 +33,12 @@ HGUITIME_OUT GUITimeoutCreate(uint16 timeoutPeriod, void* arg, GUITimeoutCallbac
 	return hGUITimeOut;
 }
 void GUITimeoutOpen(HGUITIME_OUT hGUITimeOut) {
-	if (hGUITimeOut == NULL) { return ; }
+	if (hGUITimeOut == NULL) { return; }
 	hGUITimeOut->timeoutTick = GUIGetTick();
 	_OpenTimeout(hGUITimeOut);
 }
 void GUITimeoutClose(HGUITIME_OUT hGUITimeOut) {
-	if (hGUITimeOut == NULL) { return ; }
+	if (hGUITimeOut == NULL) { return; }
 	_CloseTimeout(hGUITimeOut);
 }
 void GUITimeoutProcess(void) {

@@ -58,7 +58,7 @@ PUBLIC HRADIO_BUTTON_WIDGE RADIO_BUTTON_MARK_HEAD(Create)(int16 x, int16 y, int1
 	//hWidge->widgeBase.widgeCloseFun = RADIO_BUTTON_MARK_HEAD(Close);
 
 	_PToHTextWidgeType(hWidge)->text = text;
-	_PToHTextWidgeType(hWidge)->hFont = (HFONTF)& fontASCII16_16;
+	_PToHTextWidgeType(hWidge)->hFont = (HFONTF)&fontASCII16_16;
 	hWidge->flag = 0;
 
 	_SET_GROUP_CTRL(hWidge);
@@ -122,7 +122,7 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(Paint)(void* hObject) {
 	/*»­¹´*/
 	xRect.x = WIDGE_X(hWidge);
 	xRect.y = WIDGE_Y(hWidge);
-	xRect.w = drawW ;
+	xRect.w = drawW;
 	xRect.h = WIDGE_H(hWidge);
 	switch (RADIO_BUTTON_MARK_HEAD(GetStatus)(hWidge)) {
 	case 0:/*Î´Ñ¡Ôñ×´Ì¬*/
@@ -141,7 +141,7 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(Paint)(void* hObject) {
 		xRect.h = WIDGE_H(hWidge);
 		_PToHTextWidgeType(hObject)->baseWidge.pencil.DrawFrColor = 0x0000;
 		DrawCutString(hWidge, _PToHTextWidgeType(hObject)->hFont, &xRect, &xPoint, _PToHTextWidgeType(hObject)->text);
-		
+
 	}
 	break;
 	case 1:/*µã»÷×´Ì¬*/
@@ -158,7 +158,7 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(Paint)(void* hObject) {
 		xRect.w = WIDGE_W(hWidge) - drawW;
 		xRect.h = WIDGE_H(hWidge);
 		//DrawCutChar(hWidge, hWidge->hFONTF, &xRect, &xPoint, 'S');
-		DrawCutString(hWidge, _PToHTextWidgeType(hObject)->hFont, &xRect, &xPoint, 
+		DrawCutString(hWidge, _PToHTextWidgeType(hObject)->hFont, &xRect, &xPoint,
 			(uint8*)(_PToHTextWidgeType(hObject)->text));
 		break;
 	case 2:

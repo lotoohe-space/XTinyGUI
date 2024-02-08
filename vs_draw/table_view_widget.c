@@ -9,8 +9,6 @@ PUBLIC HTABLE_WIDGE TABLE_WIDGE_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, ui
 	}
 	GROUP_MARK_HEAD(Init)(hObject, x, y, w, h);
 
-
-
 	return hObject;
 }
 /*添加一个控件*/
@@ -22,8 +20,6 @@ PUBLIC uint8 TABLE_WIDGE_MARK_HEAD(Add)(HTABLE_WIDGE hBaseWidge, HWIDGET_BASE wi
 		return FALSE;
 	}
 	widgeLength = ((HGROUP_WIDGE)hBaseWidge)->widgeLength - 1;
-	
-
 
 	/*刷新*/
 	WindowsInvaildRect((HWIDGET_BASE)hBaseWidge, NULL);

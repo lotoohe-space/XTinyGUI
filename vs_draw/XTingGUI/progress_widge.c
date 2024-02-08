@@ -27,7 +27,7 @@ PUBLIC HPROGRESS_WIDGE PROGRESS_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int
 
 /*移动函数*/
 PUBLIC void PROGRESS_MARK_HEAD(MoveTo)(HPROGRESS_WIDGE hObject, int16 x, int16 y) {
-	_WIDGET(MoveTo)((HWIDGET_BASE)hObject,x,y);
+	_WIDGET(MoveTo)((HWIDGET_BASE)hObject, x, y);
 	//if (!hObject) { return; }
 	//hObject->widgeBase.rect.x = x;
 	//hObject->widgeBase.rect.y = y;
@@ -70,7 +70,7 @@ PRIVATE void PROGRESS_MARK_HEAD(Paint)(void* hObject) {
 	xRect.y = hWidge->widgeBase.rect.y;
 	xRect.w = (uint16)(hWidge->widgeBase.rect.w * progressing);
 	xRect.h = hWidge->widgeBase.rect.h;
-	DrawCutRect(hWidge,&xRect);
+	DrawCutRect(hWidge, &xRect);
 	/*绘制后半截*/
 	color = hWidge->widgeBase.pencil.DrawColor;
 	hWidge->widgeBase.pencil.DrawColor = hWidge->widgeBase.pencil.DrawBkColor;

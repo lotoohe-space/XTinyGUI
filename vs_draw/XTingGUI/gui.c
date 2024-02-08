@@ -249,7 +249,7 @@ HXDESKTOP GUIInit(void) {
 	_SET_FIRST_RUN(hXDesktop);
 	hXDesktop->topWin = NULL;
 #if USE_MEM_DEV
-	hXDesktop->hMemDev = MemDevCreate(0, 0, LCD_SCREEN_W, LCD_SCREEN_H*0.1, GUI_COLOR_DEEP);/*创建一个存储设备*/
+	hXDesktop->hMemDev = MemDevCreate(0, 0, LCD_SCREEN_W, LCD_CACHE_LINE, GUI_COLOR_DEEP);/*创建一个存储设备*/
 #endif /*USE_MEM_DEV*/
 
 #if USE_CURSOR 
@@ -362,13 +362,12 @@ uint8 DrawSetArea(HWIDGET_BASE hWidgeBase) {
 
 	/*控件矩形与父控件的可绘制区域相交矩形即为绘图区域*/
 	GetOverLapRect((HXRECT)(&(((HWIDGET_BASE)(hWidgeBase->parentHWIN))->pencil)),&(hWidgeBase->rect),&rRect);
-
-	/*重新设置控件的有效绘图区域*/
-	XRECT_COPY(&(hWidgeBase->pencil), &rRect);
-
 	if (rRect.w == 0 || rRect.h == 0) {
 		return FALSE;
 	}
+	/*重新设置控件的有效绘图区域*/
+	XRECT_COPY(&(hWidgeBase->pencil), &rRect);
+
 	return TRUE;
 }
 /*复位绘图区域*/

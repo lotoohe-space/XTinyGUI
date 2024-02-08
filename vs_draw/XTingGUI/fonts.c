@@ -28,7 +28,7 @@ const FONTF fontASCII12_16 = {
 	0,
 	0,
 };
-const FONTF fontASCII16_16 = {	
+const FONTF fontASCII16_16 = {
 	16,
 	16,
 	0x0,
@@ -79,7 +79,8 @@ uint8* FontReadChar(HFONTF hFont, uint16 ch) {
 			return (uint8*)(&(hFont->fontInfo.fontVal.addrFont[
 				(ch - (hFont->fontInfo.startInx)) * (hFont->fontInfo.h) * hFont->fontInfo.perRowBytes
 			]));
-		}else if (hFont->fontType == 1) {
+		}
+		else if (hFont->fontType == 1) {
 			HFONT_INFO additionFont;
 			additionFont = hFont->additionFont;
 			if (ch > hFont->fontInfo.startInx && ch < hFont->fontInfo.endInx) {
@@ -89,12 +90,13 @@ uint8* FontReadChar(HFONTF hFont, uint16 ch) {
 						(((ch >> 8) - ((hFont->fontInfo.startInx) >> 8)) * 94 + ((ch & 0xff) - (hFont->fontInfo.startInx) & 0xff)) * (hFont->fontInfo.h) * hFont->fontInfo.perRowBytes
 					]));
 				}
-			}else if (ch > additionFont->startInx && ch < additionFont->endInx) {	
-					return (uint8*)(&(additionFont->fontVal.addrFont[
-						(ch - (additionFont->startInx)) * (additionFont->h) * additionFont->perRowBytes
-					]));
-				}
-			
+			}
+			else if (ch > additionFont->startInx && ch < additionFont->endInx) {
+				return (uint8*)(&(additionFont->fontVal.addrFont[
+					(ch - (additionFont->startInx)) * (additionFont->h) * additionFont->perRowBytes
+				]));
+			}
+
 		}
 		else if (hFont->fontType == 3) {
 			return (uint8*)(&(hFont->fontInfo.fontVal.addrFont[

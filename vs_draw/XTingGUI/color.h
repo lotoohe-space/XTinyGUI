@@ -1,8 +1,6 @@
 #ifndef _COLOR_H__
 #define _COLOR_H__
 
-
-
 #define RGB565_WHITE	0xffff
 #define RGB565_BLACK	0x0000
 

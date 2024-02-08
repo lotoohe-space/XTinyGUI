@@ -5,8 +5,8 @@
 #include "x_malloc.h"
 
 /*创建一个button*/
-PUBLIC HXBUTTON BUTTON_MARK_HEAD(Create)(const char *text, int16 x, int16 y, int16 w, int16 h) {
-	HXBUTTON hXButton = xMalloc( sizeof(XBUTTON));
+PUBLIC HXBUTTON BUTTON_MARK_HEAD(Create)(const char* text, int16 x, int16 y, int16 w, int16 h) {
+	HXBUTTON hXButton = xMalloc(sizeof(XBUTTON));
 	if (hXButton == NULL) { return NULL; }
 	TEXT_MARK_HEAD(Init)((HTEXT_WIDGE)hXButton, text, x, y, w, h);
 
@@ -36,12 +36,12 @@ PUBLIC void BUTTON_MARK_HEAD(SetUpBitmap)(HXBUTTON hObject, HXBITMAP hBitmap) {
 	hObject->upBitmap = hBitmap;
 }
 /*设置Buttton文字*/
-PUBLIC void BUTTON_MARK_HEAD(SetText)(HXBUTTON hObject,const char* text) {
+PUBLIC void BUTTON_MARK_HEAD(SetText)(HXBUTTON hObject, const char* text) {
 	if (hObject == NULL) { return; }
 	TEXT_MARK_HEAD(SetText)((HTEXT_WIDGE)hObject, text);
 }
 /*设置点击回调*/
-PUBLIC void BUTTON_MARK_HEAD(SetClickBack)(HXBUTTON hObject, void* arg,ViewClickCallBack viewClickCallBack) {
+PUBLIC void BUTTON_MARK_HEAD(SetClickBack)(HXBUTTON hObject, void* arg, ViewClickCallBack viewClickCallBack) {
 	_WIDGET(SetClickBack)((HWIDGET_BASE)hObject, arg, viewClickCallBack);
 }
 /*移动控件到指定位置*/
@@ -50,9 +50,9 @@ PUBLIC void BUTTON_MARK_HEAD(MoveTo)(HXBUTTON hObject, int16 x, int16 y) {
 	_WIDGET(MoveTo)((HWIDGET_BASE)hObject, x, y);
 }
 /*绘制窗口*/
-PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
+PRIVATE void BUTTON_MARK_HEAD(Paint)(void* hObject) {
 	HXBUTTON hXButton;
-//	XRECT xRECT;
+	//	XRECT xRECT;
 	hXButton = hObject;
 	if (!hObject) { return; }
 	if (!DrawSetArea((HWIDGET_BASE)hXButton)) { return; }
@@ -85,7 +85,7 @@ PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
 		XPOINT startPoint;
 		_PToHWidgeBaseType(hXButton)->pencil.DrawBkColor = _DefaultButtonDownColor;
 		_PToHWidgeBaseType(hXButton)->pencil.DrawFrColor = _DefaultButtonFontColor;
-		if (!_GetBtnMode(hXButton)) {/*文本模式*/		
+		if (!_GetBtnMode(hXButton)) {/*文本模式*/
 			/*根据模式确定起点*/
 			TEXT_MARK_HEAD(GetPOIByTextMode)((HTEXT_WIDGE)hXButton, &startPoint);
 			DrawCutString(hXButton,
@@ -108,7 +108,7 @@ PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject) {
 	DrawResetArea((HWIDGET_BASE)hXButton);
 }
 /*事件回调*/
-PRIVATE int8 BUTTON_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg) {
+PRIVATE int8 BUTTON_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
 	int8 ret;
 	HXBUTTON hXButton = hObject;
 	if (!hXButton || !hMsg) { return RES_ASSERT_ERR; }

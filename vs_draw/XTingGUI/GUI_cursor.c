@@ -72,7 +72,7 @@ void GUICursorLastLCDCopyToMem(void) {
 	for (i = 0; i < GUICursor.GUICursorPTBitmap.h; i++) {
 		for (j = 0; j < GUICursor.GUICursorPTBitmap.w; j++) {
 			((uint16*)GUICursor.GUICursorMem)[j + i * GUICursor.GUICursorPTBitmap.w] =
-				GUIGetPixel(x + j, y+ i);
+				GUIGetPixel(x + j, y + i);
 		}
 	}
 }
@@ -87,8 +87,8 @@ BOOL GUICursorSetPOI(int16 x, int16 y) {
 	int16 i, j;
 	uint32* pixels = (uint32*)(GUICursor.GUICursorPTBitmap.pixels);
 	/*位置没有改变则不需要操作*/
-	if (x == GUICursor.cursorPOI.x && GUICursor.cursorPOI.y == y) { 
-		return FALSE; 
+	if (x == GUICursor.cursorPOI.x && GUICursor.cursorPOI.y == y) {
+		return FALSE;
 	}
 
 	/*画上一次*/
@@ -97,7 +97,7 @@ BOOL GUICursorSetPOI(int16 x, int16 y) {
 		GUICursor.GUICursorPTBitmap.w, GUICursor.GUICursorPTBitmap.h,
 		GUICursor.GUICursorMem
 	);
-	
+
 	/*设置新的位置*/
 	GUICursor.lastCursorPOI.x = GUICursor.cursorPOI.x;
 	GUICursor.lastCursorPOI.y = GUICursor.cursorPOI.y;
@@ -113,7 +113,7 @@ BOOL GUICursorSetPOI(int16 x, int16 y) {
 
 	for (i = 0; i < GUICursor.GUICursorPTBitmap.h; i++) {
 		for (j = 0; j < GUICursor.GUICursorPTBitmap.w; j++) {
-			uint32 color = pixels[(i)* GUICursor.GUICursorPTBitmap.w + j];
+			uint32 color = pixels[(i)*GUICursor.GUICursorPTBitmap.w + j];
 			if (!(color & 0xff000000)) {
 				GUIDrawPixel(j + GUICursor.cursorPOI.x, i + GUICursor.cursorPOI.y, BGR888T0RGB565(color));
 				//GUICursorDrawMem(j + GUICursor.cursorPOI.x, i + GUICursor.cursorPOI.y, BGR888T0RGB565(color));
@@ -132,16 +132,16 @@ uint8 GUICursorDrawMem(int16 x, int16 y, uintColor color) {
 		drawX = x - GUICursor.cursorPOI.x;
 		drawY = y - GUICursor.cursorPOI.y;
 		//((uint16*)(GUICursor.GUICursorLastPOIMem))[drawX+drawY* GUICursor.GUICursorPTBitmap.w]=color;
-		((uint16*)(GUICursor.GUICursorMem))[drawX+drawY* GUICursor.GUICursorPTBitmap.w]=color;
+		((uint16*)(GUICursor.GUICursorMem))[drawX + drawY * GUICursor.GUICursorPTBitmap.w] = color;
 		_SET_CURSOR_UPT(&GUICursor);
 		return TRUE;
-	}	
+	}
 	return FALSE;
 }
 /*写入到屏幕*/
 void GUICursorDrawLCD(void) {
 	int16 i, j;
-	uint32 *pixels = (uint32*)(GUICursor.GUICursorPTBitmap.pixels);
+	uint32* pixels = (uint32*)(GUICursor.GUICursorPTBitmap.pixels);
 
 	/*画上一次*/
 	GUIDrawBitmap(
@@ -152,7 +152,7 @@ void GUICursorDrawLCD(void) {
 
 	for (i = 0; i < GUICursor.GUICursorPTBitmap.h; i++) {
 		for (j = 0; j < GUICursor.GUICursorPTBitmap.w; j++) {
-			uint32 color = pixels[(i)* GUICursor.GUICursorPTBitmap.w + j];
+			uint32 color = pixels[(i)*GUICursor.GUICursorPTBitmap.w + j];
 			if (!(color & 0xff000000)) {
 				GUIDrawPixel(j + GUICursor.cursorPOI.x, i + GUICursor.cursorPOI.y, BGR888T0RGB565(color));
 				//GUICursorDrawMem(j + GUICursor.cursorPOI.x, i + GUICursor.cursorPOI.y, BGR888T0RGB565(color));

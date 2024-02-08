@@ -9,7 +9,7 @@
 
 typedef struct {
 	WIDGET_BASE widgeBase;
-	
+
 	HXBITMAP bitmap;/*œ‘ æµƒÕº∆¨*/
 
 }*HBITMAP_WIDGE, BITMAP_WIDGE;

@@ -2,7 +2,7 @@
 #define _WIDGE_CALL_DEFINE_H__
 
 #include "msg.h"
-//画笔的定义
+/*画笔的定义*/
 typedef struct {
 	/*允许被绘制的区域,全0XFFFF表示无效区域*/
 	int16 x;
@@ -35,8 +35,6 @@ typedef struct {
 	int16 y;
 	int16 x1;
 }*HXHLINE, XHLINE;
-
-
 
 /*变量强转为矩形*/
 #define _PToHXRECTType(a) ((HXRECT)(a))

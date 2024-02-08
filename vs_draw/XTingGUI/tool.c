@@ -4,9 +4,9 @@
 
 
 //内存拷贝
-void TMemcpy(void *dst, void *src, uint32 len) {
+void TMemcpy(void* dst, void* src, uint32 len) {
 	if (!dst || !src) { return; }
-	for (; len;len--) {
+	for (; len; len--) {
 		*(((char*)dst)++) = *(((char*)src)++);
 	}
 }
@@ -32,13 +32,13 @@ const char* TCharGet(const char* str, uint16 index) {
 uint32 UStrlen(uint16* str) {
 	uint16 i = 0;
 	if (str == NULL) { return 0; }
-	while (str[i]){ 
-		i++; 
+	while (str[i]) {
+		i++;
 	}
 	return i;
 }
 //获取GBK字符串长度
-uint32 TStrlen(const char *str) {
+uint32 TStrlen(const char* str) {
 	uint16 i = 0;
 	uint16 len = 0;
 	if (!str) { return 0; }
@@ -47,7 +47,7 @@ uint32 TStrlen(const char *str) {
 			i += 2;
 		}
 		else {
-			i++;	
+			i++;
 		}
 		len++;
 	}
@@ -63,17 +63,20 @@ int8 _INLINE_ isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2,
 	if (x1 >= x2 && x1 >= x2 + w2) {
 		return FALSE;
 		// 矩形A位于矩形B的左侧	
-	}else if (x1 <= x2 && x1 + w1 <= x2) {
-			return FALSE;
+	}
+	else if (x1 <= x2 && x1 + w1 <= x2) {
+		return FALSE;
 		// 矩形A位于矩形B的下侧		
-	}else if (y1 >= y2 && y1 >= y2 + h2) {
-			return FALSE;
+	}
+	else if (y1 >= y2 && y1 >= y2 + h2) {
+		return FALSE;
 		// 矩形A位于矩形B的上侧		
-	}else if (y1 <= y2 && y1 + h1 <= y2) {
+	}
+	else if (y1 <= y2 && y1 + h1 <= y2) {
 		return FALSE;
 	}
 	// 不相交都不满足，那就是相交了
-	return TRUE;	
+	return TRUE;
 }
 
 //获得两个矩形的重叠部分

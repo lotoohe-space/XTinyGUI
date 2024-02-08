@@ -26,10 +26,10 @@ HMEM_DEV	MemDevCreate(int16 x, int16 y, uint16 w, uint16 h, uint8 colorDepth) {
 	return hMemDev;
 }
 /*重新设置MemDev的大小，*/
-uint8 MemDevReset(HMEM_DEV hMemDev,int16 x,int16 y, uint16 w, uint16 h) {
+uint8 MemDevReset(HMEM_DEV hMemDev, int16 x, int16 y, uint16 w, uint16 h) {
 	if (hMemDev == NULL) { return FALSE; }
-	if (w == 0 || h == 0) { 
-		return FALSE; 
+	if (w == 0 || h == 0) {
+		return FALSE;
 	}
 	hMemDev->rect.x = x;
 	hMemDev->rect.y = y;
@@ -42,7 +42,7 @@ uint8 MemDevReset(HMEM_DEV hMemDev,int16 x,int16 y, uint16 w, uint16 h) {
 	}
 	return TRUE;
 }
-void MemDevClear(HMEM_DEV hMemDev,uintColor color) {
+void MemDevClear(HMEM_DEV hMemDev, uintColor color) {
 	if (hMemDev == NULL) { return; }
 	int16 i, j;
 	for (j = hMemDev->rect.y; j < hMemDev->rect.y + hMemDev->rect.h; j++) {
@@ -51,8 +51,8 @@ void MemDevClear(HMEM_DEV hMemDev,uintColor color) {
 		}
 	}
 }
-void MemDevDrawPT(HMEM_DEV hMemDev,int16 x,int16 y, uintColor color) {
-	if (hMemDev == NULL) { return ; }
+void MemDevDrawPT(HMEM_DEV hMemDev, int16 x, int16 y, uintColor color) {
+	if (hMemDev == NULL) { return; }
 	((uint16*)(hMemDev->mem))[x + y * hMemDev->rect.w] = (uint16)color;
 }
 uintColor MemDevReadPT(HMEM_DEV hMemDev, int16 x, int16 y) {
@@ -61,9 +61,6 @@ uintColor MemDevReadPT(HMEM_DEV hMemDev, int16 x, int16 y) {
 }
 
 void MemDevCopyToLCD(HMEM_DEV hMemDev) {
-	if (hMemDev == NULL) { return ; }
+	if (hMemDev == NULL) { return; }
 	GUIDrawBitmap(hMemDev->rect.x, hMemDev->rect.y, hMemDev->rect.w, hMemDev->rect.h, hMemDev->mem);
 }
-
-
-

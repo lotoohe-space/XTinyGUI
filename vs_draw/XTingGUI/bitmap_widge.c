@@ -5,7 +5,7 @@
 #include "x_malloc.h"
 #include "xwindows.h"
 
-PUBLIC HBITMAP_WIDGE BITMAP_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h,HXBITMAP hXBitmap) {
+PUBLIC HBITMAP_WIDGE BITMAP_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, HXBITMAP hXBitmap) {
 	HBITMAP_WIDGE hBitmapWidge = (HBITMAP_WIDGE)(xMalloc(sizeof(BITMAP_WIDGE)));
 	if (hBitmapWidge == NULL) {
 		return NULL;
@@ -16,7 +16,6 @@ PUBLIC HBITMAP_WIDGE BITMAP_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h
 	hBitmapWidge->widgeBase.paintFun = BITMAP_MARK_HEAD(Paint);
 	hBitmapWidge->widgeBase.moveToFun = BITMAP_MARK_HEAD(MoveTo);
 	hBitmapWidge->widgeBase.widgeCallBackFun = BITMAP_MARK_HEAD(CallBack);
-
 
 	/*ÉèÖÃÏÔÊ¾µÄÍ¼Æ¬*/
 	hBitmapWidge->bitmap = hXBitmap;
@@ -50,6 +49,7 @@ PUBLIC void BITMAP_MARK_HEAD(Paint)(void* hObject) {
 	if (!hObject) { return; }
 	if (!_GetVisable(hBitmapWidge)) { return; }
 	//if (!IsGUINeedCut(hBitmapWidge)) { return; }
+
 	if (!DrawSetArea((HWIDGET_BASE)hBitmapWidge)) { return; }
 
 	DrawCutBitmap(hBitmapWidge, (HXRECT)hBitmapWidge, hBitmapWidge->bitmap);

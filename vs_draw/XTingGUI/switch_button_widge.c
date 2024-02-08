@@ -8,7 +8,7 @@
 
 
 /*´´½¨º¯Êý*/
-PUBLIC HSWITCH_BUTTON_WIDGE SWITCH_BUTTON_WIDGE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, const char* onText,const char* offText) {
+PUBLIC HSWITCH_BUTTON_WIDGE SWITCH_BUTTON_WIDGE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, const char* onText, const char* offText) {
 	HSWITCH_BUTTON_WIDGE hWidge = (HSWITCH_BUTTON_WIDGE)(xMalloc(sizeof(SWITCH_BUTTON_WIDGE)));
 	if (hWidge == NULL) {
 		return NULL;
@@ -22,7 +22,7 @@ PUBLIC HSWITCH_BUTTON_WIDGE SWITCH_BUTTON_WIDGE_MARK_HEAD(Create)(int16 x, int16
 	//hWidge->widgeBase.widgeCloseFun = SWITCH_BUTTON_WIDGE_MARK_HEAD(Close);
 
 	_PToHTextWidgeType(hWidge)->text = "";
-	_PToHTextWidgeType(hWidge)->hFont = (HFONTF )(&fontASCII16_16);
+	_PToHTextWidgeType(hWidge)->hFont = (HFONTF)(&fontASCII16_16);
 	hWidge->flag = 0;
 	hWidge->onText = onText ? onText : "ON";
 	hWidge->offText = offText ? offText : "OFF";

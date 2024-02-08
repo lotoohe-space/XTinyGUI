@@ -10,7 +10,7 @@ PUBLIC HSLIDE_WIDGE SLIDE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h) 
 		return NULL;
 	}
 	_WIDGET(Init)((HWIDGET_BASE)hWidgeBase, x, y, w, h);
-	
+
 	/*设置三个回调函数*/
 	_PToHWidgeBaseType(hWidgeBase)->paintFun = SLIDE_MARK_HEAD(Paint);
 	//_PToHWidgeBaseType(hWidgeBase)->moveToFun = SLIDE_MARK_HEAD(MoveTo);
@@ -65,7 +65,7 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void* hObject) {
 	/*中间的条*/
 	XRECT drawRect;
 	drawRect.x = WIDGE_X(hWidgeBase);
-	drawRect.y = WIDGE_Y(hWidgeBase)+ drawY;
+	drawRect.y = WIDGE_Y(hWidgeBase) + drawY;
 	drawRect.w = posBCK;
 	drawRect.h = barH;
 	hWidgeBase->baseWidge.pencil.DrawColor = hWidgeBase->baseWidge.pencil.DrawFrColor;
@@ -108,7 +108,7 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void* hObject) {
 	DrawCutRect(hWidgeBase, &drawRect);
 
 	/*中间的条*/
-	drawRect.x = WIDGE_X(hWidgeBase)+ posBCK;
+	drawRect.x = WIDGE_X(hWidgeBase) + posBCK;
 	drawRect.y = WIDGE_Y(hWidgeBase);
 	drawRect.w = slideBlockW;
 	drawRect.h = WIDGE_H(hWidgeBase);
@@ -141,11 +141,11 @@ PUBLIC int8 SLIDE_MARK_HEAD(CallBack)(void* hObject, HMSGE hMsg) {
 				Dx = P_CDE2OPPOSITE_X(hBaseWidge, hMsg->msgVal.rect.x);
 				//Dy = P_CDE2OPPOSITE_Y(hBaseWidge, hMsg->msgVal.rect.y);
 				hBaseWidge->currentVal = (uint16)(((float)Dx / (float)WIDGE_W(hBaseWidge)) *
-					(hBaseWidge->maxVal ));
+					(hBaseWidge->maxVal));
 				WindowsInvaildRect(hObject, NULL);
 
 			}
-				break;
+			break;
 			case MSG_TOUCH_RELEASE:
 
 				break;

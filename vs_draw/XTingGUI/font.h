@@ -13,7 +13,7 @@ typedef struct {
 		const uint8* addrFont;//字体的地址
 		uint32 fd;//文件句柄
 	}fontVal;
-}*HFONT_INFO,FONT_INFO;
+}*HFONT_INFO, FONT_INFO;
 
 #define ASCII_TYPE		0
 #define GB2312_TYPE		1
@@ -25,7 +25,7 @@ typedef struct {
 	HFONT_INFO additionFont;
 	uint8 typePos;//0:字体在内存中 1:字体在外部存储设备
 	uint8 fontType;//字库类型 0:ascii 1:gb2312 2:gbk(未实现) 3:unicode编码
-}*HFONTF,FONTF;
+}*HFONTF, FONTF;
 ////计算一行占多少个字节
 //#define FONT_CHAR_PER_BTYES(a) ((uint16)(a->fontInfo.w/8.0f+1))
 

@@ -7,13 +7,15 @@
 #include "mem_dev.h"
 
 
-#define USE_ALPHA			0	/*是否开启透明通道,开启透明通道会降低运行速度*/
+#define USE_ALPHA			1	/*是否开启透明通道,开启透明通道会降低运行速度*/
 #define USE_MEM_DEV			1	/*是否开启存储设备*/
 #define USE_CURSOR			0	/*是否开启游标*/
 
+#define LCD_CACHE_LINE		1	/*缓冲区行数*/
+
 /*显示屏的大小*/
-#define LCD_SCREEN_W		800
-#define LCD_SCREEN_H		480
+#define LCD_SCREEN_W		1024
+#define LCD_SCREEN_H		748
 
 /*********返回的事件说明********/
 #define RES_ASSERT_ERR		-1

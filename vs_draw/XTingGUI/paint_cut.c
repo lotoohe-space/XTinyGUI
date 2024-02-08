@@ -78,12 +78,12 @@ extern void fill_rect(int x, int y, int w, int h, int color);
 HXRECT RectCutFind(void) {
 	HXRECT hRect;
 	XPOINT pointEnd;
-//	HLIST tempRectCutlist;
+	//	HLIST tempRectCutlist;
 
 	int16 temp_w = 0;
 	int16 val = bgRect.y + bgRect.h;
 	//int val1 = bgRect.y + bgRect.h;
-	
+
 	pointEnd.x = bgRect.w + bgRect.x;
 	pointEnd.y = bgRect.y + bgRect.h;
 
@@ -99,7 +99,7 @@ HXRECT RectCutFind(void) {
 		/*优化，不应该只找离得最近的一条边，应该是找右边最近的矩形的上下最近的一条边*/
 		if (hRect->y > startPoint.y) {							/*上边*/
 			/*在被剪裁矩形的纵向限定范围内*/
-			if (hRect->y > bgRect.y 
+			if (hRect->y > bgRect.y
 				&& hRect->y < bgRect.y + bgRect.h) {
 				if (hRect->y - startPoint.y < val) {				/*找最近的一条*/
 					val = hRect->y - startPoint.y;
@@ -110,7 +110,7 @@ HXRECT RectCutFind(void) {
 		}
 		else if (hRect->y + hRect->h > startPoint.y) {			/*下边*/
 			/*在被剪裁矩形的纵向限定范围内*/
-			if (hRect->y + hRect->h > bgRect.y  
+			if (hRect->y + hRect->h > bgRect.y
 				&& hRect->y + hRect->h < bgRect.y + bgRect.h) {
 				if ((hRect->y + hRect->h - startPoint.y) < val) {	/*找最近的一条*/
 					val = (hRect->y + hRect->h - startPoint.y);
@@ -207,7 +207,7 @@ HXRECT RectCutFind(void) {
 					if (!_GetVisable(hRect) || _GET_IS_DPY(hRect)) { continue; }
 					if (hRect->y > startPoint.y) {							/*上边*/
 							/*在被剪裁矩形的纵向限定范围内*/
-						if (hRect->y > bgRect.y 
+						if (hRect->y > bgRect.y
 							&& hRect->y < bgRect.y + bgRect.h) {
 							if (hRect->y - startPoint.y < val) {				/*找最近的一条*/
 								val = hRect->y - startPoint.y;
@@ -218,7 +218,7 @@ HXRECT RectCutFind(void) {
 					}
 					else if (hRect->y + hRect->h > startPoint.y) {			/*下边*/
 						/*在被剪裁矩形的纵向限定范围内*/
-						if (hRect->y + hRect->h > bgRect.y 
+						if (hRect->y + hRect->h > bgRect.y
 							&& hRect->y + hRect->h < bgRect.y + bgRect.h) {
 							if ((hRect->y + hRect->h - startPoint.y) < val) {	/*找最近的一条*/
 								val = (hRect->y + hRect->h - startPoint.y);

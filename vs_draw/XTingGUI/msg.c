@@ -27,8 +27,8 @@ uint8 GUIMsgEventInit(void) {
 	if (!res) { return FALSE; }
 
 	res = InitQueue(&drawMsg, MSG_EVENT_MAX_VAL);
-	if (!res) { 
-		DestroyQueue(&eventMsg); 
+	if (!res) {
+		DestroyQueue(&eventMsg);
 		return FALSE;
 	}
 	res = InitQueue(&moveMsg, MSG_EVENT_MAX_VAL);
@@ -79,7 +79,7 @@ void GUIDelMsg(HMSGE hMsg) {
 	xFree(hMsg);
 }
 
-int8 GUISendKeyMsg(uint8 ID,uint8 status) {
+int8 GUISendKeyMsg(uint8 ID, uint8 status) {
 	HMSGE hMsg;
 	if (eventMsg.valid == FALSE) { return FALSE; }
 	hMsg = xMalloc(sizeof(MSGE));
@@ -97,7 +97,7 @@ int8 GUISendKeyMsg(uint8 ID,uint8 status) {
 }
 
 /*发送消息到队列*/
-int8 GUISendTouchMsg(int ID,int16 x, int16 y) {
+int8 GUISendTouchMsg(int ID, int16 x, int16 y) {
 	HMSGE hMsg;
 	if (eventMsg.valid == FALSE) { return FALSE; }
 	hMsg = xMalloc(sizeof(MSGE));
@@ -114,7 +114,7 @@ int8 GUISendTouchMsg(int ID,int16 x, int16 y) {
 	return TRUE;
 }
 int GUISendDrawMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h
-//	,int16 x1,int16 y1,uint16 w1,uint16 h1
+	//	,int16 x1,int16 y1,uint16 w1,uint16 h1
 ) {
 	HMSGE hMsg;
 	//if (hWin == NULL) { return FALSE; }
@@ -147,7 +147,7 @@ HMSGE GUIGetDrawMsg(void) {
 	if (deQueue(&drawMsg, &e)) {
 		return  (HMSGE)e;
 	}
-	
+
 	return NULL;
 }
 void GUIDelDrawMsg(HMSGE hMsg) {
@@ -173,8 +173,8 @@ int GUISendMoveMsg(void* hWin, uint8 msgType, uint8 msgID, int16 x, int16 y) {
 	return TRUE;
 }
 HMSGE GUIGetMoveMsg(void) {
-	QueueDateType e,e1;
-next:	
+	QueueDateType e, e1;
+next:
 	if (deQueue(&moveMsg, &e)) {
 		if (getTailQueue(&moveMsg, &e1) == FALSE) {
 			return  (HMSGE)e;

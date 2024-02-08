@@ -5,7 +5,7 @@
 #include "paint_cut.h"
 
 PUBLIC HWIDGET_BASE _WIDGET(Create)(int16 x, int16 y, int16 w, int16 h) {
-	HWIDGET_BASE hWidgeBase = (HWIDGET_BASE)(xMalloc( sizeof(WIDGET_BASE)));
+	HWIDGET_BASE hWidgeBase = (HWIDGET_BASE)(xMalloc(sizeof(WIDGET_BASE)));
 	if (hWidgeBase == NULL) {
 		return NULL;
 	}
@@ -18,9 +18,9 @@ PUBLIC HWIDGET_BASE _WIDGET(CreateEx)(HXRECT hXRect) {
 	}
 	return _WIDGET(Create)(hXRect->x, hXRect->y, hXRect->w, hXRect->h);
 }
-PUBLIC void _WIDGET(Init)(HWIDGET_BASE hWidgeBase,int16 x, int16 y, int16 w, int16 h) {
+PUBLIC void _WIDGET(Init)(HWIDGET_BASE hWidgeBase, int16 x, int16 y, int16 w, int16 h) {
 	if (hWidgeBase == NULL) {
-		return ;
+		return;
 	}
 	/*控件大小*/
 	hWidgeBase->rect.x = x;
@@ -45,7 +45,7 @@ PUBLIC void _WIDGET(Init)(HWIDGET_BASE hWidgeBase,int16 x, int16 y, int16 w, int
 	hWidgeBase->pencil.w = w;
 	hWidgeBase->pencil.h = h;
 
-	
+
 	hWidgeBase->parentHWIN = NULL;
 
 	hWidgeBase->viewClickCallBack = NULL;
@@ -59,13 +59,13 @@ PUBLIC void _WIDGET(Init)(HWIDGET_BASE hWidgeBase,int16 x, int16 y, int16 w, int
 	_SetVisable(hWidgeBase);
 	/*默认不透明处理*/
 	_CLR_IS_DPY(hWidgeBase);
-	
+
 }
-PUBLIC void _WIDGET(Close)(HWIDGET_BASE hObject){
+PUBLIC void _WIDGET(Close)(HWIDGET_BASE hObject) {
 	if (hObject == NULL) { return; }
 	xFree(hObject);
 }
-PUBLIC void _WIDGET(SetClickBack)(HWIDGET_BASE hObject,void * arg, ViewClickCallBack viewClickCallBack) {
+PUBLIC void _WIDGET(SetClickBack)(HWIDGET_BASE hObject, void* arg, ViewClickCallBack viewClickCallBack) {
 	if (!hObject) { return; }
 	hObject->arg = arg;
 	hObject->viewClickCallBack = viewClickCallBack;
@@ -74,14 +74,15 @@ PUBLIC void _WIDGET(SetClickBack)(HWIDGET_BASE hObject,void * arg, ViewClickCall
 PUBLIC void _WIDGET(SetVisable)(HWIDGET_BASE hObject, uint8 isVisable) {
 	if (!hObject) { return; }
 	if (isVisable) {
-		_SetVisable(hObject); 
-	}else { 
-		_ClrVisable(hObject); 
+		_SetVisable(hObject);
+	}
+	else {
+		_ClrVisable(hObject);
 	}
 	WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
 }
 /*重新设置大小*/
-PUBLIC void _WIDGET(Resize)(HWIDGET_BASE hObject, int16 x, int16 y, uint16 w,uint16 h) {
+PUBLIC void _WIDGET(Resize)(HWIDGET_BASE hObject, int16 x, int16 y, uint16 w, uint16 h) {
 	if (!hObject) { return; }
 	hObject->rect.x = x;
 	hObject->rect.y = y;
@@ -108,7 +109,7 @@ PUBLIC void _WIDGET(MoveTo)(HWIDGET_BASE hObject, int16 x, int16 y) {
 	//WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
 }
 /*重绘函数*/
-PRIVATE void _WIDGET(Paint)(void *hObject) {
+PRIVATE void _WIDGET(Paint)(void* hObject) {
 	HWIDGET_BASE hWidgeBase;
 	hWidgeBase = hObject;
 	if (!hObject) { return; }
@@ -122,16 +123,16 @@ PRIVATE void _WIDGET(Paint)(void *hObject) {
 		DrawRect(&(hWidgeBase->pencil), nextCutRect);
 	}RECT_CUT_END()
 
-	/*恢复绘图区域*/
-	DrawResetArea(hWidgeBase);
+		/*恢复绘图区域*/
+		DrawResetArea(hWidgeBase);
 }
 /*事件回调函数*/
-PUBLIC int8 _WIDGET(CallBack)(void *hObject, HMSGE hMsg) {
+PUBLIC int8 _WIDGET(CallBack)(void* hObject, HMSGE hMsg) {
 	HWIDGET_BASE hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg) { return RES_ASSERT_ERR; }
 	if (!_GetVisable(hWidgeBase)) { return RES_ASSERT_ERR; }
 	if (hMsg->msgType == MSG_TOUCH) {
-		
+
 		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, (&(hWidgeBase->rect)))) {
 			switch (hMsg->msgID) {
 			case MSG_TOUCH_MOVE:
@@ -139,7 +140,7 @@ PUBLIC int8 _WIDGET(CallBack)(void *hObject, HMSGE hMsg) {
 			case MSG_TOUCH_PRESS:
 				/*按下*/
 				if (hWidgeBase->viewClickCallBack != NULL) {
-					hWidgeBase->viewClickCallBack(hWidgeBase,hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
+					hWidgeBase->viewClickCallBack(hWidgeBase, hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
 				}
 				_SetBtnPress(hWidgeBase);
 				WindowsInvaildRect(WIDGE_PARENT(hWidgeBase), (HXRECT)hWidgeBase);
