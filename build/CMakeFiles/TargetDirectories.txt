@@ -1,2 +1,3 @@
+D:/Project/MyProject1/XTinyGUI/vs_draw/build/CMakeFiles/xtinygui.dir
 D:/Project/MyProject1/XTinyGUI/vs_draw/build/CMakeFiles/edit_cache.dir
 D:/Project/MyProject1/XTinyGUI/vs_draw/build/CMakeFiles/rebuild_cache.dir
