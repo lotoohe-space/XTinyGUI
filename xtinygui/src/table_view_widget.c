@@ -1,9 +1,9 @@
 #include "table_view_widget.h"
 
-PUBLIC HTABLE_WIDGE TABLE_WIDGE_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, uint16 h) {
-	HTABLE_WIDGE hObject;
+PUBLIC p_table_widget_t TABLE_WIDGE_MARK_HEAD(Create)(int16_t x, int16_t y, uint16_t w, uint16_t h) {
+	p_table_widget_t hObject;
 
-	hObject = (HTABLE_WIDGE)(xMalloc(sizeof(TABLE_WIDGE)));
+	hObject = (p_table_widget_t)(xMalloc(sizeof(table_widget_t)));
 	if (hObject == NULL) {
 		return NULL;
 	}
@@ -12,16 +12,16 @@ PUBLIC HTABLE_WIDGE TABLE_WIDGE_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, ui
 	return hObject;
 }
 /*添加一个控件*/
-PUBLIC uint8 TABLE_WIDGE_MARK_HEAD(Add)(HTABLE_WIDGE hBaseWidge, HWIDGET_BASE widge) {
-	uint16 widgeLength;
+PUBLIC uint8_t TABLE_WIDGE_MARK_HEAD(Add)(p_table_widget_t hBaseWidge, p_widget_base_t widge) {
+	uint16_t widgeLength;
 	if (hBaseWidge == NULL || widge == NULL) { return FALSE; }
 
-	if (GROUP_MARK_HEAD(Add)((HGROUP_WIDGE)hBaseWidge, widge) == FALSE) {
+	if (GROUP_MARK_HEAD(Add)((p_group_widget_t)hBaseWidge, widge) == FALSE) {
 		return FALSE;
 	}
-	widgeLength = ((HGROUP_WIDGE)hBaseWidge)->widgeLength - 1;
+	widgeLength = ((p_group_widget_t)hBaseWidge)->widgeLength - 1;
 
 	/*刷新*/
-	WindowsInvaildRect((HWIDGET_BASE)hBaseWidge, NULL);
+	WindowsInvaildRect((p_widget_base_t)hBaseWidge, NULL);
 	return TRUE;
 }

@@ -1,18 +1,18 @@
 #include "mem_dev.h"
 #include "x_malloc.h"
-#include "tool.h"
+#include "x_tool.h"
 
 #include "GUI_interface_extern.h"
 
 /*创建一个存储设备*/
-HMEM_DEV MemDevCreate(int16 x, int16 y, uint16 w, uint16 h, uint8 colorDepth)
+p_mem_dev_t MemDevCreate(int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t colorDepth)
 {
-	HMEM_DEV hMemDev = xMalloc(sizeof(MEM_DEV));
+	p_mem_dev_t hMemDev = xMalloc(sizeof(mem_dev_t));
 	if (hMemDev == NULL)
 	{
 		return NULL;
 	}
-	hMemDev->mem = (uint8 *)xMalloc(w * h * (colorDepth / 8));
+	hMemDev->mem = (uint8_t *)xMalloc(w * h * (colorDepth / 8));
 	if (hMemDev->mem == NULL)
 	{
 		xFree(hMemDev);
@@ -31,7 +31,7 @@ HMEM_DEV MemDevCreate(int16 x, int16 y, uint16 w, uint16 h, uint8 colorDepth)
 	return hMemDev;
 }
 /*重新设置MemDev的大小，*/
-uint8 MemDevReset(HMEM_DEV hMemDev, int16 x, int16 y, uint16 w, uint16 h)
+uint8_t MemDevReset(p_mem_dev_t hMemDev, int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
 	if (hMemDev == NULL)
 	{
@@ -53,39 +53,39 @@ uint8 MemDevReset(HMEM_DEV hMemDev, int16 x, int16 y, uint16 w, uint16 h)
 	}
 	return TRUE;
 }
-void MemDevClear(HMEM_DEV hMemDev, uintColor color)
+void MemDevClear(p_mem_dev_t hMemDev, uintColor color)
 {
 	if (hMemDev == NULL)
 	{
 		return;
 	}
-	int16 i, j;
+	int16_t i, j;
 	for (j = hMemDev->rect.y; j < hMemDev->rect.y + hMemDev->rect.h; j++)
 	{
 		for (i = hMemDev->rect.x; i < hMemDev->rect.x + hMemDev->rect.w; i++)
 		{
-			((uint16 *)(hMemDev->mem))[(i - hMemDev->rect.x) + (j - hMemDev->rect.y) * hMemDev->rect.w] = color;
+			((uint16_t *)(hMemDev->mem))[(i - hMemDev->rect.x) + (j - hMemDev->rect.y) * hMemDev->rect.w] = color;
 		}
 	}
 }
-void MemDevDrawPT(HMEM_DEV hMemDev, int16 x, int16 y, uintColor color)
+void MemDevDrawPT(p_mem_dev_t hMemDev, int16_t x, int16_t y, uintColor color)
 {
 	if (hMemDev == NULL)
 	{
 		return;
 	}
-	((uint16 *)(hMemDev->mem))[x + y * hMemDev->rect.w] = (uint16)color;
+	((uint16_t *)(hMemDev->mem))[x + y * hMemDev->rect.w] = (uint16_t)color;
 }
-uintColor MemDevReadPT(HMEM_DEV hMemDev, int16 x, int16 y)
+uintColor MemDevReadPT(p_mem_dev_t hMemDev, int16_t x, int16_t y)
 {
 	if (hMemDev == NULL)
 	{
 		return 0x0000;
 	}
-	return ((uint16 *)(hMemDev->mem))[x + y * hMemDev->rect.w];
+	return ((uint16_t *)(hMemDev->mem))[x + y * hMemDev->rect.w];
 }
 
-void MemDevCopyToLCD(HMEM_DEV hMemDev)
+void MemDevCopyToLCD(p_mem_dev_t hMemDev)
 {
 	if (hMemDev == NULL)
 	{

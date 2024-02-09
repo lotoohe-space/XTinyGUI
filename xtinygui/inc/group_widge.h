@@ -9,25 +9,25 @@
 /*组控件*/
 typedef struct
 {
-	WIDGET_BASE widgeBase; /*继承Widge*/
-	HLIST widgetList;	   /*控件列表*/
-	uint16 widgeLength;	   /*控件个数*/
-} *HGROUP_WIDGE, GROUP_WIDGE;
+	widget_base_t widgeBase; /*继承Widge*/
+	p_rlist_t widgetList;		 /*控件列表*/
+	uint16_t widgeLength;		 /*控件个数*/
+} *p_group_widget_t, group_widget_t;
 
-#define _PToHGroupWidgeType(a) ((HGROUP_WIDGE)a)
+#define _PToHGroupWidgeType(a) ((p_group_widget_t)a)
 
-PUBLIC HGROUP_WIDGE GROUP_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, uint16 h);
-PUBLIC uint8 GROUP_MARK_HEAD(Init)(HGROUP_WIDGE hBaseWidge, int16 x, int16 y, uint16 w, uint16 h);
-PUBLIC void GROUP_MARK_HEAD(Close)(HGROUP_WIDGE hObject);
-PUBLIC HWIDGET_BASE GROUP_MARK_HEAD(GetWidge)(HGROUP_WIDGE hObject, uint16 index);
-PUBLIC void GROUP_MARK_HEAD(Resize)(HGROUP_WIDGE hObject, int16 x, int16 y, uint16 w, uint16 h);
+PUBLIC p_group_widget_t GROUP_MARK_HEAD(Create)(int16_t x, int16_t y, uint16_t w, uint16_t h);
+PUBLIC uint8_t GROUP_MARK_HEAD(Init)(p_group_widget_t hBaseWidge, int16_t x, int16_t y, uint16_t w, uint16_t h);
+PUBLIC void GROUP_MARK_HEAD(Close)(p_group_widget_t hObject);
+PUBLIC p_widget_base_t GROUP_MARK_HEAD(GetWidge)(p_group_widget_t hObject, uint16_t index);
+PUBLIC void GROUP_MARK_HEAD(Resize)(p_group_widget_t hObject, int16_t x, int16_t y, uint16_t w, uint16_t h);
 
-PUBLIC void GROUP_MARK_HEAD(GroupProcess)(HGROUP_WIDGE hBaseWidge, HWIDGET_BASE currentWidge);
+PUBLIC void GROUP_MARK_HEAD(GroupProcess)(p_group_widget_t hBaseWidge, p_widget_base_t currentWidge);
 /*删除一个控件*/
-PUBLIC uint8 GROUP_MARK_HEAD(Del)(HGROUP_WIDGE hBaseWidge, HWIDGET_BASE widge);
-PUBLIC uint8 GROUP_MARK_HEAD(Add)(HGROUP_WIDGE hBaseWidge, HWIDGET_BASE widge);
+PUBLIC uint8_t GROUP_MARK_HEAD(Del)(p_group_widget_t hBaseWidge, p_widget_base_t widge);
+PUBLIC uint8_t GROUP_MARK_HEAD(Add)(p_group_widget_t hBaseWidge, p_widget_base_t widge);
 PUBLIC void GROUP_MARK_HEAD(Paint)(void *hObject);
-PUBLIC void GROUP_MARK_HEAD(MoveTo)(HGROUP_WIDGE hObject, int16 x, int16 y);
-PUBLIC int8 GROUP_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);
+PUBLIC void GROUP_MARK_HEAD(MoveTo)(p_group_widget_t hObject, int16_t x, int16_t y);
+PUBLIC int8_t GROUP_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg);
 
 #endif

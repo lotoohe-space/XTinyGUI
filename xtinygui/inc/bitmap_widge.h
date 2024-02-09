@@ -9,16 +9,16 @@
 
 typedef struct
 {
-	WIDGET_BASE widgeBase;
-	HXBITMAP bitmap; /*显示的图片*/
-} *HBITMAP_WIDGE, BITMAP_WIDGE;
+	widget_base_t widgeBase;
+	p_xbitmap_t bitmap; /*显示的图片*/
+} *p_bitmap_widget_t, bitmap_widget_t;
 
-PUBLIC HBITMAP_WIDGE BITMAP_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, HXBITMAP hXBitmap);
-PUBLIC void BITMAP_MARK_HEAD(SetBitmap)(HBITMAP_WIDGE hObject, HXBITMAP hXBitmap);
-PUBLIC void BITMAP_MARK_HEAD(MoveTo)(HBITMAP_WIDGE hObject, int16 x, int16 y);
-PUBLIC void BITMAP_MARK_HEAD(SetParentWin)(HBITMAP_WIDGE hObject, HWIN hWIN);
-PUBLIC void BITMAP_MARK_HEAD(SetColor)(HBITMAP_WIDGE hObject, uintColor color);
+PUBLIC p_bitmap_widget_t BITMAP_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, p_xbitmap_t hXBitmap);
+PUBLIC void BITMAP_MARK_HEAD(SetBitmap)(p_bitmap_widget_t hObject, p_xbitmap_t hXBitmap);
+PUBLIC void BITMAP_MARK_HEAD(MoveTo)(p_bitmap_widget_t hObject, int16_t x, int16_t y);
+PUBLIC void BITMAP_MARK_HEAD(SetParentWin)(p_bitmap_widget_t hObject, p_win_t hWIN);
+PUBLIC void BITMAP_MARK_HEAD(SetColor)(p_bitmap_widget_t hObject, uintColor color);
 PUBLIC void BITMAP_MARK_HEAD(Paint)(void *hObject);
-int8 BITMAP_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);
+int8_t BITMAP_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg);
 
 #endif

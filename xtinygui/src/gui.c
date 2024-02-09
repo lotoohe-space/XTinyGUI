@@ -9,10 +9,10 @@
 #include <string.h>
 
 /*桌面也应该是一个窗体*/
-HXDESKTOP hXDesktop = NULL;
+p_xdesktop_t hXDesktop = NULL;
 
 /*添加一个控件到桌面*/
-int8 WinListAdd(HWIDGET_BASE hWidgeBase)
+int8_t WinListAdd(p_widget_base_t hWidgeBase)
 {
 
 	WindowsAdd(hXDesktop->desktopWin, hWidgeBase);
@@ -20,15 +20,15 @@ int8 WinListAdd(HWIDGET_BASE hWidgeBase)
 	return 0;
 }
 /*获取顶层的控件*/
-HWIDGET_BASE WinGetTop(void)
+p_widget_base_t WinGetTop(void)
 {
-	HLIST tList = _PToHGroupWidgeType(hXDesktop->desktopWin)->widgetList;
+	p_rlist_t tList = _PToHGroupWidgeType(hXDesktop->desktopWin)->widgetList;
 	tList = tList->next;
 	while (tList)
 	{
 		if (tList->next == NULL)
 		{
-			return (HWIDGET_BASE)(tList->val);
+			return (p_widget_base_t)(tList->val);
 		}
 		tList = tList->next;
 	}
@@ -41,8 +41,8 @@ void WinMoveTop(void *hObject)
 	{
 		return;
 	}
-	HLIST tHWinList = NULL;
-	HLIST tList = _PToHGroupWidgeType(hXDesktop->desktopWin)->widgetList;
+	p_rlist_t tHWinList = NULL;
+	p_rlist_t tList = _PToHGroupWidgeType(hXDesktop->desktopWin)->widgetList;
 	// tList = tList->next;
 	while (tList->next)
 	{
@@ -81,14 +81,14 @@ void WinMoveTop(void *hObject)
 /*GUI事件处理*/
 void GUIEvent(void)
 {
-	HMSGE hTempMsg;
-	uint8 flag = FALSE;
+	p_msg_t hTempMsg;
+	uint8_t flag = FALSE;
 	/*是否第一次刷新*/
 	if (_GET_FIRST_RUN(hXDesktop))
 	{
 		GUIEventValid();
 		/*刷新桌面一次*/
-		WindowsInvaildRect((HWIDGET_BASE)(&(hXDesktop->desktopWin->groupWidge)), NULL);
+		WindowsInvaildRect((p_widget_base_t)(&(hXDesktop->desktopWin->groupWidge)), NULL);
 		_CLR_FIRST_RUN(hXDesktop);
 	}
 
@@ -100,22 +100,22 @@ void GUIEvent(void)
 	{
 		if (hTempMsg->msgType == MSG_TOUCH)
 		{ /*触摸事件*/
-			HWIN tmpTopHWin = NULL;
+			p_win_t tmpTopHWin = NULL;
 			if (_PToHGroupWidgeType(hXDesktop->desktopWin)->widgetList)
 			{
-				int8 ret;
-				HLIST lastWin = ListGetLast(_PToHGroupWidgeType(hXDesktop->desktopWin)->widgetList);
+				int8_t ret;
+				p_rlist_t lastWin = ListGetLast(_PToHGroupWidgeType(hXDesktop->desktopWin)->widgetList);
 				if (lastWin != NULL)
 				{
 					while (lastWin != _PToHGroupWidgeType(hXDesktop->desktopWin)->widgetList)
 					{
-						HWIDGET_BASE hWidgeBase = (HWIDGET_BASE)(lastWin->val);
+						p_widget_base_t hWidgeBase = (p_widget_base_t)(lastWin->val);
 						if (_GET_IS_WIN(hWidgeBase))
 						{
 							/*是否为窗口,是窗口则如果被点击则，窗口置顶*/
 							if ((ret = hWidgeBase->widgeCallBackFun(hWidgeBase, hTempMsg)) == 0 || ret == 1)
 							{ // 是被点击了
-								tmpTopHWin = (HWIN)hWidgeBase;
+								tmpTopHWin = (p_win_t)hWidgeBase;
 								break;
 							}
 						}
@@ -166,7 +166,7 @@ void GUIEvent(void)
 	{
 		if (hTempMsg->msgType == MSG_WIN_INVAILD_UPDATE)
 		{
-			GUIUpdate(hTempMsg->msgSrc, (HXRECT)(&(hTempMsg->msgVal.rect)));
+			GUIUpdate(hTempMsg->msgSrc, (p_xrect_t)(&(hTempMsg->msgVal.rect)));
 		}
 		GUIDelDrawMsg(hTempMsg);
 	}
@@ -185,7 +185,7 @@ void GUIEvent(void)
 		GUIDelWinDelMsg(hTempMsg);
 	}
 #if USE_CURSOR
-	extern GUI_CURSOR GUICursor;
+	extern gui_cursor_t GUICursor;
 	while ((hTempMsg = GUIGetCursorMsg()) != NULL)
 	{
 		if (hTempMsg->msgType == MSG_CURSOR)
@@ -215,12 +215,12 @@ void GUIEvent(void)
 	}
 #endif
 }
-void GUIUpdate(HWIDGET_BASE hWidgeBase, HXRECT hXRect)
+void GUIUpdate(p_widget_base_t hWidgeBase, p_xrect_t hXRect)
 {
 #if USE_MEM_DEV
-	int16 i, j;
-	XRECT rRect;
-	XRECT oldDrawRect;
+	int16_t i, j;
+	xrect_t rRect;
+	xrect_t oldDrawRect;
 #endif
 	SetUpdateArea(hWidgeBase, hXRect);
 #if USE_MEM_DEV
@@ -257,13 +257,13 @@ void GUIUpdate(HWIDGET_BASE hWidgeBase, HXRECT hXRect)
 #endif
 }
 /*设置更新区域*/
-void SetUpdateArea(HWIDGET_BASE hWidgeBase, HXRECT hXRect)
+void SetUpdateArea(p_widget_base_t hWidgeBase, p_xrect_t hXRect)
 {
-	XRECT rRect;
+	xrect_t rRect;
 
 	hXDesktop->updateParentWidge = hWidgeBase;
 	/*绘图区域与桌面取相交，然后赋值给桌面Pencil*/
-	GetOverLapRect((HXRECT)(&(hXDesktop->desktopWin->groupWidge)), hXRect, &rRect);
+	GetOverLapRect((p_xrect_t)(&(hXDesktop->desktopWin->groupWidge)), hXRect, &rRect);
 
 	/*重新设置控件的有效绘图区域*/
 	XRECT_COPY(&(hXDesktop->desktopWin->groupWidge.widgeBase.pencil), &rRect);
@@ -273,12 +273,12 @@ void SetUpdateArea(HWIDGET_BASE hWidgeBase, HXRECT hXRect)
 }
 
 /*GUI初始化*/
-HXDESKTOP GUIInit(void)
+p_xdesktop_t GUIInit(void)
 {
 	GUIMsgEventInit(); /*事件初始化*/
 
 	/*创建一个桌面*/
-	hXDesktop = (HXDESKTOP)xMalloc(sizeof(XDESKTOP));
+	hXDesktop = (p_xdesktop_t)xMalloc(sizeof(xdesktop_t));
 	if (hXDesktop == NULL)
 	{
 		return NULL;
@@ -300,7 +300,7 @@ HXDESKTOP GUIInit(void)
 #endif /*USE_CURSOR*/
 
 	/*设置桌面默认颜色*/
-	WindowsSetColor(hXDesktop->desktopWin, RGB565(0, 128, 230));
+	WindowsSetColor(hXDesktop->desktopWin, rgb565_t(0, 128, 230));
 	/*设置桌面不显示头部以及边框*/
 	WindowsSetDrawHead(hXDesktop->desktopWin, FALSE);
 
@@ -317,15 +317,15 @@ HXDESKTOP GUIInit(void)
 /*当前的窗口是否需要剪裁
 	TRUE:需要剪裁
 */
-BOOL IsGUINeedCut(HWIDGET_BASE hWidgeBase)
+BOOL IsGUINeedCut(p_widget_base_t hWidgeBase)
 {
-	HXRECT hXRECT;
-	uint8 flag = 0;
+	p_xrect_t hXRECT;
+	uint8_t flag = 0;
 	if (hWidgeBase == NULL)
 	{
 		return TRUE;
 	}
-	hXRECT = (HXRECT)(hWidgeBase);
+	hXRECT = (p_xrect_t)(hWidgeBase);
 #if USE_ALPHA
 	/*如果透明则需要剪裁，也就是需要绘制*/
 	if (_GET_IS_DPY(hXRECT))
@@ -333,7 +333,7 @@ BOOL IsGUINeedCut(HWIDGET_BASE hWidgeBase)
 		return TRUE;
 	}
 	///*如果当前窗口时移动窗口则刷新*/
-	// if (memcmp(hXRECT ,&(hXDesktop->movingRect),sizeof(XRECT)) == 0) {
+	// if (memcmp(hXRECT ,&(hXDesktop->movingRect),sizeof(xrect_t)) == 0) {
 	//	return TRUE;
 	// }
 	/*如果当前窗口和移动窗口产生了碰撞则刷新*/
@@ -345,7 +345,7 @@ BOOL IsGUINeedCut(HWIDGET_BASE hWidgeBase)
 	{ /*有父窗口才能操作*/
 		/*如果当前窗口上面有透明窗口则刷新*/
 		_StartScanU((_PToHGroupWidgeType((WIDGE_PARENT(hWidgeBase))))->widgetList)
-			HXRECT hItemRect = (HXRECT)(val);
+			p_xrect_t hItemRect = (p_xrect_t)(val);
 		if (flag == 1)
 		{
 			if (_GET_IS_DPY(hItemRect))
@@ -372,7 +372,7 @@ BOOL IsGUINeedCut(HWIDGET_BASE hWidgeBase)
 		return TRUE;
 	}
 
-	// if (memcmp(hXRECT, &(hXDesktop->movingRect), sizeof(XRECT)) == 0) {
+	// if (memcmp(hXRECT, &(hXDesktop->movingRect), sizeof(xrect_t)) == 0) {
 	//	return TRUE;
 	// }
 	return _IsDrawCheckArea(
@@ -381,10 +381,10 @@ BOOL IsGUINeedCut(HWIDGET_BASE hWidgeBase)
 #endif
 }
 /*设置允许绘图的窗口，是当前窗口与桌面的相交区域*/
-uint8 DrawSetArea(HWIDGET_BASE hWidgeBase)
+uint8_t DrawSetArea(p_widget_base_t hWidgeBase)
 {
 
-	XRECT rRect;
+	xrect_t rRect;
 	if (!hWidgeBase)
 	{
 		return FALSE;
@@ -396,7 +396,7 @@ uint8 DrawSetArea(HWIDGET_BASE hWidgeBase)
 	}
 
 	/*控件矩形与父控件的可绘制区域相交矩形即为绘图区域*/
-	GetOverLapRect((HXRECT)(&(((HWIDGET_BASE)(hWidgeBase->parentHWIN))->pencil)), &(hWidgeBase->rect), &rRect);
+	GetOverLapRect((p_xrect_t)(&(((p_widget_base_t)(hWidgeBase->parentHWIN))->pencil)), &(hWidgeBase->rect), &rRect);
 	if (rRect.w == 0 || rRect.h == 0)
 	{
 		return FALSE;
@@ -407,7 +407,7 @@ uint8 DrawSetArea(HWIDGET_BASE hWidgeBase)
 	return TRUE;
 }
 /*复位绘图区域*/
-void DrawResetArea(HWIDGET_BASE hWidgeBase)
+void DrawResetArea(p_widget_base_t hWidgeBase)
 {
 	if (!hWidgeBase)
 	{
@@ -419,10 +419,10 @@ void DrawResetArea(HWIDGET_BASE hWidgeBase)
 void GUIExec(void)
 {
 #if !USE_ALPHA
-	if (!_GET_IS_DPY(hXDesktop->updateParentWidge) && hXDesktop->updateParentWidge == (HWIDGET_BASE)(hXDesktop->topWin))
+	if (!_GET_IS_DPY(hXDesktop->updateParentWidge) && hXDesktop->updateParentWidge == (p_widget_base_t)(hXDesktop->topWin))
 	{
 		/*如果是更新的窗口不是透明窗口，且是顶层窗口,则直接刷新顶层窗口*/
-		// XRECT hRect;
+		// xrect_t hRect;
 		// hRect.x = 0;
 		// hRect.y = 0;
 		// hRect.w = 800;
@@ -433,7 +433,7 @@ void GUIExec(void)
 	else
 #endif
 	{
-		// XRECT hRect;
+		// xrect_t hRect;
 		// hRect.x = 0;
 		// hRect.y = 0;
 		// hRect.w = 800;

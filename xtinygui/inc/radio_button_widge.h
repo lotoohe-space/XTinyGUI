@@ -8,19 +8,19 @@
 
 typedef struct
 {
-	TEXT_WIDGE textWidge;
-	uint8 flag;			/*0，1bit：当前状态*/
-	XBITMAP checkedImg; /*选中后的图片*/
+	text_widget_t textWidge;
+	uint8_t flag;			  /*0，1bit：当前状态*/
+	xbitmap_t checkedImg; /*选中后的图片*/
 
-} *HRADIO_BUTTON_WIDGE, RADIO_BUTTON_WIDGE;
+} *p_radio_button_widget_t, radio_button_widget_t;
 
-PUBLIC HRADIO_BUTTON_WIDGE RADIO_BUTTON_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, const char *text);
-PUBLIC void RADIO_BUTTON_MARK_HEAD(MoveTo)(HRADIO_BUTTON_WIDGE hObject, int16 x, int16 y);
-PUBLIC void RADIO_BUTTON_MARK_HEAD(SetParentWin)(HRADIO_BUTTON_WIDGE hObject, HWIDGET_BASE parentWidge);
-PUBLIC void RADIO_BUTTON_MARK_HEAD(SetStatus)(HRADIO_BUTTON_WIDGE hObject, uint8 status);
-PUBLIC void RADIO_BUTTON_MARK_HEAD(SetColor)(HRADIO_BUTTON_WIDGE hObject, uintColor color);
+PUBLIC p_radio_button_widget_t RADIO_BUTTON_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, const char *text);
+PUBLIC void RADIO_BUTTON_MARK_HEAD(MoveTo)(p_radio_button_widget_t hObject, int16_t x, int16_t y);
+PUBLIC void RADIO_BUTTON_MARK_HEAD(SetParentWin)(p_radio_button_widget_t hObject, p_widget_base_t parentWidge);
+PUBLIC void RADIO_BUTTON_MARK_HEAD(SetStatus)(p_radio_button_widget_t hObject, uint8_t status);
+PUBLIC void RADIO_BUTTON_MARK_HEAD(SetColor)(p_radio_button_widget_t hObject, uintColor color);
 PUBLIC void RADIO_BUTTON_MARK_HEAD(Paint)(void *hObject);
-PUBLIC int8 RADIO_BUTTON_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);
-PUBLIC void RADIO_BUTTON_MARK_HEAD(SetClickBack)(HRADIO_BUTTON_WIDGE hObject, void *arg, ViewClickCallBack viewClickCallBack);
+PUBLIC int8_t RADIO_BUTTON_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg);
+PUBLIC void RADIO_BUTTON_MARK_HEAD(SetClickBack)(p_radio_button_widget_t hObject, void *arg, ViewClickCallBack viewClickCallBack);
 
 #endif

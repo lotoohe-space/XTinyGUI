@@ -6,7 +6,7 @@
 #include "xwindows.h"
 #include "bitmap.h"
 
-static const uint8 radioButtonImg0[] = {
+static const uint8_t radioButtonImg0[] = {
 	_______X, X_______, // 0
 	_____XXX, XXX_____, // 1
 	___XXXXX, XXXXX___, // 2
@@ -24,7 +24,7 @@ static const uint8 radioButtonImg0[] = {
 	_____XXX, XXX_____, // 14
 	_______X, X_______, // 15
 };
-static const uint8 radioButtonImg1[] = {
+static const uint8_t radioButtonImg1[] = {
 	________, ________, // 0
 	________, ________, // 1
 	______XX, XX______, // 2
@@ -43,15 +43,14 @@ static const uint8 radioButtonImg1[] = {
 	________, ________, // 15
 };
 /*创建函数*/
-PUBLIC HRADIO_BUTTON_WIDGE RADIO_BUTTON_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, const char *text)
+PUBLIC p_radio_button_widget_t RADIO_BUTTON_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, const char *text)
 {
-	HRADIO_BUTTON_WIDGE hWidge = (HRADIO_BUTTON_WIDGE)(xMalloc(sizeof(RADIO_BUTTON_WIDGE)));
+	p_radio_button_widget_t hWidge = (p_radio_button_widget_t)(xMalloc(sizeof(radio_button_widget_t)));
 	if (hWidge == NULL)
 	{
 		return NULL;
 	}
-	_WIDGET(Init)
-	((HWIDGET_BASE)hWidge, x, y, w, h);
+	WidgetInit((p_widget_base_t)hWidge, x, y, w, h);
 
 	/*设置三个回调函数*/
 	_PToHTextWidgeType(hWidge)->baseWidge.paintFun = RADIO_BUTTON_MARK_HEAD(Paint);
@@ -60,25 +59,24 @@ PUBLIC HRADIO_BUTTON_WIDGE RADIO_BUTTON_MARK_HEAD(Create)(int16 x, int16 y, int1
 	// hWidge->widgeBase.widgeCloseFun = RADIO_BUTTON_MARK_HEAD(Close);
 
 	_PToHTextWidgeType(hWidge)->text = text;
-	_PToHTextWidgeType(hWidge)->hFont = (HFONTF)&fontASCII16_16;
+	_PToHTextWidgeType(hWidge)->hFont = (p_font_t)&fontASCII16_16;
 	hWidge->flag = 0;
 
 	_SET_GROUP_CTRL(hWidge);
 	/*初始化图片*/
-	InitBitmap(&(hWidge->checkedImg), (uint8 *)radioButtonImg0, 16, 16, 1);
+	InitBitmap(&(hWidge->checkedImg), (uint8_t *)radioButtonImg0, 16, 16, 1);
 
 	return hWidge;
 }
 /*设置点击回调*/
-void RADIO_BUTTON_MARK_HEAD(SetClickBack)(HRADIO_BUTTON_WIDGE hObject, void *arg, ViewClickCallBack viewClickCallBack)
+void RADIO_BUTTON_MARK_HEAD(SetClickBack)(p_radio_button_widget_t hObject, void *arg, ViewClickCallBack viewClickCallBack)
 {
-	_WIDGET(SetClickBack)
-	((HWIDGET_BASE)hObject, arg, viewClickCallBack);
+	WidgetSetClickBack((p_widget_base_t)hObject, arg, viewClickCallBack);
 	/*if (!hObject) { return; }
 	hObject->viewClickCallBack = viewClickCallBack;*/
 }
 /*设置状态，内部调用的函数*/
-PUBLIC void RADIO_BUTTON_MARK_HEAD(SetStatus)(HRADIO_BUTTON_WIDGE hObject, uint8 status)
+PUBLIC void RADIO_BUTTON_MARK_HEAD(SetStatus)(p_radio_button_widget_t hObject, uint8_t status)
 {
 	if (!hObject)
 	{
@@ -88,12 +86,12 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(SetStatus)(HRADIO_BUTTON_WIDGE hObject, uint8
 	if (status == TRUE)
 	{
 		GROUP_MARK_HEAD(GroupProcess)
-		((HGROUP_WIDGE)(WIDGE_PARENT(hObject)), (HWIDGET_BASE)hObject);
+		((p_group_widget_t)(WIDGE_PARENT(hObject)), (p_widget_base_t)hObject);
 	}
-	WindowsInvaildRect(WIDGE_PARENT(hObject), (HXRECT)hObject);
+	WindowsInvaildRect(WIDGE_PARENT(hObject), (p_xrect_t)hObject);
 }
 /*过去状态*/
-PUBLIC uint8 RADIO_BUTTON_MARK_HEAD(GetStatus)(HRADIO_BUTTON_WIDGE hObject)
+PUBLIC uint8_t RADIO_BUTTON_MARK_HEAD(GetStatus)(p_radio_button_widget_t hObject)
 {
 	if (!hObject)
 	{
@@ -102,7 +100,7 @@ PUBLIC uint8 RADIO_BUTTON_MARK_HEAD(GetStatus)(HRADIO_BUTTON_WIDGE hObject)
 	return (hObject->flag) & 0x3;
 }
 /*移动函数*/
-PUBLIC void RADIO_BUTTON_MARK_HEAD(MoveTo)(HRADIO_BUTTON_WIDGE hObject, int16 x, int16 y)
+PUBLIC void RADIO_BUTTON_MARK_HEAD(MoveTo)(p_radio_button_widget_t hObject, int16_t x, int16_t y)
 {
 	if (!hObject)
 	{
@@ -110,10 +108,10 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(MoveTo)(HRADIO_BUTTON_WIDGE hObject, int16 x,
 	}
 	_PToHTextWidgeType(hObject)->baseWidge.rect.x = x;
 	_PToHTextWidgeType(hObject)->baseWidge.rect.y = y;
-	// WindowsInvaildRect(hObject->widgeBase.parentHWIN, (HXRECT)hObject);
+	// WindowsInvaildRect(hObject->widgeBase.parentHWIN, (p_xrect_t)hObject);
 }
 /*设置父窗口*/
-PUBLIC void RADIO_BUTTON_MARK_HEAD(SetParentWin)(HRADIO_BUTTON_WIDGE hObject, HWIDGET_BASE parentWidge)
+PUBLIC void RADIO_BUTTON_MARK_HEAD(SetParentWin)(p_radio_button_widget_t hObject, p_widget_base_t parentWidge)
 {
 	if (!hObject)
 	{
@@ -122,7 +120,7 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(SetParentWin)(HRADIO_BUTTON_WIDGE hObject, HW
 	_PToHTextWidgeType(hObject)->baseWidge.parentHWIN = parentWidge;
 }
 /*设置颜色*/
-PUBLIC void RADIO_BUTTON_MARK_HEAD(SetColor)(HRADIO_BUTTON_WIDGE hObject, uintColor color)
+PUBLIC void RADIO_BUTTON_MARK_HEAD(SetColor)(p_radio_button_widget_t hObject, uintColor color)
 {
 	if (!hObject)
 	{
@@ -133,10 +131,10 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(SetColor)(HRADIO_BUTTON_WIDGE hObject, uintCo
 /*绘制控件*/
 PUBLIC void RADIO_BUTTON_MARK_HEAD(Paint)(void *hObject)
 {
-	uint16 drawW;
-	XRECT xRect;
+	uint16_t drawW;
+	xrect_t xRect;
 	// float progressing;
-	HRADIO_BUTTON_WIDGE hWidge;
+	p_radio_button_widget_t hWidge;
 	hWidge = hObject;
 	if (!hObject)
 	{
@@ -148,7 +146,7 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(Paint)(void *hObject)
 	}
 	// if (!IsGUINeedCut(hWidge)) { return; }
 
-	if (!DrawSetArea((HWIDGET_BASE)hWidge))
+	if (!DrawSetArea((p_widget_base_t)hWidge))
 	{
 		return;
 	}
@@ -164,14 +162,14 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(Paint)(void *hObject)
 	{
 	case 0: /*未选择状态*/
 	{
-		hWidge->checkedImg.pixels = (uint8 *)radioButtonImg0;
+		hWidge->checkedImg.pixels = (uint8_t *)radioButtonImg0;
 		_PToHTextWidgeType(hObject)->baseWidge.pencil.DrawFrColor = 0xFFFF;
 		DrawCutBitmap(hWidge, &xRect, &(hWidge->checkedImg));
 
-		XPOINT xPoint;
+		xpoint_t xPoint;
 		xPoint.x = 0;
 		xPoint.y = 0;
-		XRECT xRect;
+		xrect_t xRect;
 		xRect.x = WIDGE_X(hWidge) + drawW;
 		xRect.y = WIDGE_Y(hWidge);
 		xRect.w = WIDGE_W(hWidge) - drawW;
@@ -181,32 +179,32 @@ PUBLIC void RADIO_BUTTON_MARK_HEAD(Paint)(void *hObject)
 	}
 	break;
 	case 1: /*点击状态*/
-		hWidge->checkedImg.pixels = (uint8 *)radioButtonImg1;
+		hWidge->checkedImg.pixels = (uint8_t *)radioButtonImg1;
 		_PToHTextWidgeType(hObject)->baseWidge.pencil.DrawFrColor = 0x0000;
 		DrawCutBitmap(hWidge, &xRect, &(hWidge->checkedImg));
 
-		XPOINT xPoint;
+		xpoint_t xPoint;
 		xPoint.x = 0;
 		xPoint.y = 0;
-		XRECT xRect;
+		xrect_t xRect;
 		xRect.x = WIDGE_X(hWidge) + drawW;
 		xRect.y = WIDGE_Y(hWidge);
 		xRect.w = WIDGE_W(hWidge) - drawW;
 		xRect.h = WIDGE_H(hWidge);
 		// DrawCutChar(hWidge, hWidge->hFONTF, &xRect, &xPoint, 'S');
 		DrawCutString(hWidge, _PToHTextWidgeType(hObject)->hFont, &xRect, &xPoint,
-					  (uint8 *)(_PToHTextWidgeType(hObject)->text));
+					  (uint8_t *)(_PToHTextWidgeType(hObject)->text));
 		break;
 	case 2:
 		break;
 	}
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGET_BASE)hWidge);
+	DrawResetArea((p_widget_base_t)hWidge);
 }
 /*事件回调*/
-int8 RADIO_BUTTON_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
+int8_t RADIO_BUTTON_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg)
 {
-	HWIDGET_BASE hWidgeBase = hObject;
+	p_widget_base_t hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg)
 	{
 		return -1;
@@ -228,22 +226,22 @@ int8 RADIO_BUTTON_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 
 				break;
 			case MSG_TOUCH_RELEASE:
-				if (RADIO_BUTTON_MARK_HEAD(GetStatus)((HRADIO_BUTTON_WIDGE)hWidgeBase) == 1)
+				if (RADIO_BUTTON_MARK_HEAD(GetStatus)((p_radio_button_widget_t)hWidgeBase) == 1)
 				{
 					RADIO_BUTTON_MARK_HEAD(SetStatus)
-					((HRADIO_BUTTON_WIDGE)hWidgeBase, 0);
+					((p_radio_button_widget_t)hWidgeBase, 0);
 					if (_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack != NULL)
 					{
-						_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack(hWidgeBase, hWidgeBase->arg, RADIO_BUTTON_MARK_HEAD(GetStatus)((HRADIO_BUTTON_WIDGE)hWidgeBase));
+						_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack(hWidgeBase, hWidgeBase->arg, RADIO_BUTTON_MARK_HEAD(GetStatus)((p_radio_button_widget_t)hWidgeBase));
 					}
 				}
-				else if (RADIO_BUTTON_MARK_HEAD(GetStatus)((HRADIO_BUTTON_WIDGE)hWidgeBase) == 0)
+				else if (RADIO_BUTTON_MARK_HEAD(GetStatus)((p_radio_button_widget_t)hWidgeBase) == 0)
 				{
 					RADIO_BUTTON_MARK_HEAD(SetStatus)
-					((HRADIO_BUTTON_WIDGE)hWidgeBase, 1);
+					((p_radio_button_widget_t)hWidgeBase, 1);
 					if (_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack != NULL)
 					{
-						_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack(hWidgeBase, hWidgeBase->arg, RADIO_BUTTON_MARK_HEAD(GetStatus)((HRADIO_BUTTON_WIDGE)hWidgeBase));
+						_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack(hWidgeBase, hWidgeBase->arg, RADIO_BUTTON_MARK_HEAD(GetStatus)((p_radio_button_widget_t)hWidgeBase));
 					}
 				}
 				break;

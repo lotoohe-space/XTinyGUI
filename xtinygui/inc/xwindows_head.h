@@ -8,17 +8,16 @@
 #include "widge.h"
 #include "button_widge.h"
 #include "group_widge.h"
-#define WINDOWS_HEAD_MARK_HEAD(a) WindowsHeadWidge##a
 
 typedef struct
 {
-	GROUP_WIDGE groupWidge; /*继承GROUP_WIDGE控件*/
+	group_widget_t groupWidge; /*继承GROUP_WIDGE控件*/
 
-	HXBUTTON hXButtonMin;	/*最小化按钮，该按钮被添加到widgetList中*/
-	HXBUTTON hXButtonMax;	/*最大化按钮，该按钮被添加到widgetList中*/
-	HXBUTTON hXButtonClose; /*最大化按钮，该按钮被添加到widgetList中*/
+	p_xbutton_t hXButtonMin;	/*最小化按钮，该按钮被添加到widgetList中*/
+	p_xbutton_t hXButtonMax;	/*最大化按钮，该按钮被添加到widgetList中*/
+	p_xbutton_t hXButtonClose; /*最大化按钮，该按钮被添加到widgetList中*/
 
-} *HWIN_HEAD, WIN_HEAD;
+} *p_win_head_t, win_head_t;
 
 #define _DefaultHeadColor 0xc100
 #define _DefaultFontColor 0xffff
@@ -26,20 +25,20 @@ typedef struct
 // 默认的窗口名
 #define _DefaultWinHeadName "window"
 
-PUBLIC HWIN_HEAD WINDOWS_HEAD_MARK_HEAD(Create)(char *title, int16 x, int16 y, int16 w, int16 h);
-PUBLIC void WINDOWS_HEAD_MARK_HEAD(Close)(HWIN_HEAD hWinHead);
-PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetVisable)(void *hObject, int8 isVisable);
-PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetMaximumBtnClickBack)(HWIN_HEAD hObject, void *arg, ViewClickCallBack viewClickCallBack);
-PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetMinimumBtnClickBack)(HWIN_HEAD hObject, void *arg, ViewClickCallBack viewClickCallBack);
-PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetCloseBtnClickBack)(HWIN_HEAD hObject, void *arg, ViewClickCallBack viewClickCallBack);
-PUBLIC void WINDOWS_HEAD_MARK_HEAD(MoveTo)(HWIN_HEAD hObject, int16 x, int16 y);
-PRIVATE void WINDOWS_HEAD_MARK_HEAD(Paint)(void *hObject);
-PUBLIC int8 WINDOWS_HEAD_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);
+PUBLIC p_win_head_t WindowsHeadWidgeCreate(char *title, int16_t x, int16_t y, int16_t w, int16_t h);
+PUBLIC void WindowsHeadWidgeClose(p_win_head_t hWinHead);
+PUBLIC void WindowsHeadWidgeSetVisable(void *hObject, int8_t isVisable);
+PUBLIC void WindowsHeadWidgeSetMaximumBtnClickBack(p_win_head_t hObject, void *arg, ViewClickCallBack viewClickCallBack);
+PUBLIC void WindowsHeadWidgeSetMinimumBtnClickBack(p_win_head_t hObject, void *arg, ViewClickCallBack viewClickCallBack);
+PUBLIC void WindowsHeadWidgeSetCloseBtnClickBack(p_win_head_t hObject, void *arg, ViewClickCallBack viewClickCallBack);
+PUBLIC void WindowsHeadWidgeMoveTo(p_win_head_t hObject, int16_t x, int16_t y);
+PRIVATE void WindowsHeadWidgePaint(void *hObject);
+PUBLIC int8_t WindowsHeadWidgeCallBack(void *hObject, p_msg_t hMsg);
 
 /*需要抽象出来*/
-PUBLIC HWIDGET_BASE WINDOWS_HEAD_MARK_HEAD(GetWidge)(HWIN_HEAD hObject, uint16 index);
-PUBLIC void WINDOWS_HEAD_MARK_HEAD(Resize)(HWIN_HEAD hObject, int16 x, int16 y, uint16 w, uint16 h);
+PUBLIC p_widget_base_t WindowsHeadWidgeGetWidge(p_win_head_t hObject, uint16_t index);
+PUBLIC void WindowsHeadWidgeResize(p_win_head_t hObject, int16_t x, int16_t y, uint16_t w, uint16_t h);
 
-PUBLIC void WINDOWS_HEAD_MARK_HEAD(SetArea)(HWIN_HEAD hObject, int16 x, int16 y, int16 w, int16 h);
-PUBLIC int8 WINDOWS_HEAD_MARK_HEAD(Add)(HWIN_HEAD hWinHead, void *widge);
+PUBLIC void WindowsHeadWidgeSetArea(p_win_head_t hObject, int16_t x, int16_t y, int16_t w, int16_t h);
+PUBLIC int8_t WindowsHeadWidgeAdd(p_win_head_t hWinHead, void *widge);
 #endif

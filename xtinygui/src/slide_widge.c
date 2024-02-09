@@ -4,15 +4,14 @@
 
 #define SLIDE_DEFAULT_MAX_VAL 100
 
-PUBLIC HSLIDE_WIDGE SLIDE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h)
+PUBLIC p_slide_widget_t SLIDE_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h)
 {
-	HSLIDE_WIDGE hWidgeBase = (HSLIDE_WIDGE)(xMalloc(sizeof(SLIDE_WIDGE)));
+	p_slide_widget_t hWidgeBase = (p_slide_widget_t)(xMalloc(sizeof(slide_widget_t)));
 	if (hWidgeBase == NULL)
 	{
 		return NULL;
 	}
-	_WIDGET(Init)
-	((HWIDGET_BASE)hWidgeBase, x, y, w, h);
+	WidgetInit((p_widget_base_t)hWidgeBase, x, y, w, h);
 
 	/*设置三个回调函数*/
 	_PToHWidgeBaseType(hWidgeBase)->paintFun = SLIDE_MARK_HEAD(Paint);
@@ -23,7 +22,7 @@ PUBLIC HSLIDE_WIDGE SLIDE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h)
 
 	hWidgeBase->baseWidge.pencil.DrawColor = RGB565_BLACK;
 	hWidgeBase->baseWidge.pencil.DrawFrColor = _DefaultFrColor;
-	hWidgeBase->baseWidge.pencil.DrawBkColor = RGB565(230, 235, 230);
+	hWidgeBase->baseWidge.pencil.DrawBkColor = rgb565_t(230, 235, 230);
 
 	hWidgeBase->maxVal = SLIDE_DEFAULT_MAX_VAL;
 	hWidgeBase->currentVal = 50;
@@ -34,7 +33,7 @@ PUBLIC HSLIDE_WIDGE SLIDE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h)
 /*重绘函数*/
 PUBLIC void SLIDE_MARK_HEAD(Paint)(void *hObject)
 {
-	HSLIDE_WIDGE hWidgeBase;
+	p_slide_widget_t hWidgeBase;
 	hWidgeBase = hObject;
 	if (!hObject)
 	{
@@ -46,20 +45,20 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void *hObject)
 	}
 	// if (!IsGUINeedCut(hWidgeBase)) { return; }
 
-	if (!DrawSetArea((HWIDGET_BASE)hWidgeBase))
+	if (!DrawSetArea((p_widget_base_t)hWidgeBase))
 	{
 		return;
 	}
 
-	uint16 barH;
-	uint16 slideBlockH;
-	uint16 slideBlockW;
+	uint16_t barH;
+	uint16_t slideBlockH;
+	uint16_t slideBlockW;
 	/*得到相对坐标*/
-	int16 x, y;
-	uint16 w, h;
+	int16_t x, y;
+	uint16_t w, h;
 
-	int16 drawY;
-	int16 posBCK;
+	int16_t drawY;
+	int16_t posBCK;
 
 	barH = 6;
 	slideBlockH = WIDGE_H(hWidgeBase);
@@ -73,10 +72,10 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void *hObject)
 	/*横栏的位置*/
 	drawY = (h - barH) >> 1;
 	/*块的位置*/
-	posBCK = (int16)((w - slideBlockW) *
+	posBCK = (int16_t)((w - slideBlockW) *
 					 ((float)(hWidgeBase->currentVal) / (float)(hWidgeBase->maxVal)));
 	/*中间的条*/
-	XRECT drawRect;
+	xrect_t drawRect;
 	drawRect.x = WIDGE_X(hWidgeBase);
 	drawRect.y = WIDGE_Y(hWidgeBase) + drawY;
 	drawRect.w = posBCK;
@@ -129,14 +128,14 @@ PUBLIC void SLIDE_MARK_HEAD(Paint)(void *hObject)
 	DrawCutRect(hWidgeBase, &drawRect);
 
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGET_BASE)hWidgeBase);
+	DrawResetArea((p_widget_base_t)hWidgeBase);
 }
 
 /*事件回调*/
-PUBLIC int8 SLIDE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
+PUBLIC int8_t SLIDE_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg)
 {
-	int8 ret;
-	HSLIDE_WIDGE hBaseWidge = hObject;
+	int8_t ret;
+	p_slide_widget_t hBaseWidge = hObject;
 	if (!hBaseWidge || !hMsg)
 	{
 		return -1;
@@ -146,11 +145,11 @@ PUBLIC int8 SLIDE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 		return -1;
 	}
 
-	ret = _WIDGET(CallBack)(hBaseWidge, hMsg);
+	ret = WidgetCallBack(hBaseWidge, hMsg);
 
 	if (ret == RES_OK)
 	{
-		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, (HXRECT)hBaseWidge))
+		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y, (p_xrect_t)hBaseWidge))
 		{
 			switch (hMsg->msgID)
 			{
@@ -159,11 +158,11 @@ PUBLIC int8 SLIDE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 				break;
 			case MSG_TOUCH_MOVE:
 			{
-				int16 Dx;
+				int16_t Dx;
 
 				Dx = P_CDE2OPPOSITE_X(hBaseWidge, hMsg->msgVal.rect.x);
 				// Dy = P_CDE2OPPOSITE_Y(hBaseWidge, hMsg->msgVal.rect.y);
-				hBaseWidge->currentVal = (uint16)(((float)Dx / (float)WIDGE_W(hBaseWidge)) *
+				hBaseWidge->currentVal = (uint16_t)(((float)Dx / (float)WIDGE_W(hBaseWidge)) *
 												  (hBaseWidge->maxVal));
 				WindowsInvaildRect(hObject, NULL);
 			}

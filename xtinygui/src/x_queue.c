@@ -1,10 +1,10 @@
 
-#include "SqQueue.h"
+#include "x_queue.h"
 
 #include "x_malloc.h"
 
 /*初始化队列*/
-uint8 InitQueue(SqQueue *q, uint16 size)
+uint8_t InitQueue(xqueue_t *q, uint16_t size)
 {
 	QueueDateType *data;
 	if (q == NULL)
@@ -22,7 +22,7 @@ uint8 InitQueue(SqQueue *q, uint16 size)
 	q->valid = TRUE;
 	return TRUE;
 }
-uint16 QueueLength(SqQueue *q)
+uint16_t QueueLength(xqueue_t *q)
 {
 	if (q == NULL)
 	{
@@ -30,7 +30,7 @@ uint16 QueueLength(SqQueue *q)
 	}
 	return (q->rear - q->front + q->maxVal) % q->maxVal;
 }
-void DestroyQueue(SqQueue *q)
+void DestroyQueue(xqueue_t *q)
 {
 	if (q == NULL)
 	{
@@ -38,7 +38,7 @@ void DestroyQueue(SqQueue *q)
 	}
 	xFree(q->data);
 }
-uint8 QueueEmpty(SqQueue *q)
+uint8_t QueueEmpty(xqueue_t *q)
 {
 	if (q == NULL)
 	{
@@ -46,7 +46,7 @@ uint8 QueueEmpty(SqQueue *q)
 	}
 	return (q->front == q->rear);
 }
-uint8 enQueue(SqQueue *q, QueueDateType e)
+uint8_t enQueue(xqueue_t *q, QueueDateType e)
 {
 	if ((q->rear + 1) % q->maxVal == q->front)
 	{
@@ -56,7 +56,7 @@ uint8 enQueue(SqQueue *q, QueueDateType e)
 	q->data[q->rear] = e;
 	return TRUE;
 }
-uint8 deQueue(SqQueue *q, QueueDateType *e)
+uint8_t deQueue(xqueue_t *q, QueueDateType *e)
 {
 	if (q->front == q->rear)
 	{ /*空了，则返回错误*/
@@ -67,7 +67,7 @@ uint8 deQueue(SqQueue *q, QueueDateType *e)
 	return TRUE;
 }
 /*获取队尾的元素*/
-uint8 getTailQueue(SqQueue *q, QueueDateType *e)
+uint8_t getTailQueue(xqueue_t *q, QueueDateType *e)
 {
 	if (q->front == q->rear)
 	{ /*空了，则返回错误*/

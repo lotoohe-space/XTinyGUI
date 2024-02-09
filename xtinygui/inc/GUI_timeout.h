@@ -2,17 +2,17 @@
 #define _GUI_TIMEOUT_H__
 
 #include "type.h"
-#include "tool.h"
+#include "x_tool.h"
 typedef void (*GUITimeoutCallback)(void *arg);
 
 typedef struct
 {
 	GUITimeoutCallback timoutCallBackFun;
 	void *arg;
-	uint32 timeoutPeriod;
-	uint32 timeoutTick;
-	uint8 flag; /*0:bit 是否被使用*/
-} *HGUITIME_OUT, GUITIME_OUT;
+	uint32_t timeoutPeriod;
+	uint32_t timeoutTick;
+	uint8_t flag; /*0:bit 是否被使用*/
+} *p_guitime_out_t, guitime_out_t;
 
 /*是否被使用*/
 #define _SetTimeoutUse(a) (_SET_BIT(((a))->flag, 0))
@@ -24,10 +24,10 @@ typedef struct
 #define _CloseTimeout(a) (_CLR_BIT(((a))->flag, 1))
 #define _GetTimeout(a) (_GET_BIT(((a))->flag, 1))
 
-void GUITimeoutFree(HGUITIME_OUT hGUITimeout);
-HGUITIME_OUT GUITimeoutCreate(uint16 timeoutPeriod, void *arg, GUITimeoutCallback timoutCallBackFun);
-void GUITimeoutOpen(HGUITIME_OUT hGUITimeOut);
-void GUITimeoutClose(HGUITIME_OUT hGUITimeOut);
+void GUITimeoutFree(p_guitime_out_t hGUITimeout);
+p_guitime_out_t GUITimeoutCreate(uint16_t timeoutPeriod, void *arg, GUITimeoutCallback timoutCallBackFun);
+void GUITimeoutOpen(p_guitime_out_t hGUITimeOut);
+void GUITimeoutClose(p_guitime_out_t hGUITimeOut);
 
 /*非用户使用*/
 void GUITimeoutProcess(void);

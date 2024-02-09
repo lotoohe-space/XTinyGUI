@@ -3,6 +3,7 @@
 
 #include "msg.h"
 #include "paint.h"
+#include <string.h>
 #define _GET_BIT(a, b) (((a) >> (b)) & 0x1)
 #define _SET_BIT(a, b) (a) |= (1 << (b))
 #define _CLR_BIT(a, b) (a) &= (~(1 << (b)))
@@ -10,8 +11,8 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-extern int8 isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2);
-extern BOOL GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res);
+extern int8_t isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2);
+extern BOOL GetOverLapRect(p_xrect_t r1, p_xrect_t r2, p_xrect_t res);
 
 // 某个范围内内的垂直线是否与下方的横线相交
 #define _isRangeLinesCollsionLineD(x1, y1, w1, x2, y2, w2) ((y2 > y1) && (((x2 >= x1 && x2 < (x1 + w1))) || ((x2 + w2) >= x1) && ((x2 + w1) < (x1 + w1)))) // isRangeLinesCollsionLineD(x1,y1,w1,x2,y2,w2)
@@ -40,14 +41,12 @@ extern BOOL GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res);
         rRect.w -= rRect.x;                          \
         rRect.h -= rRect.y;                          \
     }
-void TMemcpy(void *dst, void *src, uint32 len);
 /*获取gbk或者gb2312的长度*/
-uint32 TStrlen(const char *str);
-/*获取UNICODE的长度*/
-uint32 UStrlen(uint16 *str);
-const char *TCharGet(const char *str, uint16 index);
+uint32_t GBK_Strlen(const char *str);
+uint32_t UNI_Strlen(uint16_t *str);
+const char *GBK_CharGet(const char *str, uint16_t index);
 
 // 矩形复制函数
-#define XRECT_COPY(a, b) TMemcpy((a), (b), sizeof(XRECT))
+#define XRECT_COPY(a, b) memcpy((a), (b), sizeof(xrect_t))
 
 #endif

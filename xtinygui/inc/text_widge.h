@@ -24,26 +24,23 @@ typedef enum
 
 typedef struct
 {
-	WIDGET_BASE baseWidge;
+	widget_base_t baseWidge; /*继承widget*/
+	p_font_t hFont;			 /*字体*/
+	const char *text;		 /*显示的文字内容*/
+	TextMode textMode;		 /*文字显示模式 0:左对齐 1:居中对齐 2:右对齐*/
+} *p_text_widget_t, text_widget_t;
 
-	HFONTF hFont; /*字体*/
-	const char *text;
+#define _PToHTextWidgeType(a) ((p_text_widget_t)a)
 
-	TextMode textMode; /*文字显示模式 0:左对齐 1:居中对齐 2:右对齐*/
-
-} *HTEXT_WIDGE, TEXT_WIDGE;
-
-#define _PToHTextWidgeType(a) ((HTEXT_WIDGE)a)
-
-PUBLIC HTEXT_WIDGE TEXT_MARK_HEAD(Create)(const char *text, int16 x, int16 y, uint16 w, uint16 h);
-PUBLIC void TEXT_MARK_HEAD(Init)(HTEXT_WIDGE hObject, const char *text, int16 x, int16 y, uint16 w, uint16 h);
+PUBLIC p_text_widget_t TEXT_MARK_HEAD(Create)(const char *text, int16_t x, int16_t y, uint16_t w, uint16_t h);
+PUBLIC void TEXT_MARK_HEAD(Init)(p_text_widget_t hObject, const char *text, int16_t x, int16_t y, uint16_t w, uint16_t h);
 /*根据模式得到文字绘制的起始位置*/
-PUBLIC HXPOINT TEXT_MARK_HEAD(GetPOIByTextMode)(HTEXT_WIDGE hTextWidge, HXPOINT startPoint);
-PUBLIC void TEXT_MARK_HEAD(SetTextMode)(HTEXT_WIDGE hOjbect, uint8 textMode);
-PUBLIC void TEXT_MARK_HEAD(SetFont)(HTEXT_WIDGE hObject, HFONTF hFont);
-PUBLIC void TEXT_MARK_HEAD(SetText)(HTEXT_WIDGE hObject, const char *text);
-PUBLIC void TEXT_MARK_HEAD(MoveTo)(HTEXT_WIDGE hObject, int16 x, int16 y);
+PUBLIC p_xpoint_t TEXT_MARK_HEAD(GetPOIByTextMode)(p_text_widget_t hTextWidge, p_xpoint_t startPoint);
+PUBLIC void TEXT_MARK_HEAD(SetTextMode)(p_text_widget_t hOjbect, uint8_t textMode);
+PUBLIC void TEXT_MARK_HEAD(SetFont)(p_text_widget_t hObject, p_font_t hFont);
+PUBLIC void TEXT_MARK_HEAD(SetText)(p_text_widget_t hObject, const char *text);
+PUBLIC void TEXT_MARK_HEAD(MoveTo)(p_text_widget_t hObject, int16_t x, int16_t y);
 PUBLIC void TEXT_MARK_HEAD(Paint)(void *hObject);
-PUBLIC int8 TEXT_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);
+PUBLIC int8_t TEXT_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg);
 
 #endif

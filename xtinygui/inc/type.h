@@ -1,58 +1,42 @@
-#ifndef _TYPE_H__
-#define _TYPE_H__
-
+#pragma once
 #include "config.h"
-
-typedef char int8;
-typedef unsigned char uint8;
-typedef short int16;
-typedef unsigned short uint16;
-typedef int int32;
-typedef unsigned int uint32;
-typedef long long int64;
-typedef unsigned long long uint64;
+#include <stdint.h>
+typedef struct
+{
+	uint8_t a;
+	uint16_t r : 5;
+	uint16_t g : 6;
+	uint16_t b : 5;
+} *p_argb565_t, argb565_t;
 
 typedef struct
 {
-	uint8 a;
-	uint16 r : 5;
-	uint16 g : 6;
-	uint16 b : 5;
-} *HARGB565, ARGB565;
+	uint16_t r : 5;
+	uint16_t g : 6;
+	uint16_t b : 5;
+} *p_rgb565_t, rgb565_t;
 
 typedef struct
 {
-	uint16 r : 5;
-	uint16 g : 6;
-	uint16 b : 5;
-} *HRGB565, RGB565;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+} *p_rgb_t, rgb_t;
 
 typedef struct
 {
-	uint8 r;
-	uint8 g;
-	uint8 b;
-} *HRGB, RGB;
+	uint8_t a;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+} *p_argb_t, argb_t;
 
-typedef struct
-{
-	uint8 a;
-	uint8 r;
-	uint8 g;
-	uint8 b;
-} *HARGB, ARGB;
-
-// ��ɫ�����Ķ���
 #if GUI_COLOR_DEEP <= 8
-typedef uint8 uintColor;
+typedef uint8_t uintColor;
 #elif GUI_COLOR_DEEP > 8 && GUI_COLOR_DEEP <= 16
-// typedef union {
-//	ARGB565 aColor;/*��͸��ɫ��RGB565*/
-//	uint16 color;/*��ɫ*/
-// }uintColor;
-typedef uint32 uintColor; /*Argb rgbΪ16bit*/
+typedef uint32_t uintColor; /*Argb rgbΪ16bit*/
 #elif GUI_COLOR_DEEP >= 24
-typedef uint32 uintColor;
+typedef uint32_t uintColor;
 #endif
 
 #ifndef NULL
@@ -66,7 +50,7 @@ typedef uint32 uintColor;
 #define FALSE (!TRUE)
 #endif
 
-#define BOOL uint8
+#define BOOL uint8_t
 
 #define PUBLIC
 #define PRIVATE static
@@ -75,6 +59,4 @@ typedef uint32 uintColor;
 #define _INLINE_ _inline
 #else
 #define _INLINE_ inline
-#endif
-
 #endif

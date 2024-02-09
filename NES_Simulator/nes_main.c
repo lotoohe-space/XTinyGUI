@@ -19,7 +19,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-uint8 Continue = TRUE;//初始化为真
+uint8_t Continue = TRUE;//初始化为真
 int FrameCnt=0;
 
 /* NES 帧周期循环*/   

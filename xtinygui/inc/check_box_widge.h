@@ -8,18 +8,18 @@
 
 typedef struct
 {
-	TEXT_WIDGE textWidge;
-	uint8 flag;			/*0，1bit：当前状态*/
-	XBITMAP checkedImg; /*选中后的图片*/
+	text_widget_t textWidge;
+	uint8_t flag;			  /*0，1bit：当前状态*/
+	xbitmap_t checkedImg; /*选中后的图片*/
 
-} *HCHECKBOX_WIDGE, CHECKBOX_WIDGE;
+} *p_checkbox_widget_t, checkbox_widget_t;
 
-PUBLIC HCHECKBOX_WIDGE CHECKBOX_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, const char *text);
-PUBLIC void CHECKBOX_MARK_HEAD(MoveTo)(HCHECKBOX_WIDGE hObject, int16 x, int16 y);
-PUBLIC void CHECKBOX_MARK_HEAD(SetParentWin)(HCHECKBOX_WIDGE hObject, HWIDGET_BASE parentWidge);
-PUBLIC void CHECKBOX_MARK_HEAD(SetColor)(HCHECKBOX_WIDGE hObject, uintColor color);
+PUBLIC p_checkbox_widget_t CHECKBOX_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, const char *text);
+PUBLIC void CHECKBOX_MARK_HEAD(MoveTo)(p_checkbox_widget_t hObject, int16_t x, int16_t y);
+PUBLIC void CHECKBOX_MARK_HEAD(SetParentWin)(p_checkbox_widget_t hObject, p_widget_base_t parentWidge);
+PUBLIC void CHECKBOX_MARK_HEAD(SetColor)(p_checkbox_widget_t hObject, uintColor color);
 PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void *hObject);
-PUBLIC int8 CHECKBOX_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);
-PUBLIC void CHECKBOX_MARK_HEAD(SetClickBack)(HCHECKBOX_WIDGE hObject, void *arg, ViewClickCallBack viewClickCallBack);
+PUBLIC int8_t CHECKBOX_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg);
+PUBLIC void CHECKBOX_MARK_HEAD(SetClickBack)(p_checkbox_widget_t hObject, void *arg, ViewClickCallBack viewClickCallBack);
 
 #endif

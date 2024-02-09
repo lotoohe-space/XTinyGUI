@@ -99,7 +99,7 @@ typedef Uint16 SDL_AudioFormat;
 /* @} */
 
 /**
- *  \name int32 support
+ *  \name int32_t support
  */
 /* @{ */
 #define AUDIO_S32LSB    0x8020  /**< 32-bit integer samples */
@@ -629,10 +629,10 @@ extern DECLSPEC int SDLCALL SDL_GetDefaultAudioInfo(char **name,
  * doesn't offer, SDL will always try to get the closest equivalent.
  *
  * For example, if you ask for float32 audio format, but the sound card only
- * supports int16, SDL will set the hardware to int16. If you had set
+ * supports int16_t, SDL will set the hardware to int16_t. If you had set
  * SDL_AUDIO_ALLOW_FORMAT_CHANGE, SDL will change the format in the `obtained`
  * structure. If that flag was *not* set, SDL will prepare to convert your
- * callback's float32 audio to int16 before feeding it to the hardware and
+ * callback's float32 audio to int16_t before feeding it to the hardware and
  * will keep the originally requested format in the `obtained` structure.
  *
  * The resulting audio specs, varying depending on hardware and on what

@@ -1,6 +1,6 @@
 #include "bitmap.h"
 
-uint8 InitBitmap(HXBITMAP hXBitmap, uint8 *pixels, uint16 w, uint16 h, uint8 colorDepth)
+uint8_t InitBitmap(p_xbitmap_t hXBitmap, uint8_t *pixels, uint16_t w, uint16_t h, uint8_t colorDepth)
 {
 	if (hXBitmap == NULL)
 	{
@@ -15,7 +15,7 @@ uint8 InitBitmap(HXBITMAP hXBitmap, uint8 *pixels, uint16 w, uint16 h, uint8 col
 	hXBitmap->alpha = 255;
 	return TRUE;
 }
-void BitmapSetFlag(HXBITMAP hXBitmap, uint8 flag)
+void BitmapSetFlag(p_xbitmap_t hXBitmap, uint8_t flag)
 {
 	if (hXBitmap == NULL)
 	{
@@ -23,7 +23,7 @@ void BitmapSetFlag(HXBITMAP hXBitmap, uint8 flag)
 	}
 	hXBitmap->flag = flag;
 }
-uint8 InitBitmapFromFile(const char *file)
+uint8_t InitBitmapFromFile(const char *file)
 {
 
 	return TRUE;

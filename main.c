@@ -21,7 +21,7 @@ const int SCREEN_WIDTH = LCD_SCREEN_W;
 const int SCREEN_HEIGHT = LCD_SCREEN_H;
 
 #define POINTS_COUNT 4
-static uint16 displayMem[LCD_SCREEN_W * LCD_SCREEN_H];
+static uint16_t displayMem[LCD_SCREEN_W * LCD_SCREEN_H];
 
 SDL_Renderer *renderer = NULL;
 SDL_Texture *scr_text;
@@ -73,7 +73,7 @@ void timer_event_screen(void *p) // 回调函数
 		}
 	}
 }
-uint32 GetCurrentTimeMsec(void)
+uint32_t GetCurrentTimeMsec(void)
 {
 	return SDL_GetTicks();
 }
@@ -88,7 +88,7 @@ int WinMain(int argc, char *argv[])
 	// Initialize SDL
 	SDL_Init(SDL_INIT_VIDEO);
 	// Create window
-	window = SDL_CreateWindow("title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+	window = SDL_CreateWindow("xTinyGUI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 							  SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL)
 	{

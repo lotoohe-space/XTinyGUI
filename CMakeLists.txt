@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 # 项目名称
 project(xtinygui)
-
+set(CMAKE_BUILD_TYPE "Release")
 file(GLOB xtinygui_src xtinygui/src/*.c)
 # file(GLOB app app/src/*.c)
 file(GLOB nes NES_Simulator/*.c)

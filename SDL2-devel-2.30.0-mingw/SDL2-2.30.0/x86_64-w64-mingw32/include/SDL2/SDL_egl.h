@@ -252,7 +252,7 @@ typedef unsigned long long int  khronos_uint64_t;
 #elif 0
 
 /*
- * Hypothetical platform with no float or int64 support
+ * Hypothetical platform with no float or int64_t support
  */
 typedef int                     khronos_int32_t;
 typedef unsigned int            khronos_uint32_t;

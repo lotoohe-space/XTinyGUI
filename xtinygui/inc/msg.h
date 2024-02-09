@@ -75,48 +75,47 @@
 typedef struct
 {
 	void *msgSrc;  /*消息源*/
-	uint8 msgType; /*消息类型*/
-	uint8 msgID;   /*消息ID*/
+	uint8_t msgType; /*消息类型*/
+	uint8_t msgID;   /*消息ID*/
 	union
 	{
-		uint8 status; /*按键的状态*/
-		uint32 what;
+		uint8_t status; /*按键的状态*/
+		uint32_t what;
 		void *v;
 		/*设置消息的宽高*/
 		struct
 		{
 			/*坐标*/
-			int16 x;
-			int16 y;
+			int16_t x;
+			int16_t y;
 			/*宽高*/
-			uint16 w;
-			uint16 h;
+			uint16_t w;
+			uint16_t h;
 		} rect;
 	} msgVal;
+} *p_msg_t, msg_t;
 
-} *HMSGE, MSGE;
-
-uint8 GUIMsgEventInit(void);
+uint8_t GUIMsgEventInit(void);
 void GUIEventValid(void);
-HMSGE GUIGetMsg(void);
-void GUIDelMsg(HMSGE hMsg);
+p_msg_t GUIGetMsg(void);
+void GUIDelMsg(p_msg_t hMsg);
 
-int8 GUISendKeyMsg(uint8 ID, uint8 status);
-int8 GUISendTouchMsg(int ID, int16 x, int16 y);
+int8_t GUISendKeyMsg(uint8_t ID, uint8_t status);
+int8_t GUISendTouchMsg(int ID, int16_t x, int16_t y);
 
-int GUISendDrawMsg(void *hWin, uint8 msgType, uint8 msgID, int16 x, int16 y, uint16 w, uint16 h);
-HMSGE GUIGetDrawMsg(void);
-void GUIDelDrawMsg(HMSGE hMsg);
+int GUISendDrawMsg(void *hWin, uint8_t msgType, uint8_t msgID, int16_t x, int16_t y, uint16_t w, uint16_t h);
+p_msg_t GUIGetDrawMsg(void);
+void GUIDelDrawMsg(p_msg_t hMsg);
 
-int GUISendMoveMsg(void *hWin, uint8 msgType, uint8 msgID, int16 x, int16 y);
-HMSGE GUIGetMoveMsg(void);
-void GUIDelMoveMsg(HMSGE hMsg);
+int GUISendMoveMsg(void *hWin, uint8_t msgType, uint8_t msgID, int16_t x, int16_t y);
+p_msg_t GUIGetMoveMsg(void);
+void GUIDelMoveMsg(p_msg_t hMsg);
 
-int8 GUISendWINDelMsg(void *msgSrc, void *delItem);
-HMSGE GUIGetWINDelMsg(void);
-void GUIDelWinDelMsg(HMSGE hMsg);
+int8_t GUISendWINDelMsg(void *msgSrc, void *delItem);
+p_msg_t GUIGetWINDelMsg(void);
+void GUIDelWinDelMsg(p_msg_t hMsg);
 
-int8 GUISendCursorMsg(uint16 ID, int16 x, int16 y);
-void GUIDelCursorMsg(HMSGE hMsg);
-HMSGE GUIGetCursorMsg(void);
+int8_t GUISendCursorMsg(uint16_t ID, int16_t x, int16_t y);
+void GUIDelCursorMsg(p_msg_t hMsg);
+p_msg_t GUIGetCursorMsg(void);
 #endif

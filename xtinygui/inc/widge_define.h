@@ -6,57 +6,57 @@
 typedef struct
 {
 	/*允许被绘制的区域,全0XFFFF表示无效区域*/
-	int16 x;
-	int16 y;
-	uint16 w;
-	uint16 h;
+	int16_t x;
+	int16_t y;
+	uint16_t w;
+	uint16_t h;
 
 	uintColor DrawColor;   /*画笔颜色*/
 	uintColor DrawFrColor; /*前景色*/
 	uintColor DrawBkColor; /*背景色*/
-} *HPENCIL, PENCIL;
+} *p_pencil_t, pencil_t;
 
 /*矩形*/
 typedef struct
 {
-	int16 x;
-	int16 y;
-	int16 w;
-	int16 h;
-} *HXRECT, XRECT;
+	int16_t x;
+	int16_t y;
+	int16_t w;
+	int16_t h;
+} *p_xrect_t, xrect_t;
 
 /*点*/
 typedef struct
 {
-	int16 x;
-	int16 y;
-} *HXPOINT, XPOINT;
+	int16_t x;
+	int16_t y;
+} *p_xpoint_t, xpoint_t;
 
 /*横线*/
 typedef struct
 {
-	int16 x0;
-	int16 y;
-	int16 x1;
-} *HXHLINE, XHLINE;
+	int16_t x0;
+	int16_t y;
+	int16_t x1;
+} *p_xhline_t, xhline_t;
 
 /*变量强转为矩形*/
-#define _PToHXRECTType(a) ((HXRECT)(a))
+#define _PToHXRECTType(a) ((p_xrect_t)(a))
 
 /*刷新函数*/
-typedef void (*PaintFunction)(void *hObject);
+typedef void (*WidgetPaintFunction)(void *hObject);
 /*移动函数*/
-typedef void (*WidgeMoveToFunction)(void *hObject, int16 x, int16 y);
+typedef void (*WidgetMoveToFunction)(void *hObject, int16_t x, int16_t y);
 /*事件回调函数*/
-typedef int8 (*WidgeCallBackFunction)(void *hObject, HMSGE hMsg);
+typedef int8_t (*WidgetCallBackFunction)(void *hObject, p_msg_t hMsg);
 /*关闭函数*/
-typedef void (*WidgeCloseFunction)(void *hObject);
+typedef void (*WidgetCloseFunction)(void *hObject);
 /*重设大小函数*/
-typedef void (*WidgeResizeFunction)(void *hOjbect, int16 x, int16 y, uint16 w, uint16 h);
+typedef void (*WidgetResizeFunction)(void *hOjbect, int16_t x, int16_t y, uint16_t w, uint16_t h);
 
 /*窗口事件回调*/
-typedef uint8 (*WinProcessCallBack)(void *Object, void *arg, HMSGE hMsg);
+typedef uint8_t (*WinProcessCallBack)(void *Object, void *arg, p_msg_t hMsg);
 /*按钮事件回调*/
-typedef void (*ViewClickCallBack)(void *Object, void *arg, uint8 status);
+typedef void (*ViewClickCallBack)(void *Object, void *arg, uint8_t status);
 
 #endif

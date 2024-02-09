@@ -7,15 +7,14 @@
 #include "xwindows.h"
 
 /*创建函数*/
-PUBLIC HPROGRESS_WIDGE PROGRESS_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, uint16 maxVal)
+PUBLIC p_progress_widget_t PROGRESS_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t maxVal)
 {
-	HPROGRESS_WIDGE hWidge = (HPROGRESS_WIDGE)(xMalloc(sizeof(PROGRESS_WIDGE)));
+	p_progress_widget_t hWidge = (p_progress_widget_t)(xMalloc(sizeof(progress_widget_t)));
 	if (hWidge == NULL)
 	{
 		return NULL;
 	}
-	_WIDGET(Init)
-	((HWIDGET_BASE)hWidge, x, y, w, h);
+	WidgetInit((p_widget_base_t)hWidge, x, y, w, h);
 
 	/*设置三个回调函数*/
 	hWidge->widgeBase.paintFun = PROGRESS_MARK_HEAD(Paint);
@@ -29,48 +28,45 @@ PUBLIC HPROGRESS_WIDGE PROGRESS_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int
 }
 
 /*移动函数*/
-PUBLIC void PROGRESS_MARK_HEAD(MoveTo)(HPROGRESS_WIDGE hObject, int16 x, int16 y)
+PUBLIC void PROGRESS_MARK_HEAD(MoveTo)(p_progress_widget_t hObject, int16_t x, int16_t y)
 {
-	_WIDGET(MoveTo)
-	((HWIDGET_BASE)hObject, x, y);
+	WidgetMoveTo((p_widget_base_t)hObject, x, y);
 	// if (!hObject) { return; }
 	// hObject->widgeBase.rect.x = x;
 	// hObject->widgeBase.rect.y = y;
 }
 /*设置父窗口*/
-PUBLIC void PROGRESS_MARK_HEAD(SetParentWin)(HPROGRESS_WIDGE hObject, HWIN hWIN)
+PUBLIC void PROGRESS_MARK_HEAD(SetParentWin)(p_progress_widget_t hObject, p_win_t hWIN)
 {
-	_WIDGET(SetParentWin)
-	((HWIDGET_BASE)hObject, hWIN);
+	WidgetSetParentWin((p_widget_base_t)hObject, hWIN);
 	// if (!hObject) { return; }
 	// hObject->widgeBase.parentHWIN = hWIN;
 }
 /*设置颜色*/
-PUBLIC void PROGRESS_MARK_HEAD(SetColor)(HPROGRESS_WIDGE hObject, uintColor color)
+PUBLIC void PROGRESS_MARK_HEAD(SetColor)(p_progress_widget_t hObject, uintColor color)
 {
-	_WIDGET(SetColor)
-	((HWIDGET_BASE)hObject, color);
+	WidgetSetColor((p_widget_base_t)hObject, color);
 	// if (!hObject) { return; }
 	// hObject->widgeBase.pencil.DrawColor = color;
 }
 
-PUBLIC void PROGRESS_MARK_HEAD(SetProgressVal)(HPROGRESS_WIDGE hObject, uint16 val)
+PUBLIC void PROGRESS_MARK_HEAD(SetProgressVal)(p_progress_widget_t hObject, uint16_t val)
 {
 	if (!hObject)
 	{
 		return;
 	}
 	hObject->currentVal = MIN(val, hObject->maxVal);
-	WindowsInvaildRect((HWIDGET_BASE)hObject, NULL);
+	WindowsInvaildRect((p_widget_base_t)hObject, NULL);
 }
 
 /*绘制控件*/
 PRIVATE void PROGRESS_MARK_HEAD(Paint)(void *hObject)
 {
 	uintColor color;
-	XRECT xRect;
+	xrect_t xRect;
 	float progressing;
-	HPROGRESS_WIDGE hWidge;
+	p_progress_widget_t hWidge;
 	hWidge = hObject;
 	if (!hObject)
 	{
@@ -82,7 +78,7 @@ PRIVATE void PROGRESS_MARK_HEAD(Paint)(void *hObject)
 	}
 	// if (!isGUINeedCut(hWidge)) { return; }
 
-	if (!DrawSetArea((HWIDGET_BASE)hWidge))
+	if (!DrawSetArea((p_widget_base_t)hWidge))
 	{
 		return;
 	}
@@ -91,24 +87,24 @@ PRIVATE void PROGRESS_MARK_HEAD(Paint)(void *hObject)
 	/*绘制前半截*/
 	xRect.x = hWidge->widgeBase.rect.x;
 	xRect.y = hWidge->widgeBase.rect.y;
-	xRect.w = (uint16)(hWidge->widgeBase.rect.w * progressing);
+	xRect.w = (uint16_t)(hWidge->widgeBase.rect.w * progressing);
 	xRect.h = hWidge->widgeBase.rect.h;
 	DrawCutRect(hWidge, &xRect);
 	/*绘制后半截*/
 	color = hWidge->widgeBase.pencil.DrawColor;
 	hWidge->widgeBase.pencil.DrawColor = hWidge->widgeBase.pencil.DrawBkColor;
 
-	xRect.x = hWidge->widgeBase.rect.x + (uint16)(hWidge->widgeBase.rect.w * progressing);
-	xRect.w = hWidge->widgeBase.rect.w - (uint16)(hWidge->widgeBase.rect.w * progressing);
+	xRect.x = hWidge->widgeBase.rect.x + (uint16_t)(hWidge->widgeBase.rect.w * progressing);
+	xRect.w = hWidge->widgeBase.rect.w - (uint16_t)(hWidge->widgeBase.rect.w * progressing);
 	DrawCutRect(hWidge, &xRect);
 	hWidge->widgeBase.pencil.DrawColor = color;
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGET_BASE)hWidge);
+	DrawResetArea((p_widget_base_t)hWidge);
 }
 /*事件回调*/
-PRIVATE int8 PROGRESS_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
+PRIVATE int8_t PROGRESS_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg)
 {
-	HWIDGET_BASE hWidgeBase = hObject;
+	p_widget_base_t hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg)
 	{
 		return -1;

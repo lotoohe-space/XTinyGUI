@@ -4,17 +4,17 @@
 
 static void GUITimeoutCb(void *arg);
 
-PUBLIC HLIST_WIDGE LIST_WIDGE_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, uint16 h)
+PUBLIC p_xlist_widget_t LIST_WIDGE_MARK_HEAD(Create)(int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
-	HLIST_WIDGE hObject;
+	p_xlist_widget_t hObject;
 
-	hObject = (HLIST_WIDGE)(xMalloc(sizeof(LIST_WIDGE)));
+	hObject = (p_xlist_widget_t)(xMalloc(sizeof(xlist_widget_t)));
 	if (hObject == NULL)
 	{
 		return NULL;
 	}
 	GROUP_MARK_HEAD(Init)
-	((HGROUP_WIDGE)hObject, x, y, w, h);
+	((p_group_widget_t)hObject, x, y, w, h);
 
 	_PToHGroupWidgeType(hObject)->widgeBase.paintFun = LIST_WIDGE_MARK_HEAD(Paint);
 	//_PToHGroupWidgeType(hObject)->widgeBase.moveToFun = GROUP_MARK_HEAD(MoveTo);
@@ -41,7 +41,7 @@ PUBLIC HLIST_WIDGE LIST_WIDGE_MARK_HEAD(Create)(int16 x, int16 y, uint16 w, uint
 
 	return hObject;
 }
-PUBLIC void LIST_WIDGE_MARK_HEAD(SetFlag)(HLIST_WIDGE hBaseWidge, LIST_WIDGE_FLAG flagBisPoi, BOOL status)
+PUBLIC void LIST_WIDGE_MARK_HEAD(SetFlag)(p_xlist_widget_t hBaseWidge, LIST_WIDGE_FLAG flagBisPoi, BOOL status)
 {
 	if (hBaseWidge == NULL)
 	{
@@ -50,7 +50,7 @@ PUBLIC void LIST_WIDGE_MARK_HEAD(SetFlag)(HLIST_WIDGE hBaseWidge, LIST_WIDGE_FLA
 
 	hBaseWidge->flag = ((hBaseWidge->flag) & (~(1 << flagBisPoi))) | ((status & 0x01) << flagBisPoi);
 }
-PUBLIC void LIST_WIDGE_MARK_HEAD(Close)(HLIST_WIDGE hObject)
+PUBLIC void LIST_WIDGE_MARK_HEAD(Close)(p_xlist_widget_t hObject)
 {
 	if (!hObject)
 	{
@@ -58,114 +58,114 @@ PUBLIC void LIST_WIDGE_MARK_HEAD(Close)(HLIST_WIDGE hObject)
 	}
 	GUITimeoutFree(hObject->hGUITimeout);
 	GROUP_MARK_HEAD(Close)
-	((HGROUP_WIDGE)hObject);
+	((p_group_widget_t)hObject);
 }
 /*添加一个控件*/
-PUBLIC uint8 LIST_WIDGE_MARK_HEAD(Add)(HLIST_WIDGE hBaseWidge, HWIDGET_BASE widge)
+PUBLIC uint8_t LIST_WIDGE_MARK_HEAD(Add)(p_xlist_widget_t hBaseWidge, p_widget_base_t widge)
 {
-	uint16 widgeLength;
+	uint16_t widgeLength;
 	if (hBaseWidge == NULL || widge == NULL)
 	{
 		return FALSE;
 	}
 
-	if (GROUP_MARK_HEAD(Add)((HGROUP_WIDGE)hBaseWidge, widge) == FALSE)
+	if (GROUP_MARK_HEAD(Add)((p_group_widget_t)hBaseWidge, widge) == FALSE)
 	{
 		return FALSE;
 	}
-	widgeLength = ((HGROUP_WIDGE)hBaseWidge)->widgeLength - 1;
+	widgeLength = ((p_group_widget_t)hBaseWidge)->widgeLength - 1;
 	if (!_GetListWidgeMode(hBaseWidge))
 	{ /*定高模式*/
 		if (_GetOTN(hBaseWidge))
 		{
 			/*重新设置控件的信息*/
-			((HXRECT)widge)->x = hBaseWidge->groupWidge.widgeBase.rect.x +
+			((p_xrect_t)widge)->x = hBaseWidge->groupWidge.widgeBase.rect.x +
 								 hBaseWidge->itemsSize.itemSize * widgeLength + widgeLength;
-			((HXRECT)widge)->y = hBaseWidge->groupWidge.widgeBase.rect.y;
+			((p_xrect_t)widge)->y = hBaseWidge->groupWidge.widgeBase.rect.y;
 		}
 		else
 		{
-			((HXRECT)widge)->x = hBaseWidge->groupWidge.widgeBase.rect.x;
-			((HXRECT)widge)->y = hBaseWidge->groupWidge.widgeBase.rect.y +
+			((p_xrect_t)widge)->x = hBaseWidge->groupWidge.widgeBase.rect.x;
+			((p_xrect_t)widge)->y = hBaseWidge->groupWidge.widgeBase.rect.y +
 								 hBaseWidge->itemsSize.itemSize * widgeLength + widgeLength;
 		}
-		((HXRECT)widge)->h = hBaseWidge->itemsSize.itemSize;
-		((HXRECT)widge)->w = hBaseWidge->groupWidge.widgeBase.rect.w;
+		((p_xrect_t)widge)->h = hBaseWidge->itemsSize.itemSize;
+		((p_xrect_t)widge)->w = hBaseWidge->groupWidge.widgeBase.rect.w;
 	}
 	else
 	{ /*高度自适应*/
 		/*重新设置控件的信息*/
 		if (_GetOTN(hBaseWidge))
 		{
-			((HXRECT)widge)->x = hBaseWidge->groupWidge.widgeBase.rect.x +
+			((p_xrect_t)widge)->x = hBaseWidge->groupWidge.widgeBase.rect.x +
 								 hBaseWidge->itemsSize.itemsH + hBaseWidge->itemGap * widgeLength;
-			((HXRECT)widge)->y = hBaseWidge->groupWidge.widgeBase.rect.y;
-			hBaseWidge->itemsSize.itemsH += ((HXRECT)widge)->w;
-			//((HXRECT)widge)->h = hBaseWidge->groupWidge.widgeBase.rect.h;
+			((p_xrect_t)widge)->y = hBaseWidge->groupWidge.widgeBase.rect.y;
+			hBaseWidge->itemsSize.itemsH += ((p_xrect_t)widge)->w;
+			//((p_xrect_t)widge)->h = hBaseWidge->groupWidge.widgeBase.rect.h;
 		}
 		else
 		{
-			((HXRECT)widge)->x = hBaseWidge->groupWidge.widgeBase.rect.x;
-			((HXRECT)widge)->y = hBaseWidge->groupWidge.widgeBase.rect.y +
+			((p_xrect_t)widge)->x = hBaseWidge->groupWidge.widgeBase.rect.x;
+			((p_xrect_t)widge)->y = hBaseWidge->groupWidge.widgeBase.rect.y +
 								 hBaseWidge->itemsSize.itemsH + hBaseWidge->itemGap * widgeLength;
-			hBaseWidge->itemsSize.itemsH += ((HXRECT)widge)->h;
-			//((HXRECT)widge)->w = hBaseWidge->groupWidge.widgeBase.rect.w;
+			hBaseWidge->itemsSize.itemsH += ((p_xrect_t)widge)->h;
+			//((p_xrect_t)widge)->w = hBaseWidge->groupWidge.widgeBase.rect.w;
 		}
 	}
 
 	/*刷新*/
-	WindowsInvaildRect((HWIDGET_BASE)hBaseWidge, NULL);
+	WindowsInvaildRect((p_widget_base_t)hBaseWidge, NULL);
 	return TRUE;
 }
 /*ListWidge内部控件的位置滑动*/
-PRIVATE uint8 LIST_WIDGE_MARK_HEAD(ListSlide)(HLIST_WIDGE hBaseWidge, int16 dXY)
+PRIVATE uint8_t LIST_WIDGE_MARK_HEAD(ListSlide)(p_xlist_widget_t hBaseWidge, int16_t dXY)
 {
-	HXRECT widgeRectLast;
-	HXRECT widgeRectFirst;
+	p_xrect_t widgeRectLast;
+	p_xrect_t widgeRectFirst;
 
 	if (!hBaseWidge)
 	{
 		return FALSE;
 	}
 	/*获取第一控件*/
-	widgeRectFirst = (HXRECT)GROUP_MARK_HEAD(GetWidge)((HGROUP_WIDGE)hBaseWidge, 0);
+	widgeRectFirst = (p_xrect_t)GROUP_MARK_HEAD(GetWidge)((p_group_widget_t)hBaseWidge, 0);
 	if (widgeRectFirst == NULL)
 	{
 		return FALSE;
 	}
 	/*获取最后一个控件*/
-	widgeRectLast = (HXRECT)GROUP_MARK_HEAD(GetWidge)((HGROUP_WIDGE)hBaseWidge, hBaseWidge->groupWidge.widgeLength - 1);
+	widgeRectLast = (p_xrect_t)GROUP_MARK_HEAD(GetWidge)((p_group_widget_t)hBaseWidge, hBaseWidge->groupWidge.widgeLength - 1);
 	if (widgeRectLast == NULL)
 	{
 		return FALSE;
 	}
 	if (_GetOTN(hBaseWidge))
 	{ /*横向*/
-		if (widgeRectLast->x + dXY + widgeRectLast->w < ((HXRECT)(hBaseWidge))->x + ((HXRECT)(hBaseWidge))->w)
+		if (widgeRectLast->x + dXY + widgeRectLast->w < ((p_xrect_t)(hBaseWidge))->x + ((p_xrect_t)(hBaseWidge))->w)
 		{
 			// return FALSE;
-			dXY = ((HXRECT)(hBaseWidge))->x + ((HXRECT)(hBaseWidge))->w - (widgeRectLast->x + widgeRectLast->w);
+			dXY = ((p_xrect_t)(hBaseWidge))->x + ((p_xrect_t)(hBaseWidge))->w - (widgeRectLast->x + widgeRectLast->w);
 		}
-		if (widgeRectFirst->x + dXY > ((HXRECT)(hBaseWidge))->x)
+		if (widgeRectFirst->x + dXY > ((p_xrect_t)(hBaseWidge))->x)
 		{
-			dXY = ((HXRECT)(hBaseWidge))->x - widgeRectFirst->x;
+			dXY = ((p_xrect_t)(hBaseWidge))->x - widgeRectFirst->x;
 		}
 	}
 	else
 	{ /*纵向*/
-		if (widgeRectLast->y + dXY + widgeRectLast->h < ((HXRECT)(hBaseWidge))->y + ((HXRECT)(hBaseWidge))->h)
+		if (widgeRectLast->y + dXY + widgeRectLast->h < ((p_xrect_t)(hBaseWidge))->y + ((p_xrect_t)(hBaseWidge))->h)
 		{
-			dXY = (((HXRECT)(hBaseWidge))->y + ((HXRECT)(hBaseWidge))->h) - (widgeRectLast->y + widgeRectLast->h);
+			dXY = (((p_xrect_t)(hBaseWidge))->y + ((p_xrect_t)(hBaseWidge))->h) - (widgeRectLast->y + widgeRectLast->h);
 		}
-		if (widgeRectFirst->y + dXY > ((HXRECT)(hBaseWidge))->y)
+		if (widgeRectFirst->y + dXY > ((p_xrect_t)(hBaseWidge))->y)
 		{
-			dXY = ((HXRECT)(hBaseWidge))->y - widgeRectFirst->y;
+			dXY = ((p_xrect_t)(hBaseWidge))->y - widgeRectFirst->y;
 		}
 	}
 	/*每个控件进行偏移*/
 	_StartScanU(_PToHGroupWidgeType(hBaseWidge)->widgetList)
 	{ /*开始扫描*/
-		HXRECT hWidge = (HXRECT)_PToHWidgeBaseType(val);
+		p_xrect_t hWidge = (p_xrect_t)_PToHWidgeBaseType(val);
 		if (_GetOTN(hBaseWidge))
 		{ /*横向*/
 			hWidge->x += dXY;
@@ -176,12 +176,12 @@ PRIVATE uint8 LIST_WIDGE_MARK_HEAD(ListSlide)(HLIST_WIDGE hBaseWidge, int16 dXY)
 		}
 	}
 	_EndScanU(); /*结束扫描*/
-	WindowsInvaildRect(_PToHWidgeBaseType(hBaseWidge), (HXRECT)hBaseWidge);
+	WindowsInvaildRect(_PToHWidgeBaseType(hBaseWidge), (p_xrect_t)hBaseWidge);
 	return TRUE;
 }
 static void GUITimeoutCb(void *arg)
 {
-	HLIST_WIDGE hBaseWidge = arg;
+	p_xlist_widget_t hBaseWidge = arg;
 	if (arg == NULL)
 	{
 		return;
@@ -219,8 +219,8 @@ static void GUITimeoutCb(void *arg)
 }
 PUBLIC void LIST_WIDGE_MARK_HEAD(Paint)(void *hObject)
 {
-	HLIST_WIDGE hBaseWidge;
-	HLIST cutPostionList;
+	p_xlist_widget_t hBaseWidge;
+	p_rlist_t cutPostionList;
 	hBaseWidge = hObject;
 	if (!hBaseWidge)
 	{
@@ -230,11 +230,11 @@ PUBLIC void LIST_WIDGE_MARK_HEAD(Paint)(void *hObject)
 	{
 		return;
 	}
-	if (!IsGUINeedCut((HWIDGET_BASE)hBaseWidge))
+	if (!IsGUINeedCut((p_widget_base_t)hBaseWidge))
 	{
 		return;
 	}
-	if (!DrawSetArea((HWIDGET_BASE)hBaseWidge))
+	if (!DrawSetArea((p_widget_base_t)hBaseWidge))
 	{
 		return;
 	} // 计算得到当前绘图区域
@@ -255,12 +255,12 @@ PUBLIC void LIST_WIDGE_MARK_HEAD(Paint)(void *hObject)
 	_EndScanU(); /*结束扫描*/
 
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGET_BASE)hBaseWidge);
+	DrawResetArea((p_widget_base_t)hBaseWidge);
 }
 /*事件回调函数*/
-PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
+PUBLIC int8_t LIST_WIDGE_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg)
 {
-	HLIST_WIDGE hBaseWidge = hObject;
+	p_xlist_widget_t hBaseWidge = hObject;
 	if (!hBaseWidge || !hMsg)
 	{
 		return -1;
@@ -274,7 +274,7 @@ PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 		if (_IsDrawCheckPointR(hMsg->msgVal.rect.x, hMsg->msgVal.rect.y,
 							   &(_PToHGroupWidgeType(hBaseWidge)->widgeBase.rect)))
 		{
-			int16 dXY = 0;
+			int16_t dXY = 0;
 			/*触摸事件*/
 			if (hMsg->msgType == MSG_TOUCH)
 			{
@@ -298,7 +298,7 @@ PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 					if (_GetListAnimation(hBaseWidge))
 					{
 						/*如果开启了动画，记录当时按下的时间*/
-						hBaseWidge->firstTime = (uint16)GUIGetTick();
+						hBaseWidge->firstTime = (uint16_t)GUIGetTick();
 					}
 					break;
 				case MSG_TOUCH_MOVE:
@@ -335,7 +335,7 @@ PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 					{
 						if (_GetListAnimation(hBaseWidge))
 						{ /*如果开启了动画*/
-							int16 dis = 0;
+							int16_t dis = 0;
 							if (_GetOTN(hBaseWidge))
 							{ /*横向*/
 								dis = hMsg->msgVal.rect.x - hBaseWidge->firstXY;
@@ -346,7 +346,7 @@ PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 							}
 
 							/*吧与上次差值当做速度*/
-							hBaseWidge->dSP = 25 * (dis) / ((uint16)((uint16)GUIGetTick() - hBaseWidge->firstTime));
+							hBaseWidge->dSP = 25 * (dis) / ((uint16_t)((uint16_t)GUIGetTick() - hBaseWidge->firstTime));
 							if (hBaseWidge->dSP != 0)
 							{
 								GUITimeoutOpen(hBaseWidge->hGUITimeout);
@@ -360,16 +360,16 @@ PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 			}
 
 			/*事件传递到每一个控件*/
-			HLIST hWidgeList = _PToHGroupWidgeType(hBaseWidge)->widgetList;
+			p_rlist_t hWidgeList = _PToHGroupWidgeType(hBaseWidge)->widgetList;
 			if (hWidgeList)
 			{
-				int8 ret;
-				HLIST lastWidge = ListGetLast(hWidgeList);
+				int8_t ret;
+				p_rlist_t lastWidge = ListGetLast(hWidgeList);
 				if (lastWidge != NULL)
 				{
 					while (lastWidge != hWidgeList)
 					{
-						HWIDGET_BASE hWidge = (HWIDGET_BASE)(lastWidge->val);
+						p_widget_base_t hWidge = (p_widget_base_t)(lastWidge->val);
 						if ((ret = hWidge->widgeCallBackFun(hWidge, hMsg)) == 0)
 						{
 							return 0;
@@ -386,7 +386,7 @@ PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 			{
 				if (_GetListAnimation(hBaseWidge))
 				{ /*如果开启了动画*/
-					int16 dis = 0;
+					int16_t dis = 0;
 					if (_GetOTN(hBaseWidge))
 					{ /*横向*/
 						dis = hMsg->msgVal.rect.x - hBaseWidge->firstXY;
@@ -397,7 +397,7 @@ PUBLIC int8 LIST_WIDGE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 					}
 
 					/*吧与上次差值当做速度*/
-					hBaseWidge->dSP = (dis) / ((uint16)((uint16)GUIGetTick() - hBaseWidge->firstTime));
+					hBaseWidge->dSP = (dis) / ((uint16_t)((uint16_t)GUIGetTick() - hBaseWidge->firstTime));
 					if (hBaseWidge->dSP != 0)
 					{
 						GUITimeoutOpen(hBaseWidge->hGUITimeout);

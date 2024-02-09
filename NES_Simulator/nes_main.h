@@ -68,7 +68,7 @@ typedef struct{
 /* function ------------------------------------------------------------------*/
 void nes_main(void);
 void NesFrameCycle(void);
-void NES_ReadJoyPad(uint8 JoyPadNum);
+void NES_ReadJoyPad(uint8_t JoyPadNum);
 
 #endif /*  _NES_MAIN_H_ */
   /**

@@ -5,7 +5,7 @@
 #include "x_malloc.h"
 
 /* 7*12 */
-const uint32 GUICursorPT[] = {
+const uint32_t GUICursorPT[] = {
 	0x00000000, 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
 	0x00000000, 0x00FFFFFF, 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
 	0x00000000, 0x00FFFFFF, 0x00FFFFFF, 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
@@ -20,10 +20,10 @@ const uint32 GUICursorPT[] = {
 	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000};
 
 /*游标*/
-GUI_CURSOR GUICursor = {
+gui_cursor_t GUICursor = {
 	7,
 	12,
-	(uint8 *)GUICursorPT,
+	(uint8_t *)GUICursorPT,
 	0,
 	32,
 	BITMAP_DRAW_ARGB8888,
@@ -32,7 +32,7 @@ GUI_CURSOR GUICursor = {
 	0};
 
 /*GUI游标初始化*/
-uint8 GUICursorInit(void)
+uint8_t GUICursorInit(void)
 {
 	GUICursor.GUICursorMem = xMalloc(
 		GUICursor.GUICursorPTBitmap.w * GUICursor.GUICursorPTBitmap.h * (GUI_COLOR_DEEP / 8));
@@ -64,8 +64,8 @@ uint8 GUICursorInit(void)
 /*保存当前位置的背景到缓存*/
 void GUICursorLastLCDCopyToMem(void)
 {
-	int16 i, j;
-	int16 x, y;
+	int16_t i, j;
+	int16_t x, y;
 	x = GUICursor.cursorPOI.x;
 	y = GUICursor.cursorPOI.y;
 	/*获取当前位置的背景图片*/
@@ -73,7 +73,7 @@ void GUICursorLastLCDCopyToMem(void)
 	{
 		for (j = 0; j < GUICursor.GUICursorPTBitmap.w; j++)
 		{
-			((uint16 *)GUICursor.GUICursorMem)[j + i * GUICursor.GUICursorPTBitmap.w] =
+			((uint16_t *)GUICursor.GUICursorMem)[j + i * GUICursor.GUICursorPTBitmap.w] =
 				GUIGetPixel(x + j, y + i);
 		}
 	}
@@ -85,10 +85,10 @@ void GUICursorLastLCDCopyToMem(void)
 2.重新设置当前位置和上一次的位置
 3.然后保存新位置的背景到缓存
 */
-BOOL GUICursorSetPOI(int16 x, int16 y)
+BOOL GUICursorSetPOI(int16_t x, int16_t y)
 {
-	int16 i, j;
-	uint32 *pixels = (uint32 *)(GUICursor.GUICursorPTBitmap.pixels);
+	int16_t i, j;
+	uint32_t *pixels = (uint32_t *)(GUICursor.GUICursorPTBitmap.pixels);
 	/*位置没有改变则不需要操作*/
 	if (x == GUICursor.cursorPOI.x && GUICursor.cursorPOI.y == y)
 	{
@@ -118,7 +118,7 @@ BOOL GUICursorSetPOI(int16 x, int16 y)
 	{
 		for (j = 0; j < GUICursor.GUICursorPTBitmap.w; j++)
 		{
-			uint32 color = pixels[(i)*GUICursor.GUICursorPTBitmap.w + j];
+			uint32_t color = pixels[(i)*GUICursor.GUICursorPTBitmap.w + j];
 			if (!(color & 0xff000000))
 			{
 				GUIDrawPixel(j + GUICursor.cursorPOI.x, i + GUICursor.cursorPOI.y, BGR888T0RGB565(color));
@@ -130,15 +130,15 @@ BOOL GUICursorSetPOI(int16 x, int16 y)
 	return TRUE;
 }
 /*往游标的缓存内绘制*/
-uint8 GUICursorDrawMem(int16 x, int16 y, uintColor color)
+uint8_t GUICursorDrawMem(int16_t x, int16_t y, uintColor color)
 {
 	if (x >= GUICursor.cursorPOI.x && x < GUICursor.cursorPOI.x + GUICursor.GUICursorPTBitmap.w && y >= GUICursor.cursorPOI.y && y < GUICursor.cursorPOI.y + GUICursor.GUICursorPTBitmap.h)
 	{
-		int16 drawX, drawY;
+		int16_t drawX, drawY;
 		drawX = x - GUICursor.cursorPOI.x;
 		drawY = y - GUICursor.cursorPOI.y;
-		//((uint16*)(GUICursor.GUICursorLastPOIMem))[drawX+drawY* GUICursor.GUICursorPTBitmap.w]=color;
-		((uint16 *)(GUICursor.GUICursorMem))[drawX + drawY * GUICursor.GUICursorPTBitmap.w] = color;
+		//((uint16_t*)(GUICursor.GUICursorLastPOIMem))[drawX+drawY* GUICursor.GUICursorPTBitmap.w]=color;
+		((uint16_t *)(GUICursor.GUICursorMem))[drawX + drawY * GUICursor.GUICursorPTBitmap.w] = color;
 		_SET_CURSOR_UPT(&GUICursor);
 		return TRUE;
 	}
@@ -147,8 +147,8 @@ uint8 GUICursorDrawMem(int16 x, int16 y, uintColor color)
 /*写入到屏幕*/
 void GUICursorDrawLCD(void)
 {
-	int16 i, j;
-	uint32 *pixels = (uint32 *)(GUICursor.GUICursorPTBitmap.pixels);
+	int16_t i, j;
+	uint32_t *pixels = (uint32_t *)(GUICursor.GUICursorPTBitmap.pixels);
 
 	/*画上一次*/
 	GUIDrawBitmap(
@@ -160,7 +160,7 @@ void GUICursorDrawLCD(void)
 	{
 		for (j = 0; j < GUICursor.GUICursorPTBitmap.w; j++)
 		{
-			uint32 color = pixels[(i)*GUICursor.GUICursorPTBitmap.w + j];
+			uint32_t color = pixels[(i)*GUICursor.GUICursorPTBitmap.w + j];
 			if (!(color & 0xff000000))
 			{
 				GUIDrawPixel(j + GUICursor.cursorPOI.x, i + GUICursor.cursorPOI.y, BGR888T0RGB565(color));
@@ -170,7 +170,7 @@ void GUICursorDrawLCD(void)
 	}
 }
 /*设置游标类型*/
-void GUICursorSetType(uint8 type)
+void GUICursorSetType(uint8_t type)
 {
 }
 

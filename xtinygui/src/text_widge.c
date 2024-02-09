@@ -1,13 +1,13 @@
 
 #include "text_widge.h"
 #include "x_malloc.h"
-#include "tool.h"
+#include "x_tool.h"
 #include "gui.h"
 #include "paint_cut.h"
 
-PUBLIC HTEXT_WIDGE TEXT_MARK_HEAD(Create)(const char *text, int16 x, int16 y, uint16 w, uint16 h)
+PUBLIC p_text_widget_t TEXT_MARK_HEAD(Create)(const char *text, int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
-	HTEXT_WIDGE hObject = (HTEXT_WIDGE)(xMalloc(sizeof(TEXT_WIDGE)));
+	p_text_widget_t hObject = (p_text_widget_t)(xMalloc(sizeof(text_widget_t)));
 	if (hObject == NULL)
 	{
 		return NULL;
@@ -16,51 +16,50 @@ PUBLIC HTEXT_WIDGE TEXT_MARK_HEAD(Create)(const char *text, int16 x, int16 y, ui
 	(hObject, text, x, y, w, h);
 	return hObject;
 }
-PUBLIC void TEXT_MARK_HEAD(Init)(HTEXT_WIDGE hObject, const char *text, int16 x, int16 y, uint16 w, uint16 h)
+PUBLIC void TEXT_MARK_HEAD(Init)(p_text_widget_t hObject, const char *text, int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
 	if (hObject == NULL)
 	{
 		return;
 	}
-	_WIDGET(Init)
-	((HWIDGET_BASE)hObject, x, y, w, h);
+	WidgetInit((p_widget_base_t)hObject, x, y, w, h);
 
 	hObject->baseWidge.paintFun = TEXT_MARK_HEAD(Paint);
 	hObject->baseWidge.moveToFun = TEXT_MARK_HEAD(MoveTo);
 	hObject->baseWidge.widgeCallBackFun = TEXT_MARK_HEAD(CallBack);
 
-	hObject->hFont = (HFONTF)&fontASCII16_16;
+	hObject->hFont = (p_font_t)&fontASCII16_16;
 	hObject->text = text ? text : "None";
 	hObject->textMode = TEXT_CENTER_ALIGN;
 }
-PUBLIC void TEXT_MARK_HEAD(SetTextMode)(HTEXT_WIDGE hOjbect, uint8 textMode)
+PUBLIC void TEXT_MARK_HEAD(SetTextMode)(p_text_widget_t hOjbect, uint8_t textMode)
 {
 	if (hOjbect == NULL)
 	{
 		return;
 	}
 	hOjbect->textMode = textMode;
-	WindowsInvaildRect((HWIDGET_BASE)hOjbect, NULL);
+	WindowsInvaildRect((p_widget_base_t)hOjbect, NULL);
 }
-PUBLIC void TEXT_MARK_HEAD(SetFont)(HTEXT_WIDGE hObject, HFONTF hFont)
+PUBLIC void TEXT_MARK_HEAD(SetFont)(p_text_widget_t hObject, p_font_t hFont)
 {
 	if (hObject == NULL)
 	{
 		return;
 	}
 	hObject->hFont = hFont;
-	WindowsInvaildRect((HWIDGET_BASE)hObject, NULL);
+	WindowsInvaildRect((p_widget_base_t)hObject, NULL);
 }
-PUBLIC void TEXT_MARK_HEAD(SetText)(HTEXT_WIDGE hObject, const char *text)
+PUBLIC void TEXT_MARK_HEAD(SetText)(p_text_widget_t hObject, const char *text)
 {
 	if (hObject == NULL)
 	{
 		return;
 	}
 	hObject->text = text;
-	WindowsInvaildRect((HWIDGET_BASE)hObject, NULL);
+	WindowsInvaildRect((p_widget_base_t)hObject, NULL);
 }
-PUBLIC void TEXT_MARK_HEAD(MoveTo)(HTEXT_WIDGE hObject, int16 x, int16 y)
+PUBLIC void TEXT_MARK_HEAD(MoveTo)(p_text_widget_t hObject, int16_t x, int16_t y)
 {
 	if (!hObject)
 	{
@@ -70,10 +69,10 @@ PUBLIC void TEXT_MARK_HEAD(MoveTo)(HTEXT_WIDGE hObject, int16 x, int16 y)
 	hObject->baseWidge.rect.y = y;
 }
 /*根据模式得到文字绘制的起始位置*/
-PUBLIC HXPOINT TEXT_MARK_HEAD(GetPOIByTextMode)(HTEXT_WIDGE hTextWidge, HXPOINT startPoint)
+PUBLIC p_xpoint_t TEXT_MARK_HEAD(GetPOIByTextMode)(p_text_widget_t hTextWidge, p_xpoint_t startPoint)
 {
-	uint16 textW = 0;
-	uint16 textH = 0;
+	uint16_t textW = 0;
+	uint16_t textH = 0;
 
 	if (startPoint == NULL || hTextWidge == NULL)
 	{
@@ -85,11 +84,11 @@ PUBLIC HXPOINT TEXT_MARK_HEAD(GetPOIByTextMode)(HTEXT_WIDGE hTextWidge, HXPOINT 
 
 	if (hTextWidge->hFont->fontType == UNICODE_TYPE)
 	{
-		textW = UStrlen((uint16 *)(hTextWidge->text)) * hTextWidge->hFont->fontInfo.w;
+		textW = UNI_Strlen((uint16_t *)(hTextWidge->text)) * hTextWidge->hFont->fontInfo.w;
 	}
 	else
 	{
-		textW = TStrlen(hTextWidge->text) * hTextWidge->hFont->fontInfo.w;
+		textW = GBK_Strlen(hTextWidge->text) * hTextWidge->hFont->fontInfo.w;
 	}
 	textH = hTextWidge->hFont->fontInfo.h;
 
@@ -147,8 +146,8 @@ PUBLIC HXPOINT TEXT_MARK_HEAD(GetPOIByTextMode)(HTEXT_WIDGE hTextWidge, HXPOINT 
 }
 PUBLIC void TEXT_MARK_HEAD(Paint)(void *hObject)
 {
-	XPOINT startPoint;
-	HTEXT_WIDGE hTextWidge;
+	xpoint_t startPoint;
+	p_text_widget_t hTextWidge;
 	hTextWidge = hObject;
 	if (!hObject)
 	{
@@ -158,9 +157,9 @@ PUBLIC void TEXT_MARK_HEAD(Paint)(void *hObject)
 	{
 		return;
 	}
-	// if (!isGUINeedCut((HXRECT)hTextWidge)) { return; }
+	// if (!isGUINeedCut((p_xrect_t)hTextWidge)) { return; }
 
-	if (!DrawSetArea((HWIDGET_BASE)hTextWidge))
+	if (!DrawSetArea((p_widget_base_t)hTextWidge))
 	{
 		return;
 	}
@@ -170,14 +169,14 @@ PUBLIC void TEXT_MARK_HEAD(Paint)(void *hObject)
 	DrawCutString(hTextWidge, hTextWidge->hFont,
 				  &(hTextWidge->baseWidge.rect),
 				  &startPoint,
-				  (uint8 *)(hTextWidge->text));
+				  (uint8_t *)(hTextWidge->text));
 
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGET_BASE)hTextWidge);
+	DrawResetArea((p_widget_base_t)hTextWidge);
 }
-PUBLIC int8 TEXT_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
+PUBLIC int8_t TEXT_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg)
 {
-	HTEXT_WIDGE hTextWidge = hObject;
+	p_text_widget_t hTextWidge = hObject;
 	if (!hTextWidge || !hMsg)
 	{
 		return -1;

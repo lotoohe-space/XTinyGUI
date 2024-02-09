@@ -3,11 +3,11 @@
 #include "gui.h"
 
 #define GUI_TIMEOUT_MAX_COUNT 10
-GUITIME_OUT GUITimeoutList[GUI_TIMEOUT_MAX_COUNT] = {0};
+guitime_out_t GUITimeoutList[GUI_TIMEOUT_MAX_COUNT] = {0};
 
-PRIVATE HGUITIME_OUT GUITimeoutNew(void)
+PRIVATE p_guitime_out_t GUITimeoutNew(void)
 {
-	uint16 i = 0;
+	uint16_t i = 0;
 	for (i = 0; i < GUI_TIMEOUT_MAX_COUNT; i++)
 	{
 		if (!_GetTimeoutUse(&GUITimeoutList[i]))
@@ -18,7 +18,7 @@ PRIVATE HGUITIME_OUT GUITimeoutNew(void)
 	}
 	return NULL;
 }
-PUBLIC void GUITimeoutFree(HGUITIME_OUT hGUITimeout)
+PUBLIC void GUITimeoutFree(p_guitime_out_t hGUITimeout)
 {
 	if (hGUITimeout == NULL)
 	{
@@ -27,9 +27,9 @@ PUBLIC void GUITimeoutFree(HGUITIME_OUT hGUITimeout)
 	_ClrTimeoutUse(hGUITimeout);
 }
 
-HGUITIME_OUT GUITimeoutCreate(uint16 timeoutPeriod, void *arg, GUITimeoutCallback timoutCallBackFun)
+p_guitime_out_t GUITimeoutCreate(uint16_t timeoutPeriod, void *arg, GUITimeoutCallback timoutCallBackFun)
 {
-	HGUITIME_OUT hGUITimeOut = GUITimeoutNew();
+	p_guitime_out_t hGUITimeOut = GUITimeoutNew();
 	if (hGUITimeOut == NULL)
 	{
 		return NULL;
@@ -42,7 +42,7 @@ HGUITIME_OUT GUITimeoutCreate(uint16 timeoutPeriod, void *arg, GUITimeoutCallbac
 	_OpenTimeout(hGUITimeOut);
 	return hGUITimeOut;
 }
-void GUITimeoutOpen(HGUITIME_OUT hGUITimeOut)
+void GUITimeoutOpen(p_guitime_out_t hGUITimeOut)
 {
 	if (hGUITimeOut == NULL)
 	{
@@ -51,7 +51,7 @@ void GUITimeoutOpen(HGUITIME_OUT hGUITimeOut)
 	hGUITimeOut->timeoutTick = GUIGetTick();
 	_OpenTimeout(hGUITimeOut);
 }
-void GUITimeoutClose(HGUITIME_OUT hGUITimeOut)
+void GUITimeoutClose(p_guitime_out_t hGUITimeOut)
 {
 	if (hGUITimeOut == NULL)
 	{
@@ -61,7 +61,7 @@ void GUITimeoutClose(HGUITIME_OUT hGUITimeOut)
 }
 void GUITimeoutProcess(void)
 {
-	uint16 i = 0;
+	uint16_t i = 0;
 	for (i = 0; i < GUI_TIMEOUT_MAX_COUNT; i++)
 	{
 		if (_GetTimeoutUse(&GUITimeoutList[i]) && _GetTimeout(&GUITimeoutList[i]))

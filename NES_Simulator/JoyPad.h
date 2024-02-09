@@ -25,15 +25,15 @@ typedef enum {JOYPADDISABLE = 0, JOYPADENABLE = !JOYPADDISABLE} JoyPadState;
 
 typedef struct{
 	JoyPadState state;
-	uint8  index;	//当前读取位
-	uint32 value;	//JoyPad 当前值	
+	uint8_t  index;	//当前读取位
+	uint32_t value;	//JoyPad 当前值	
 }JoyPadType;
 
 /* function ------------------------------------------------------------------*/
 void NES_JoyPadInit(void);
 void NES_JoyPadReset(void);
 void NES_JoyPadDisable(void);
-uint8 NES_GetJoyPadVlaue(int JoyPadNum);
+uint8_t NES_GetJoyPadVlaue(int JoyPadNum);
 void NES_SetJoyPadValue(int JoyPadNum, int index, int status);
 
 #endif /* _JOYPAD_H_*/

@@ -7,15 +7,13 @@
 /*按钮的管理结构体*/
 typedef struct
 {
-	WIDGET_BASE baseWidge; /*继承WIDGE_BASE控件*/
+	widget_base_t baseWidge; /*继承WIDGE_BASE控件*/
+	int16_t maxVal;	   /*最大值*/
+	uint16_t currentVal; /*当前值*/
+} *p_slide_widget_t, slide_widget_t;
 
-	int16 maxVal;	   /*最大值*/
-	uint16 currentVal; /*当前值*/
-
-} *HSLIDE_WIDGE, SLIDE_WIDGE;
-
-PUBLIC HSLIDE_WIDGE SLIDE_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h);
+PUBLIC p_slide_widget_t SLIDE_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h);
 PUBLIC void SLIDE_MARK_HEAD(Paint)(void *hObject);
-PUBLIC int8 SLIDE_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg);
+PUBLIC int8_t SLIDE_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg);
 
 #endif

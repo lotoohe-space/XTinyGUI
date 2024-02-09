@@ -2,20 +2,18 @@
 #include "type.h"
 #include "gui.h"
 #include <string.h>
-// 内存拷贝
-void TMemcpy(void *dst, void *src, uint32 len)
+
+/**
+ * @brief 获取gbk字符串的第index个字符的地址
+ *
+ * @param str
+ * @param index
+ * @return const char*
+ */
+const char *GBK_CharGet(const char *str, uint16_t index)
 {
-	if (!dst || !src)
-	{
-		return;
-	}
-	memcpy(dst, src, len);
-}
-// 获取gbk字符串的第index个字符的地址
-const char *TCharGet(const char *str, uint16 index)
-{
-	uint16 i = 0;
-	uint16 len = 0;
+	uint16_t i = 0;
+	uint16_t len = 0;
 	if (!str)
 	{
 		return NULL;
@@ -38,9 +36,15 @@ const char *TCharGet(const char *str, uint16 index)
 	}
 	return NULL;
 }
-uint32 UStrlen(uint16 *str)
+/**
+ * @brief 获取UNICODE的长度
+ *
+ * @param str
+ * @return uint32_t
+ */
+uint32_t UNI_Strlen(uint16_t *str)
 {
-	uint16 i = 0;
+	uint16_t i = 0;
 	if (str == NULL)
 	{
 		return 0;
@@ -51,11 +55,16 @@ uint32 UStrlen(uint16 *str)
 	}
 	return i;
 }
-// 获取GBK字符串长度
-uint32 TStrlen(const char *str)
+/**
+ * @brief 获取GBK字符串长度
+ *
+ * @param str
+ * @return uint32_t
+ */
+uint32_t GBK_Strlen(const char *str)
 {
-	uint16 i = 0;
-	uint16 len = 0;
+	uint16_t i = 0;
+	uint16_t len = 0;
 	if (!str)
 	{
 		return 0;
@@ -77,9 +86,19 @@ uint32 TStrlen(const char *str)
 }
 
 /**
- * 判断两矩形是否相交
+ * @brief 判断两矩形是否相交
+ *
+ * @param x1
+ * @param y1
+ * @param w1
+ * @param h1
+ * @param x2
+ * @param y2
+ * @param w2
+ * @param h2
+ * @return int8_t
  */
-int8 isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2)
+int8_t isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2)
 {
 	// 矩形A位于矩形B的右侧
 	if (x1 >= x2 && x1 >= x2 + w2)
@@ -105,8 +124,15 @@ int8 isCollsionWithRect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, 
 	return TRUE;
 }
 
-// 获得两个矩形的重叠部分
-BOOL GetOverLapRect(HXRECT r1, HXRECT r2, HXRECT res)
+/**
+ * @brief 获得两个矩形的重叠部分
+ *
+ * @param r1
+ * @param r2
+ * @param res
+ * @return BOOL
+ */
+BOOL GetOverLapRect(p_xrect_t r1, p_xrect_t r2, p_xrect_t res)
 {
 	//	assert(r1 != NULL && r2 != NULL && res!=NULL);
 

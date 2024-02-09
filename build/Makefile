@@ -248,30 +248,6 @@ NES_Simulator/nes_main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/NES_Simulator/nes_main.c.s
 .PHONY : NES_Simulator/nes_main.c.s
 
-NES_Simulator/rom_mario.obj: NES_Simulator/rom_mario.c.obj
-.PHONY : NES_Simulator/rom_mario.obj
-
-# target to build an object file
-NES_Simulator/rom_mario.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/NES_Simulator/rom_mario.c.obj
-.PHONY : NES_Simulator/rom_mario.c.obj
-
-NES_Simulator/rom_mario.i: NES_Simulator/rom_mario.c.i
-.PHONY : NES_Simulator/rom_mario.i
-
-# target to preprocess a source file
-NES_Simulator/rom_mario.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/NES_Simulator/rom_mario.c.i
-.PHONY : NES_Simulator/rom_mario.c.i
-
-NES_Simulator/rom_mario.s: NES_Simulator/rom_mario.c.s
-.PHONY : NES_Simulator/rom_mario.s
-
-# target to generate assembly for a file
-NES_Simulator/rom_mario.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/NES_Simulator/rom_mario.c.s
-.PHONY : NES_Simulator/rom_mario.c.s
-
 app.obj: app.c.obj
 .PHONY : app.obj
 
@@ -1016,9 +992,6 @@ help:
 	@echo ... NES_Simulator/nes_main.obj
 	@echo ... NES_Simulator/nes_main.i
 	@echo ... NES_Simulator/nes_main.s
-	@echo ... NES_Simulator/rom_mario.obj
-	@echo ... NES_Simulator/rom_mario.i
-	@echo ... NES_Simulator/rom_mario.s
 	@echo ... app.obj
 	@echo ... app.i
 	@echo ... app.s

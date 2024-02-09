@@ -5,15 +5,14 @@
 #include "x_malloc.h"
 #include "xwindows.h"
 
-PUBLIC HBITMAP_WIDGE BITMAP_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, HXBITMAP hXBitmap)
+PUBLIC p_bitmap_widget_t BITMAP_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, p_xbitmap_t hXBitmap)
 {
-	HBITMAP_WIDGE hBitmapWidge = (HBITMAP_WIDGE)(xMalloc(sizeof(BITMAP_WIDGE)));
+	p_bitmap_widget_t hBitmapWidge = (p_bitmap_widget_t)(xMalloc(sizeof(bitmap_widget_t)));
 	if (hBitmapWidge == NULL)
 	{
 		return NULL;
 	}
-	_WIDGET(Init)
-	((HWIDGET_BASE)hBitmapWidge, x, y, w, h);
+	WidgetInit((p_widget_base_t)hBitmapWidge, x, y, w, h);
 
 	/*设置三个回调函数*/
 	hBitmapWidge->widgeBase.paintFun = BITMAP_MARK_HEAD(Paint);
@@ -25,7 +24,7 @@ PUBLIC HBITMAP_WIDGE BITMAP_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h
 
 	return hBitmapWidge;
 }
-PUBLIC void BITMAP_MARK_HEAD(SetBitmap)(HBITMAP_WIDGE hObject, HXBITMAP hXBitmap)
+PUBLIC void BITMAP_MARK_HEAD(SetBitmap)(p_bitmap_widget_t hObject, p_xbitmap_t hXBitmap)
 {
 	if (!hObject)
 	{
@@ -33,18 +32,17 @@ PUBLIC void BITMAP_MARK_HEAD(SetBitmap)(HBITMAP_WIDGE hObject, HXBITMAP hXBitmap
 	}
 	/*设置显示的图片*/
 	hObject->bitmap = hXBitmap;
-	WindowsInvaildRect((HWIDGET_BASE)hObject, NULL);
+	WindowsInvaildRect((p_widget_base_t)hObject, NULL);
 }
-PUBLIC void BITMAP_MARK_HEAD(MoveTo)(HBITMAP_WIDGE hObject, int16 x, int16 y)
+PUBLIC void BITMAP_MARK_HEAD(MoveTo)(p_bitmap_widget_t hObject, int16_t x, int16_t y)
 {
-	_WIDGET(MoveTo)
-	((HWIDGET_BASE)hObject, x, y);
+	WidgetMoveTo((p_widget_base_t)hObject, x, y);
 	// if (!hObject) { return; }
 	// hObject->widgeBase.rect.x = x;
 	// hObject->widgeBase.rect.y = y;
 }
 
-PUBLIC void BITMAP_MARK_HEAD(SetParentWin)(HBITMAP_WIDGE hObject, HWIN hWIN)
+PUBLIC void BITMAP_MARK_HEAD(SetParentWin)(p_bitmap_widget_t hObject, p_win_t hWIN)
 {
 	if (!hObject)
 	{
@@ -52,7 +50,7 @@ PUBLIC void BITMAP_MARK_HEAD(SetParentWin)(HBITMAP_WIDGE hObject, HWIN hWIN)
 	}
 	hObject->widgeBase.parentHWIN = hWIN;
 }
-PUBLIC void BITMAP_MARK_HEAD(SetColor)(HBITMAP_WIDGE hObject, uintColor color)
+PUBLIC void BITMAP_MARK_HEAD(SetColor)(p_bitmap_widget_t hObject, uintColor color)
 {
 	if (!hObject)
 	{
@@ -62,7 +60,7 @@ PUBLIC void BITMAP_MARK_HEAD(SetColor)(HBITMAP_WIDGE hObject, uintColor color)
 }
 PUBLIC void BITMAP_MARK_HEAD(Paint)(void *hObject)
 {
-	HBITMAP_WIDGE hBitmapWidge;
+	p_bitmap_widget_t hBitmapWidge;
 	hBitmapWidge = hObject;
 	if (!hObject)
 	{
@@ -74,19 +72,19 @@ PUBLIC void BITMAP_MARK_HEAD(Paint)(void *hObject)
 	}
 	// if (!IsGUINeedCut(hBitmapWidge)) { return; }
 
-	if (!DrawSetArea((HWIDGET_BASE)hBitmapWidge))
+	if (!DrawSetArea((p_widget_base_t)hBitmapWidge))
 	{
 		return;
 	}
 
-	DrawCutBitmap(hBitmapWidge, (HXRECT)hBitmapWidge, hBitmapWidge->bitmap);
+	DrawCutBitmap(hBitmapWidge, (p_xrect_t)hBitmapWidge, hBitmapWidge->bitmap);
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGET_BASE)hBitmapWidge);
+	DrawResetArea((p_widget_base_t)hBitmapWidge);
 }
 
-int8 BITMAP_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
+int8_t BITMAP_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg)
 {
-	HWIDGET_BASE hWidgeBase = hObject;
+	p_widget_base_t hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg)
 	{
 		return -1;

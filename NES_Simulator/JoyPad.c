@@ -15,9 +15,9 @@
 
 JoyPadType JoyPad[2];
 
-uint8 NES_GetJoyPadVlaue(int JoyPadNum)
+uint8_t NES_GetJoyPadVlaue(int JoyPadNum)
 {
-	uint8 retval = 0;
+	uint8_t retval = 0;
 
 	retval = (JoyPad[JoyPadNum].value >> JoyPad[JoyPadNum].index) & 0x01;	 //A, B, SELECT, START, UP, DOWN, LEFT, RIGHT
 	JoyPad[JoyPadNum].index++;	

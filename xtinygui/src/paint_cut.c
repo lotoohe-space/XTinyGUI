@@ -4,22 +4,31 @@
 #include "gui.h"
 #include "list.h"
 #include <string.h>
+extern void fill_rect(int x, int y, int w, int h, int color);
 
-XRECT xResRect;
+xrect_t xResRect;
 /*和那个矩形产生了碰撞*/
-HXRECT lastRightRect = NULL;
-LIST rectCutList = {0}; // 剪裁矩形
-HLIST rectItem = NULL;	// 临时用
-XRECT bgRect;			// 被剪裁的矩形
-XPOINT startPoint;		// 初始扫描起点
+p_xrect_t lastRightRect = NULL;
+list_t rectCutList = {0};		  /*剪裁矩形*/
+static p_rlist_t rectItem = NULL; /*临时用*/
+static xrect_t bgRect;			  /*被剪裁的矩形*/
+static xpoint_t startPoint;		  /*初始扫描起点*/
+static BOOL isEnd = 0;			  /*剪裁是否结束*/
 
-BOOL isEnd = 0;
-
-// 添加剪裁矩形
-// 每次添加到尾部
-HLIST RectCutAddRectList(HLIST addRectList)
+BOOL RectCutIsEnd(void)
 {
-	HLIST tempRectCutList;
+	return isEnd;
+}
+
+/**
+ * @brief 添加剪裁矩形，每次添加到尾部
+ *
+ * @param addRectList
+ * @return p_rlist_t
+ */
+p_rlist_t RectCutAddRectList(p_rlist_t addRectList)
+{
+	p_rlist_t tempRectCutList;
 	tempRectCutList = &rectCutList;
 
 	while (tempRectCutList->next)
@@ -30,28 +39,37 @@ HLIST RectCutAddRectList(HLIST addRectList)
 
 	return tempRectCutList;
 }
-// 指定的List处断开
-void RectCutSplitRectList(HLIST splitRectList)
+/**
+ * @brief 指定的List处断开
+ *
+ * @param splitRectList
+ */
+void RectCutSplitRectList(p_rlist_t splitRectList)
 {
 	splitRectList->next = NULL;
 }
 
-// 初始化剪裁
-int8 RectCutInit(void)
+/**
+ * @brief 初始化剪裁
+ *
+ * @return int8_t
+ */
+int8_t RectCutInit(void)
 {
 
 	return TRUE;
 }
 
-// 开始剪裁
-int8 RectCutStart(HXRECT hXRECT)
+/**
+ * @brief 开始剪裁
+ * 
+ * @param hXRECT 
+ * @return int8_t 
+ */
+int8_t RectCutStart(p_xrect_t hXRECT)
 {
 	rectItem = rectCutList.next;
-	bgRect.x = hXRECT->x;
-	bgRect.y = hXRECT->y;
-	bgRect.w = hXRECT->w;
-	bgRect.h = hXRECT->h;
-
+	bgRect = *hXRECT;
 	startPoint.x = bgRect.x;
 	startPoint.y = bgRect.y;
 
@@ -60,9 +78,9 @@ int8 RectCutStart(HXRECT hXRECT)
 	return 1;
 }
 
-HXRECT RectCutGetNext(void)
+static p_xrect_t RectCutGetNext(void)
 {
-	HLIST tempList = rectItem;
+	p_rlist_t tempList = rectItem;
 
 	if (rectItem != NULL)
 	{
@@ -80,16 +98,15 @@ void RectCutEnd(void)
 	// splitItem->next = NULL;
 }
 
-extern void fill_rect(int x, int y, int w, int h, int color);
 /*得到下一个剪裁矩形*/
-HXRECT RectCutFind(void)
+p_xrect_t RectCutFind(void)
 {
-	HXRECT hRect;
-	XPOINT pointEnd;
-	//	HLIST tempRectCutlist;
+	p_xrect_t hRect;
+	xpoint_t pointEnd;
+	//	p_rlist_t tempRectCutlist;
 
-	int16 temp_w = 0;
-	int16 val = bgRect.y + bgRect.h;
+	int16_t temp_w = 0;
+	int16_t val = bgRect.y + bgRect.h;
 	// int val1 = bgRect.y + bgRect.h;
 
 	pointEnd.x = bgRect.w + bgRect.x;
@@ -178,7 +195,7 @@ HXRECT RectCutFind(void)
 				if (startPoint.x >= pointEnd.x && pointEnd.y >= bgRect.y + bgRect.h)
 				{
 
-					HLIST tempItem;
+					p_rlist_t tempItem;
 					int tempPointEndY;
 					tempPointEndY = pointEnd.y;
 					tempItem = rectItem;
@@ -224,7 +241,7 @@ HXRECT RectCutFind(void)
 				/*右移超出边界，x回到起点*/
 				startPoint.x = bgRect.x;
 				/*Y回到找到的最近的一条边*/
-				HLIST tempItem;
+				p_rlist_t tempItem;
 				int tempPointEndY;
 				tempPointEndY = pointEnd.y;
 				tempItem = rectItem;
@@ -236,7 +253,7 @@ HXRECT RectCutFind(void)
 						continue;
 					}
 					if (hRect->y > startPoint.y)
-					{	/*上边*/
+					{ /*上边*/
 						/*在被剪裁矩形的纵向限定范围内*/
 						if (hRect->y > bgRect.y && hRect->y < bgRect.y + bgRect.h)
 						{

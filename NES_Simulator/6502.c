@@ -52,13 +52,13 @@ int  sum, saveflags;
 WORD help;
 
 /* 6502 memory map */
-uint8  ram6502[0x800];  /* RAM*/
-//uint8* ppu_regbase;		/* PPU IO reg*/
-//uint8* apu_regbase;		/* APU IO reg*/
-uint8* exp_rom;			/* expansion rom*/
-uint8* sram;			/* sram*/
-uint8* prg_rombank0;	/* prg-rom lower bank*/
-uint8* prg_rombank1;	/* prg-rom upper bank*/
+uint8_t  ram6502[0x800];  /* RAM*/
+//uint8_t* ppu_regbase;		/* PPU IO reg*/
+//uint8_t* apu_regbase;		/* APU IO reg*/
+uint8_t* exp_rom;			/* expansion rom*/
+uint8_t* sram;			/* sram*/
+uint8_t* prg_rombank0;	/* prg-rom lower bank*/
+uint8_t* prg_rombank1;	/* prg-rom upper bank*/
 
 /* arrays */
 typedef struct{
@@ -355,7 +355,7 @@ const OPCODE opcodetable[]={
  */
 void SprDMA(BYTE scr_addr) 		//scr_addr Ϊ��8λ��ַ
 {
-	uint8 *scr_addrptr = 0;		//������sprite���� ָ��
+	uint8_t *scr_addrptr = 0;		//������sprite���� ָ��
 	int 	i;
 
 	switch(scr_addr >> 4){		//ѡ��Դ��ַ��������
@@ -943,7 +943,7 @@ void cpy6502(void)
 
 void dec6502(void)
 {
-	uint8 temp;	
+	uint8_t temp;	
 
 	opcodetable[opcode].adrmode();
 //	gameImage[savepc]--;
@@ -981,7 +981,7 @@ void eor6502(void)
 
 void inc6502(void)
 {
-	uint8 temp;  
+	uint8_t temp;  
 	
 	opcodetable[opcode].adrmode();
 //      gameImage[savepc]++;
@@ -1354,7 +1354,7 @@ void stz6502(void)
 
 void tsb6502(void)
 {
-	uint8 temp;	
+	uint8_t temp;	
 
 	opcodetable[opcode].adrmode();
 //      gameImage[savepc] |= A;
@@ -1368,7 +1368,7 @@ void tsb6502(void)
 
 void trb6502(void)
 {
-	uint8 temp;    
+	uint8_t temp;    
 
 	opcodetable[opcode].adrmode();
 //      gameImage[savepc] = gameImage[savepc] & (A ^ 0xff);
@@ -1479,10 +1479,10 @@ void exec6502(int timerTicks)
 }
 
 /* ��ʼ��6502 �洢��*/
-void init6502mem( uint8* exp_romptr,
-				  uint8* sramptr,			
-				  uint8* prg_rombank0ptr,		
-			   	  uint8  rom_num)		
+void init6502mem( uint8_t* exp_romptr,
+				  uint8_t* sramptr,			
+				  uint8_t* prg_rombank0ptr,		
+			   	  uint8_t  rom_num)		
 {
 	exp_rom		= exp_romptr;			/* expansion rom*/
 	sram		= sramptr;				/* sram*/

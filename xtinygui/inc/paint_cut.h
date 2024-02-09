@@ -4,37 +4,29 @@
 #include "type.h"
 #include "gui.h"
 
-HLIST RectCutAddRectList(HLIST addRectList);
-void RectCutSplitRectList(HLIST splitRectList);
+p_rlist_t RectCutAddRectList(p_rlist_t addRectList);
+void RectCutSplitRectList(p_rlist_t splitRectList);
 
-int8 RectCutInit(void);
-int8 RectCutStart(HXRECT hXRECT);
-HXRECT RectCutGetNext(void);
-HXRECT RectCutFind(void);
+int8_t RectCutInit(void);
+int8_t RectCutStart(p_xrect_t hXRECT);
+p_xrect_t RectCutFind(void);
 void RectCutEnd(void);
+BOOL RectCutIsEnd(void);
 
-extern BOOL isEnd;
-
-//#define RECT_CUT_INIT(x,y,w,h) \
-//	{HXRECT nextCutRect;\
-//	if(RectCutStart((x), (y), (w), (h))){\
-//		while ((nextCutRect = RectCutFind()) != NULL)
-// #define RECT_CUT_ELSE() RectCutEnd();}else{
-// #define RECT_CUT_END() }}
 #define RECT_CUT_INIT(a)                                \
 	{                                                   \
-		HXRECT nextCutRect;                             \
+		p_xrect_t nextCutRect;                          \
 		RectCutStart(a);                                \
 		while (((nextCutRect = RectCutFind()) != NULL)) \
 		{
 
-#define RECT_CUT_END() \
-	if (isEnd)         \
-	{                  \
-		break;         \
-	}                  \
-	}                  \
-	RectCutEnd();      \
+#define RECT_CUT_END()  \
+	if (RectCutIsEnd()) \
+	{                   \
+		break;          \
+	}                   \
+	}                   \
+	RectCutEnd();       \
 	}
 
 #endif

@@ -4,26 +4,25 @@
 #include "gui.h"
 #include "paint_cut.h"
 
-PUBLIC HWIDGET_BASE _WIDGET(Create)(int16 x, int16 y, int16 w, int16 h)
+PUBLIC p_widget_base_t WidgetCreate(int16_t x, int16_t y, int16_t w, int16_t h)
 {
-	HWIDGET_BASE hWidgeBase = (HWIDGET_BASE)(xMalloc(sizeof(WIDGET_BASE)));
+	p_widget_base_t hWidgeBase = (p_widget_base_t)(xMalloc(sizeof(widget_base_t)));
 	if (hWidgeBase == NULL)
 	{
 		return NULL;
 	}
-	_WIDGET(Init)
-	(hWidgeBase, x, y, w, h);
+	WidgetInit(hWidgeBase, x, y, w, h);
 	return hWidgeBase;
 }
-PUBLIC HWIDGET_BASE _WIDGET(CreateEx)(HXRECT hXRect)
+PUBLIC p_widget_base_t WidgetCreateEx(p_xrect_t hXRect)
 {
 	if (hXRect == NULL)
 	{
 		return NULL;
 	}
-	return _WIDGET(Create)(hXRect->x, hXRect->y, hXRect->w, hXRect->h);
+	return WidgetCreate(hXRect->x, hXRect->y, hXRect->w, hXRect->h);
 }
-PUBLIC void _WIDGET(Init)(HWIDGET_BASE hWidgeBase, int16 x, int16 y, int16 w, int16 h)
+PUBLIC void WidgetInit(p_widget_base_t hWidgeBase, int16_t x, int16_t y, int16_t w, int16_t h)
 {
 	if (hWidgeBase == NULL)
 	{
@@ -36,11 +35,11 @@ PUBLIC void _WIDGET(Init)(HWIDGET_BASE hWidgeBase, int16 x, int16 y, int16 w, in
 	hWidgeBase->rect.h = h;
 
 	/*设置三个回调函数*/
-	hWidgeBase->paintFun = _WIDGET(Paint);
-	hWidgeBase->moveToFun = _WIDGET(MoveTo);
-	hWidgeBase->widgeCallBackFun = _WIDGET(CallBack);
-	hWidgeBase->widgeCloseFun = _WIDGET(Close);
-	hWidgeBase->widgeResizeFun = _WIDGET(Resize);
+	hWidgeBase->paintFun = WidgetPaint;
+	hWidgeBase->moveToFun = WidgetMoveTo;
+	hWidgeBase->widgeCallBackFun = WidgetCallBack;
+	hWidgeBase->widgeCloseFun = WidgetClose;
+	hWidgeBase->widgeResizeFun = WidgetResize;
 	/*设置颜色*/
 	hWidgeBase->pencil.DrawColor = RGB565_BLACK;
 	hWidgeBase->pencil.DrawFrColor = _DefaultFrColor;
@@ -66,7 +65,7 @@ PUBLIC void _WIDGET(Init)(HWIDGET_BASE hWidgeBase, int16 x, int16 y, int16 w, in
 	/*默认不透明处理*/
 	_CLR_IS_DPY(hWidgeBase);
 }
-PUBLIC void _WIDGET(Close)(HWIDGET_BASE hObject)
+PUBLIC void WidgetClose(p_widget_base_t hObject)
 {
 	if (hObject == NULL)
 	{
@@ -74,7 +73,7 @@ PUBLIC void _WIDGET(Close)(HWIDGET_BASE hObject)
 	}
 	xFree(hObject);
 }
-PUBLIC void _WIDGET(SetClickBack)(HWIDGET_BASE hObject, void *arg, ViewClickCallBack viewClickCallBack)
+PUBLIC void WidgetSetClickBack(p_widget_base_t hObject, void *arg, ViewClickCallBack viewClickCallBack)
 {
 	if (!hObject)
 	{
@@ -84,7 +83,7 @@ PUBLIC void _WIDGET(SetClickBack)(HWIDGET_BASE hObject, void *arg, ViewClickCall
 	hObject->viewClickCallBack = viewClickCallBack;
 }
 /*设置是否可见*/
-PUBLIC void _WIDGET(SetVisable)(HWIDGET_BASE hObject, uint8 isVisable)
+PUBLIC void WidgetSetVisable(p_widget_base_t hObject, uint8_t isVisable)
 {
 	if (!hObject)
 	{
@@ -98,10 +97,10 @@ PUBLIC void _WIDGET(SetVisable)(HWIDGET_BASE hObject, uint8 isVisable)
 	{
 		_ClrVisable(hObject);
 	}
-	WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
+	WindowsInvaildRect(hObject->parentHWIN, (p_xrect_t)hObject);
 }
 /*重新设置大小*/
-PUBLIC void _WIDGET(Resize)(HWIDGET_BASE hObject, int16 x, int16 y, uint16 w, uint16 h)
+PUBLIC void WidgetResize(p_widget_base_t hObject, int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
 	if (!hObject)
 	{
@@ -111,10 +110,10 @@ PUBLIC void _WIDGET(Resize)(HWIDGET_BASE hObject, int16 x, int16 y, uint16 w, ui
 	hObject->rect.y = y;
 	hObject->rect.w = w;
 	hObject->rect.h = h;
-	// WindowsInvaildRect(((HWIDGET_BASE)hObject)->parentHWIN, NULL);
+	// WindowsInvaildRect(((p_widget_base_t)hObject)->parentHWIN, NULL);
 }
 /*设置父控件*/
-PUBLIC void _WIDGET(SetParentWin)(HWIDGET_BASE hObject, void *hWIN)
+PUBLIC void WidgetSetParentWin(p_widget_base_t hObject, void *hWIN)
 {
 	if (!hObject)
 	{
@@ -123,17 +122,17 @@ PUBLIC void _WIDGET(SetParentWin)(HWIDGET_BASE hObject, void *hWIN)
 	hObject->parentHWIN = hWIN;
 }
 /*设置前景色*/
-PUBLIC void _WIDGET(SetColor)(HWIDGET_BASE hObject, uintColor color)
+PUBLIC void WidgetSetColor(p_widget_base_t hObject, uintColor color)
 {
 	if (!hObject)
 	{
 		return;
 	}
 	hObject->pencil.DrawColor = color;
-	WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
+	WindowsInvaildRect(hObject->parentHWIN, (p_xrect_t)hObject);
 }
 /*移动控件*/
-PUBLIC void _WIDGET(MoveTo)(HWIDGET_BASE hObject, int16 x, int16 y)
+PUBLIC void WidgetMoveTo(p_widget_base_t hObject, int16_t x, int16_t y)
 {
 	if (!hObject)
 	{
@@ -141,12 +140,12 @@ PUBLIC void _WIDGET(MoveTo)(HWIDGET_BASE hObject, int16 x, int16 y)
 	}
 	hObject->rect.x = x;
 	hObject->rect.y = y;
-	// WindowsInvaildRect(hObject->parentHWIN, (HXRECT)hObject);
+	// WindowsInvaildRect(hObject->parentHWIN, (p_xrect_t)hObject);
 }
 /*重绘函数*/
-PRIVATE void _WIDGET(Paint)(void *hObject)
+PRIVATE void WidgetPaint(void *hObject)
 {
-	HWIDGET_BASE hWidgeBase;
+	p_widget_base_t hWidgeBase;
 	hWidgeBase = hObject;
 	if (!hObject)
 	{
@@ -174,9 +173,9 @@ PRIVATE void _WIDGET(Paint)(void *hObject)
 	DrawResetArea(hWidgeBase);
 }
 /*事件回调函数*/
-PUBLIC int8 _WIDGET(CallBack)(void *hObject, HMSGE hMsg)
+PUBLIC int8_t WidgetCallBack(void *hObject, p_msg_t hMsg)
 {
-	HWIDGET_BASE hWidgeBase = hObject;
+	p_widget_base_t hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg)
 	{
 		return RES_ASSERT_ERR;
@@ -201,7 +200,7 @@ PUBLIC int8 _WIDGET(CallBack)(void *hObject, HMSGE hMsg)
 					hWidgeBase->viewClickCallBack(hWidgeBase, hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
 				}
 				_SetBtnPress(hWidgeBase);
-				WindowsInvaildRect(WIDGE_PARENT(hWidgeBase), (HXRECT)hWidgeBase);
+				WindowsInvaildRect(WIDGE_PARENT(hWidgeBase), (p_xrect_t)hWidgeBase);
 				break;
 			case MSG_TOUCH_RELEASE:
 				/*松开*/
@@ -212,7 +211,7 @@ PUBLIC int8 _WIDGET(CallBack)(void *hObject, HMSGE hMsg)
 						hWidgeBase->viewClickCallBack(hWidgeBase, hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
 					}
 					_SetBtnRelease(hWidgeBase);
-					WindowsInvaildRect(WIDGE_PARENT(hWidgeBase), (HXRECT)hWidgeBase);
+					WindowsInvaildRect(WIDGE_PARENT(hWidgeBase), (p_xrect_t)hWidgeBase);
 				}
 				break;
 			}
@@ -228,7 +227,7 @@ PUBLIC int8 _WIDGET(CallBack)(void *hObject, HMSGE hMsg)
 					hWidgeBase->viewClickCallBack(hWidgeBase, hWidgeBase->arg, _GetBtnStatus(hWidgeBase));
 				}
 				_SetBtnRelease(hWidgeBase);
-				WindowsInvaildRect(WIDGE_PARENT(hWidgeBase), (HXRECT)hWidgeBase);
+				WindowsInvaildRect(WIDGE_PARENT(hWidgeBase), (p_xrect_t)hWidgeBase);
 			}
 		}
 	}

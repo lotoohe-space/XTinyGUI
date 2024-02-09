@@ -6,7 +6,7 @@
 #include "xwindows.h"
 #include "bitmap.h"
 
-const uint8 checkBoxDefuImg0[] = {
+const uint8_t checkBoxDefuImg0[] = {
 	________, ________, // 0
 	________, ______XX, // 1
 	________, ______XX, // 2
@@ -27,15 +27,14 @@ const uint8 checkBoxDefuImg0[] = {
 };
 
 /*创建函数*/
-PUBLIC HCHECKBOX_WIDGE CHECKBOX_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int16 h, const char *text)
+PUBLIC p_checkbox_widget_t CHECKBOX_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, const char *text)
 {
-	HCHECKBOX_WIDGE hWidge = (HCHECKBOX_WIDGE)(xMalloc(sizeof(CHECKBOX_WIDGE)));
+	p_checkbox_widget_t hWidge = (p_checkbox_widget_t)(xMalloc(sizeof(checkbox_widget_t)));
 	if (hWidge == NULL)
 	{
 		return NULL;
 	}
-	_WIDGET(Init)
-	((HWIDGET_BASE)hWidge, x, y, w, h);
+	WidgetInit((p_widget_base_t)hWidge, x, y, w, h);
 
 	/*设置三个回调函数*/
 	_PToHTextWidgeType(hWidge)->baseWidge.paintFun = CHECKBOX_MARK_HEAD(Paint);
@@ -44,34 +43,33 @@ PUBLIC HCHECKBOX_WIDGE CHECKBOX_MARK_HEAD(Create)(int16 x, int16 y, int16 w, int
 	// hWidge->widgeBase.widgeCloseFun = CHECKBOX_MARK_HEAD(Close);
 
 	_PToHTextWidgeType(hWidge)->text = text;
-	_PToHTextWidgeType(hWidge)->hFont = (HFONTF)&fontASCII16_16;
+	_PToHTextWidgeType(hWidge)->hFont = (p_font_t)&fontASCII16_16;
 	hWidge->flag = 0;
 
 	/*初始化图片*/
-	InitBitmap(&(hWidge->checkedImg), (uint8 *)checkBoxDefuImg0, 16, 16, 1);
+	InitBitmap(&(hWidge->checkedImg), (uint8_t *)checkBoxDefuImg0, 16, 16, 1);
 
 	return hWidge;
 }
 /*设置点击回调*/
-void CHECKBOX_MARK_HEAD(SetClickBack)(HCHECKBOX_WIDGE hObject, void *arg, ViewClickCallBack viewClickCallBack)
+void CHECKBOX_MARK_HEAD(SetClickBack)(p_checkbox_widget_t hObject, void *arg, ViewClickCallBack viewClickCallBack)
 {
-	_WIDGET(SetClickBack)
-	((HWIDGET_BASE)hObject, arg, viewClickCallBack);
+	WidgetSetClickBack((p_widget_base_t)hObject, arg, viewClickCallBack);
 	/*if (!hObject) { return; }
 	hObject->viewClickCallBack = viewClickCallBack;*/
 }
 /*设置状态，内部调用的函数*/
-PRIVATE void CHECKBOX_MARK_HEAD(SetStatus)(HCHECKBOX_WIDGE hObject, uint8 status)
+PRIVATE void CHECKBOX_MARK_HEAD(SetStatus)(p_checkbox_widget_t hObject, uint8_t status)
 {
 	if (!hObject)
 	{
 		return;
 	}
 	hObject->flag = status & 0x3;
-	WindowsInvaildRect(WIDGE_PARENT(hObject), (HXRECT)hObject);
+	WindowsInvaildRect(WIDGE_PARENT(hObject), (p_xrect_t)hObject);
 }
 /*过去状态*/
-PUBLIC uint8 CHECKBOX_MARK_HEAD(GetStatus)(HCHECKBOX_WIDGE hObject)
+PUBLIC uint8_t CHECKBOX_MARK_HEAD(GetStatus)(p_checkbox_widget_t hObject)
 {
 	if (!hObject)
 	{
@@ -80,7 +78,7 @@ PUBLIC uint8 CHECKBOX_MARK_HEAD(GetStatus)(HCHECKBOX_WIDGE hObject)
 	return (hObject->flag) & 0x3;
 }
 /*移动函数*/
-PUBLIC void CHECKBOX_MARK_HEAD(MoveTo)(HCHECKBOX_WIDGE hObject, int16 x, int16 y)
+PUBLIC void CHECKBOX_MARK_HEAD(MoveTo)(p_checkbox_widget_t hObject, int16_t x, int16_t y)
 {
 	if (!hObject)
 	{
@@ -88,10 +86,10 @@ PUBLIC void CHECKBOX_MARK_HEAD(MoveTo)(HCHECKBOX_WIDGE hObject, int16 x, int16 y
 	}
 	_PToHTextWidgeType(hObject)->baseWidge.rect.x = x;
 	_PToHTextWidgeType(hObject)->baseWidge.rect.y = y;
-	// WindowsInvaildRect(hObject->widgeBase.parentHWIN, (HXRECT)hObject);
+	// WindowsInvaildRect(hObject->widgeBase.parentHWIN, (p_xrect_t)hObject);
 }
 /*设置父窗口*/
-PUBLIC void CHECKBOX_MARK_HEAD(SetParentWin)(HCHECKBOX_WIDGE hObject, HWIDGET_BASE parentWidge)
+PUBLIC void CHECKBOX_MARK_HEAD(SetParentWin)(p_checkbox_widget_t hObject, p_widget_base_t parentWidge)
 {
 	if (!hObject)
 	{
@@ -100,7 +98,7 @@ PUBLIC void CHECKBOX_MARK_HEAD(SetParentWin)(HCHECKBOX_WIDGE hObject, HWIDGET_BA
 	_PToHTextWidgeType(hObject)->baseWidge.parentHWIN = parentWidge;
 }
 /*设置颜色*/
-PUBLIC void CHECKBOX_MARK_HEAD(SetColor)(HCHECKBOX_WIDGE hObject, uintColor color)
+PUBLIC void CHECKBOX_MARK_HEAD(SetColor)(p_checkbox_widget_t hObject, uintColor color)
 {
 	if (!hObject)
 	{
@@ -111,10 +109,10 @@ PUBLIC void CHECKBOX_MARK_HEAD(SetColor)(HCHECKBOX_WIDGE hObject, uintColor colo
 /*绘制控件*/
 PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void *hObject)
 {
-	uint16 drawW;
-	XRECT xRect;
+	uint16_t drawW;
+	xrect_t xRect;
 	// float progressing;
-	HCHECKBOX_WIDGE hWidge;
+	p_checkbox_widget_t hWidge;
 	hWidge = hObject;
 	if (!hObject)
 	{
@@ -126,7 +124,7 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void *hObject)
 	}
 	// if (!IsGUINeedCut(hWidge)) { return; }
 
-	if (!DrawSetArea((HWIDGET_BASE)hWidge))
+	if (!DrawSetArea((p_widget_base_t)hWidge))
 	{
 		return;
 	}
@@ -171,10 +169,10 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void *hObject)
 	{
 		_PToHTextWidgeType(hObject)->baseWidge.pencil.DrawColor = _PToHTextWidgeType(hObject)->baseWidge.pencil.DrawBkColor;
 		DrawCutRect(hWidge, &xRect);
-		XPOINT xPoint;
+		xpoint_t xPoint;
 		xPoint.x = 0;
 		xPoint.y = 0;
-		XRECT xRect;
+		xrect_t xRect;
 		xRect.x = WIDGE_X(hWidge) + drawW;
 		xRect.y = WIDGE_Y(hWidge);
 		xRect.w = WIDGE_W(hWidge) - drawW;
@@ -185,10 +183,10 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void *hObject)
 	break;
 	case 1: /*点击状态*/
 		DrawCutBitmap(hWidge, &xRect, &(hWidge->checkedImg));
-		XPOINT xPoint;
+		xpoint_t xPoint;
 		xPoint.x = 0;
 		xPoint.y = 0;
-		XRECT xRect;
+		xrect_t xRect;
 		xRect.x = WIDGE_X(hWidge) + drawW;
 		xRect.y = WIDGE_Y(hWidge);
 		xRect.w = WIDGE_W(hWidge) - drawW;
@@ -200,12 +198,12 @@ PUBLIC void CHECKBOX_MARK_HEAD(Paint)(void *hObject)
 		break;
 	}
 	/*恢复绘图区域*/
-	DrawResetArea((HWIDGET_BASE)hWidge);
+	DrawResetArea((p_widget_base_t)hWidge);
 }
 /*事件回调*/
-int8 CHECKBOX_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
+int8_t CHECKBOX_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg)
 {
-	HWIDGET_BASE hWidgeBase = hObject;
+	p_widget_base_t hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg)
 	{
 		return -1;
@@ -227,22 +225,22 @@ int8 CHECKBOX_MARK_HEAD(CallBack)(void *hObject, HMSGE hMsg)
 
 				break;
 			case MSG_TOUCH_RELEASE:
-				if (CHECKBOX_MARK_HEAD(GetStatus)((HCHECKBOX_WIDGE)hWidgeBase) == 1)
+				if (CHECKBOX_MARK_HEAD(GetStatus)((p_checkbox_widget_t)hWidgeBase) == 1)
 				{
 					CHECKBOX_MARK_HEAD(SetStatus)
-					((HCHECKBOX_WIDGE)hWidgeBase, 0);
+					((p_checkbox_widget_t)hWidgeBase, 0);
 					if (_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack != NULL)
 					{
-						_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack(hWidgeBase, hWidgeBase->arg, CHECKBOX_MARK_HEAD(GetStatus)((HCHECKBOX_WIDGE)hWidgeBase));
+						_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack(hWidgeBase, hWidgeBase->arg, CHECKBOX_MARK_HEAD(GetStatus)((p_checkbox_widget_t)hWidgeBase));
 					}
 				}
-				else if (CHECKBOX_MARK_HEAD(GetStatus)((HCHECKBOX_WIDGE)hWidgeBase) == 0)
+				else if (CHECKBOX_MARK_HEAD(GetStatus)((p_checkbox_widget_t)hWidgeBase) == 0)
 				{
 					CHECKBOX_MARK_HEAD(SetStatus)
-					((HCHECKBOX_WIDGE)hWidgeBase, 1);
+					((p_checkbox_widget_t)hWidgeBase, 1);
 					if (_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack != NULL)
 					{
-						_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack(hWidgeBase, hWidgeBase->arg, CHECKBOX_MARK_HEAD(GetStatus)((HCHECKBOX_WIDGE)hWidgeBase));
+						_PToHWidgeBaseType(hWidgeBase)->viewClickCallBack(hWidgeBase, hWidgeBase->arg, CHECKBOX_MARK_HEAD(GetStatus)((p_checkbox_widget_t)hWidgeBase));
 					}
 				}
 				break;
