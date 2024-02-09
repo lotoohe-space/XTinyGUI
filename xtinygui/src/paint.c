@@ -50,7 +50,6 @@ void DrawAPixel(uintColor aColor, int16_t x, int16_t y)
 	uint8_t A = 0xFF - C565A(aColor);
 	if (A == 0x00)
 	{
-		//		DrawPixel(lcColor, x, y);
 		return;
 	}
 	else if (A == 0xff)
@@ -206,7 +205,7 @@ void DrawBitmapBinary(p_pencil_t hPencil, p_xrect_t drawBorder, p_xpoint_t start
 			for (j = 0; j < draw_w; j++)
 			{
 				uint16_t temp = (i + startDrawPT->y) * hXBitmap->w +
-							  (j + startDrawPT->x); // 当前像素的位置
+								(j + startDrawPT->x); // 当前像素的位置
 				pixel = hXBitmap->pixels[temp / 8] & ((1 << (7 - (temp % 8))));
 				if (pixel)
 				{
@@ -274,7 +273,7 @@ uint8_t DrawRect(p_pencil_t hPencil, p_xrect_t hXRECT)
  */
 uint8_t DrawBitmap(p_pencil_t hPencil, p_xrect_t border, p_xrect_t bgBorder, p_xbitmap_t hXBitmap)
 {
-	xrect_t rRect;  /*可以绘制的区域*/
+	xrect_t rRect;	/*可以绘制的区域*/
 	xrect_t rRect1; /*可以绘制的区域*/
 	xrect_t temp;
 	if (!hPencil)
@@ -403,7 +402,7 @@ static uint8_t _DrawChar(p_pencil_t hPencil, p_xrect_t hXRectArea, p_font_t hFon
 			for (j = 0; j < draw_w; j++)
 			{
 				uint16_t temp = (i + startPoint->y) * hFont->fontInfo.w +
-							  (j + startPoint->x); // 当前像素的位置
+								(j + startPoint->x); // 当前像素的位置
 				pixel = chData[temp / 8] & ((1 << ((temp % 8))));
 				if (pixel)
 				{
@@ -447,7 +446,7 @@ uint8_t _DrawCharEx(p_xrect_t bgRect, p_xrect_t drawRect, p_xpoint_t hStartXPoin
 				{
 
 					uint16_t temp = (i - sDrawY) * hFont->fontInfo.w +
-								  (j - sDrawX); // 当前像素的位置
+									(j - sDrawX); // 当前像素的位置
 					pixel = chData[temp / 8] & ((1 << ((temp % 8))));
 					if (pixel)
 					{
@@ -556,7 +555,7 @@ uint8_t _DrawStringEx(p_xrect_t bgRect, p_xrect_t drawRect, p_xpoint_t hStartXPo
 }
 uint8_t DrawStringEx(p_xrect_t bgBorder, p_xrect_t drawBorder, p_xpoint_t hStartXPoint, p_font_t hFont, const char *text, p_pencil_t hPencil)
 {
-	xrect_t rRect;  /*可以绘制的区域*/
+	xrect_t rRect;	/*可以绘制的区域*/
 	xrect_t rRect1; /*可以绘制的区域*/
 	xrect_t temp;
 	if (!hPencil)
@@ -571,7 +570,7 @@ uint8_t DrawStringEx(p_xrect_t bgBorder, p_xrect_t drawBorder, p_xpoint_t hStart
 
 uint8_t DrawCharEx(p_xrect_t bgBorder, p_xrect_t drawBorder, p_xpoint_t hStartXPoint, p_font_t hFont, char ch, p_pencil_t hPencil)
 {
-	xrect_t rRect;  /*可以绘制的区域*/
+	xrect_t rRect;	/*可以绘制的区域*/
 	xrect_t rRect1; /*可以绘制的区域*/
 	xrect_t temp;
 	if (!hPencil)
@@ -586,7 +585,7 @@ uint8_t DrawCharEx(p_xrect_t bgBorder, p_xrect_t drawBorder, p_xpoint_t hStartXP
 
 uint8_t DrawChar(p_pencil_t hPencil, p_font_t hFont, p_xrect_t border, p_xrect_t bgBorder, char ch)
 {
-	xrect_t rRect;  /*可以绘制的区域*/
+	xrect_t rRect;	/*可以绘制的区域*/
 	xrect_t rRect1; /*可以绘制的区域*/
 	xrect_t temp;
 	if (!hPencil)
@@ -617,11 +616,11 @@ uint8_t DrawCutChar(void *hObject, p_font_t hFont, p_xrect_t bgRect, p_xpoint_t 
 	{
 		return (uint8_t)FALSE;
 	}
-	RECT_CUT_INIT(bgRect)
+	p_xrect_t nextCutRect = NULL;
+	RECT_CUT_FOREACH(nextCutRect, bgRect)
 	{
 		DrawCharEx(bgRect, nextCutRect, hStartXPoint, hFont, ch, &(hWidgeBase->pencil));
 	}
-	RECT_CUT_END()
 	return (int8_t)TRUE;
 }
 
@@ -637,43 +636,44 @@ uint8_t DrawCutString(void *hObject, p_font_t hFont, p_xrect_t border, p_xpoint_
 
 	startPoint.x = 0;
 	startPoint.y = 0;
+	p_xrect_t nextCutRect = NULL;
 
-	RECT_CUT_INIT(border)
+	RECT_CUT_FOREACH(nextCutRect, border)
 	{
 		//	DrawString(&(hWidgeBase->pencil), hFont, nextCutRect, !hXPoint ? border->x : hXPoint->x, !hXPoint ? border->y : hXPoint->y, text);
 		DrawStringEx(border, nextCutRect, hXPoint == 0 ? &startPoint : hXPoint, hFont, text, &(hWidgeBase->pencil));
 	}
-	RECT_CUT_END()
 	return (int8_t)TRUE;
 }
 
 /*图片剪裁绘制*/
 uint8_t DrawCutBitmap(void *hObject, p_xrect_t border, p_xbitmap_t hXBitmap)
 {
+	p_xrect_t nextCutRect = NULL;
 	p_widget_base_t hWidgeBase = hObject;
 	if (!hWidgeBase || !border || !hXBitmap)
 	{
 		return (uint8_t)0;
 	}
 	/*循环绘制剪裁后的矩形*/
-	RECT_CUT_INIT(border)
+	RECT_CUT_FOREACH(nextCutRect, border)
 	{
 		DrawBitmap(&(hWidgeBase->pencil), nextCutRect, border, hXBitmap);
 	}
-	RECT_CUT_END()
 
 	return (uint8_t)1;
 }
 /*矩形剪裁绘制*/
 uint8_t DrawCutRect(void *hObject, p_xrect_t hXRECT)
 {
+	p_xrect_t nextCutRect = NULL;
 	p_widget_base_t hWidgeBase = hObject;
 	if (!hWidgeBase)
 	{
 		return (uint8_t)0;
 	}
 	/*循环绘制剪裁后的矩形*/
-	RECT_CUT_INIT(hXRECT)
+	RECT_CUT_FOREACH(nextCutRect, hXRECT)
 	{
 		// delay_ms(1000);
 		if (_GET_IS_DPY(hWidgeBase))
@@ -686,7 +686,6 @@ uint8_t DrawCutRect(void *hObject, p_xrect_t hXRECT)
 			DrawRect(&(hWidgeBase->pencil), nextCutRect);
 		}
 	}
-	RECT_CUT_END()
 
 	return (uint8_t)1;
 }

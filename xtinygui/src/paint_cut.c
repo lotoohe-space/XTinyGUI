@@ -66,7 +66,7 @@ int8_t RectCutInit(void)
  * @param hXRECT 
  * @return int8_t 
  */
-int8_t RectCutStart(p_xrect_t hXRECT)
+void *RectCutStart(p_xrect_t hXRECT)
 {
 	rectItem = rectCutList.next;
 	bgRect = *hXRECT;
@@ -75,7 +75,7 @@ int8_t RectCutStart(p_xrect_t hXRECT)
 
 	isEnd = FALSE;
 
-	return 1;
+	return NULL;
 }
 
 static p_xrect_t RectCutGetNext(void)

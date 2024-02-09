@@ -145,6 +145,7 @@ PUBLIC void WidgetMoveTo(p_widget_base_t hObject, int16_t x, int16_t y)
 /*重绘函数*/
 PRIVATE void WidgetPaint(void *hObject)
 {
+	p_xrect_t nextCutRect = NULL;
 	p_widget_base_t hWidgeBase;
 	hWidgeBase = hObject;
 	if (!hObject)
@@ -163,11 +164,10 @@ PRIVATE void WidgetPaint(void *hObject)
 	}
 	hWidgeBase->pencil.DrawColor = hWidgeBase->pencil.DrawBkColor;
 	// 绘制底色
-	RECT_CUT_INIT(&(hWidgeBase->rect))
+	RECT_CUT_FOREACH(nextCutRect, &(hWidgeBase->rect))
 	{
 		DrawRect(&(hWidgeBase->pencil), nextCutRect);
 	}
-	RECT_CUT_END()
 
 	/*恢复绘图区域*/
 	DrawResetArea(hWidgeBase);

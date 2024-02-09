@@ -8,25 +8,12 @@ p_rlist_t RectCutAddRectList(p_rlist_t addRectList);
 void RectCutSplitRectList(p_rlist_t splitRectList);
 
 int8_t RectCutInit(void);
-int8_t RectCutStart(p_xrect_t hXRECT);
+void *RectCutStart(p_xrect_t hXRECT);
 p_xrect_t RectCutFind(void);
 void RectCutEnd(void);
 BOOL RectCutIsEnd(void);
 
-#define RECT_CUT_INIT(a)                                \
-	{                                                   \
-		p_xrect_t nextCutRect;                          \
-		RectCutStart(a);                                \
-		while (((nextCutRect = RectCutFind()) != NULL)) \
-		{
-
-#define RECT_CUT_END()  \
-	if (RectCutIsEnd()) \
-	{                   \
-		break;          \
-	}                   \
-	}                   \
-	RectCutEnd();       \
-	}
+#define RECT_CUT_FOREACH(pos, a) \
+	for (RectCutStart(a); !RectCutIsEnd() && ((pos = RectCutFind()) != NULL);)
 
 #endif

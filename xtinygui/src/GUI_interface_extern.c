@@ -35,14 +35,16 @@ void GUIDrawRect(int16_t x, int16_t y, uint16_t w, uint16_t h, uintColor color)
 		}
 	}
 }
+extern void SDL2_GUIDrawBitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t *bitmap);
 void GUIDrawBitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t *bitmap)
 {
-	int16_t i, j;
-	for (j = y; j < y + h; j++)
-	{
-		for (i = x; i < x + w; i++)
-		{
-			GUIDrawPixel(i, j, ((uint16_t *)(bitmap))[(i - x) + (j - y) * w]);
-		}
-	}
+	SDL2_GUIDrawBitmap(x, y, w, h, bitmap);
+	// int16_t i, j;
+	// for (j = y; j < y + h; j++)
+	// {
+	// 	for (i = x; i < x + w; i++)
+	// 	{
+	// 		GUIDrawPixel(i, j, ((uint16_t *)(bitmap))[(i - x) + (j - y) * w]);
+	// 	}
+	// }
 }

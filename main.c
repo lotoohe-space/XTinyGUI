@@ -20,11 +20,10 @@ extern void NesFrameCycle(void);
 const int SCREEN_WIDTH = LCD_SCREEN_W;
 const int SCREEN_HEIGHT = LCD_SCREEN_H;
 
-#define POINTS_COUNT 4
 static uint16_t displayMem[LCD_SCREEN_W * LCD_SCREEN_H];
 
 SDL_Renderer *renderer = NULL;
-SDL_Texture *scr_text;
+SDL_Texture *scr_text = NULL;
 
 void d_pix(int x, int y, int color)
 {
@@ -39,6 +38,16 @@ unsigned int g_pix(int x, int y)
 	// if (x < 0 || x >= LCD_SCREEN_W || y < 0 || y >= LCD_SCREEN_H) { return 0x0000; }
 	return displayMem[y * LCD_SCREEN_W + x];
 }
+void SDL2_GUIDrawBitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t *bitmap)
+{
+	SDL_UpdateTexture(scr_text, &(SDL_Rect){.x = x, .y = y, .w = w, .h = h},
+					  bitmap,
+					  w * 2);
+	SDL_RenderCopy(renderer, scr_text, &(SDL_Rect){.x = x, .y = y, .w = w, .h = h},
+				   &(SDL_Rect){.x = x, .y = y, .w = w, .h = h});
+	SDL_RenderPresent(renderer);
+}
+#if 0
 void timer_draw_screen(void *p) // 回调函数
 {
 	while (1)
@@ -57,6 +66,7 @@ void timer_draw_screen(void *p) // 回调函数
 		}
 	}
 }
+#endif
 void timer_event_screen(void *p) // 回调函数
 {
 	while (1)
@@ -96,7 +106,7 @@ int WinMain(int argc, char *argv[])
 		exit(-1);
 	}
 	/* We must call SDL_CreateRenderer in order for draw calls to affect this window. */
-	renderer = SDL_CreateRenderer(window, -1, 0);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	scr_text = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB565,
 								 SDL_TEXTUREACCESS_STREAMING, LCD_SCREEN_W, LCD_SCREEN_H);
 
@@ -109,9 +119,9 @@ int WinMain(int argc, char *argv[])
 	/* Up until now everything was drawn behind the scenes.
 	   This will show the new, red contents of the window. */
 	SDL_RenderPresent(renderer);
-	SDL_CreateThread(timer_draw_screen, "timer draw screen thread", NULL);
+	// SDL_CreateThread(timer_draw_screen, "timer draw screen thread", NULL);
 	SDL_CreateThread(timer_event_screen, "timer event screen thread", NULL);
-	
+
 	// Hack to get window to stay up
 	SDL_Event e;
 	int quit = 0;
