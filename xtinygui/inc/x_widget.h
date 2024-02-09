@@ -1,20 +1,20 @@
 #ifndef _XWIDGE_H__
 #define _XWIDGE_H__
-#include "type.h"
-#include "widge_define.h"
+#include "x_types.h"
+#include "widget_define.h"
 #include "x_tool.h"
 
-typedef struct
+typedef struct widget_base
 {
-	xrect_t rect;	   /*控件大小*/
+	xrect_t rect;	 /*控件大小*/
 	pencil_t pencil; /*画笔，设置有效绘图大小，以及颜色*/
 
 	/*内部调用使用*/
-	WidgetPaintFunction paintFun;					/*控件刷新函数*/
-	WidgetMoveToFunction moveToFun;			/*控件移动函数*/
+	WidgetPaintFunction paintFun;			 /*控件刷新函数*/
+	WidgetMoveToFunction moveToFun;			 /*控件移动函数*/
 	WidgetCallBackFunction widgeCallBackFun; /*控件事件回调函数*/
-	WidgetCloseFunction widgeCloseFun;		/*控件关闭函数*/
-	WidgetResizeFunction widgeResizeFun;		/*控件重设大小函数*/
+	WidgetCloseFunction widgeCloseFun;		 /*控件关闭函数*/
+	WidgetResizeFunction widgeResizeFun;	 /*控件重设大小函数*/
 
 	/*外部调用，点击事件回调函数，所有控件共有的特性*/
 	ViewClickCallBack viewClickCallBack;
@@ -22,14 +22,14 @@ typedef struct
 	void *arg;
 
 	void *parentHWIN; /*父控件*/
-	uint8_t flag;		  /*
-					  0:bit 是否为窗口
-					  1:bit 是否被点击
-					  2:bit 是否显示
-					  3:bit 是否有焦点(还未实现)
-					  4:bit 是否需要进行透明处理
-					  5:bit 是否(在group_widge中需要特殊处理)
-					  */
+	uint8_t flag;	  /*
+				  0:bit 是否为窗口
+				  1:bit 是否被点击
+				  2:bit 是否显示
+				  3:bit 是否有焦点(还未实现)
+				  4:bit 是否需要进行透明处理
+				  5:bit 是否(在group_widge中需要特殊处理)
+				  */
 
 } *p_widget_base_t, widget_base_t;
 

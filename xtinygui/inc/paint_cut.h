@@ -1,7 +1,7 @@
 
 #ifndef _PAINT_CUT_H__
 #define _PAINT_CUT_H__
-#include "type.h"
+#include "x_types.h"
 #include "gui.h"
 
 p_rlist_t RectCutAddRectList(p_rlist_t addRectList);

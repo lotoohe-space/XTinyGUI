@@ -3,7 +3,7 @@
 #include "x_tool.h"
 #include "gui.h"
 #include "paint_cut.h"
-#include "widge.h"
+#include "x_widget.h"
 #include "msg.h"
 #include "bitmap.h"
 #include "text_widge.h"
@@ -29,6 +29,7 @@ void DrawPixel(uintColor color, int16_t x, int16_t y)
 #if USE_MEM_DEV
 	int16_t rX = x - hXDesktop->hMemDev->rect.x;
 	int16_t rY = y - hXDesktop->hMemDev->rect.y;
+
 	MemDevDrawPT(hXDesktop->hMemDev, rX, rY, color);
 #else /*USE_MEM_DEV*/
 #if USE_CURSOR
@@ -48,6 +49,7 @@ void DrawAPixel(uintColor aColor, int16_t x, int16_t y)
 
 	uint16_t lcColor = _GetPixel(x, y);
 	uint8_t A = 0xFF - C565A(aColor);
+
 	if (A == 0x00)
 	{
 		return;
@@ -63,13 +65,14 @@ void DrawAPixel(uintColor aColor, int16_t x, int16_t y)
 		uint8_t G = ((C565G(aColor) * A + C565G(lcColor) * (0xff - A)) >> 8) & 0xff;
 		uint8_t B = ((C565B(aColor) * A + C565B(lcColor) * (0xff - A)) >> 8) & 0xff;
 
-		DrawPixel(rgb565_t(R, G, B), x, y);
+		DrawPixel(RGB565_GEN(R, G, B), x, y);
 	}
 }
 /*画矩形*/
 void RawDrawRect(p_xrect_t hRect, uintColor color)
 {
 	int16_t i, j;
+
 	for (i = hRect->y; i < hRect->y + hRect->h; i++)
 	{
 		for (j = hRect->x; j < hRect->x + hRect->w; j++)
@@ -82,6 +85,7 @@ void RawDrawRect(p_xrect_t hRect, uintColor color)
 void RawDrawARect(p_xrect_t hRect, uintColor color)
 {
 	int16_t i, j;
+
 	for (i = hRect->y; i < hRect->y + hRect->h; i++)
 	{
 		for (j = hRect->x; j < hRect->x + hRect->w; j++)
@@ -98,6 +102,7 @@ void RawDrawBitmap(p_pencil_t hPencil, p_xrect_t drawBorder, p_xpoint_t startDra
 	int16_t endy;
 	int16_t endx;
 	uint16_t *pixels;
+
 	pixels = (uint16_t *)(hXBitmap->pixels);
 	endy = drawBorder->h + drawBorder->y;
 	endx = drawBorder->w + drawBorder->x;
@@ -105,9 +110,11 @@ void RawDrawBitmap(p_pencil_t hPencil, p_xrect_t drawBorder, p_xpoint_t startDra
 	{
 		for (j = drawBorder->x; j < endx; j++)
 		{
-			if ((i - drawBorder->y + startDrawBMP->y) < hXBitmap->h && (j - drawBorder->x + startDrawBMP->x) < hXBitmap->w)
+			if ((i - drawBorder->y + startDrawBMP->y) < hXBitmap->h &&
+				(j - drawBorder->x + startDrawBMP->x) < hXBitmap->w)
 			{
-				uintColor color = pixels[(i - drawBorder->y + startDrawBMP->y) * hXBitmap->w + (j - drawBorder->x) + startDrawBMP->x];
+				uintColor color = pixels[(i - drawBorder->y + startDrawBMP->y) * hXBitmap->w +
+										 (j - drawBorder->x) + startDrawBMP->x];
 				DrawPixel(color, j, i);
 			}
 			else

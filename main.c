@@ -1,7 +1,7 @@
 #include <SDL.h>
 #include "msg.h"
 #include "gui.h"
-#include "widge.h"
+#include "x_widget.h"
 #include "xwindows.h"
 #include "button_widge.h"
 #include "text_widge.h"

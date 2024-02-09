@@ -88,7 +88,7 @@ p_msg_t GUIGetMsg(void)
 }
 void GUIDelMsg(p_msg_t hMsg)
 {
-	xFree(hMsg);
+	XFree(hMsg);
 }
 
 int8_t GUISendKeyMsg(uint8_t ID, uint8_t status)
@@ -98,7 +98,7 @@ int8_t GUISendKeyMsg(uint8_t ID, uint8_t status)
 	{
 		return FALSE;
 	}
-	hMsg = xMalloc(sizeof(msg_t));
+	hMsg = XMalloc(sizeof(msg_t));
 	if (hMsg == NULL)
 	{
 		return FALSE;
@@ -123,7 +123,7 @@ int8_t GUISendTouchMsg(int ID, int16_t x, int16_t y)
 	{
 		return FALSE;
 	}
-	hMsg = xMalloc(sizeof(msg_t));
+	hMsg = XMalloc(sizeof(msg_t));
 	if (hMsg == NULL)
 	{
 		return FALSE;
@@ -149,7 +149,7 @@ int GUISendDrawMsg(void *hWin, uint8_t msgType, uint8_t msgID, int16_t x, int16_
 	{
 		return FALSE;
 	}
-	hMsg = xMalloc(sizeof(msg_t));
+	hMsg = XMalloc(sizeof(msg_t));
 	if (hMsg == NULL)
 	{
 		return FALSE;
@@ -185,7 +185,7 @@ p_msg_t GUIGetDrawMsg(void)
 }
 void GUIDelDrawMsg(p_msg_t hMsg)
 {
-	xFree(hMsg);
+	XFree(hMsg);
 }
 
 int GUISendMoveMsg(void *hWin, uint8_t msgType, uint8_t msgID, int16_t x, int16_t y)
@@ -196,7 +196,7 @@ int GUISendMoveMsg(void *hWin, uint8_t msgType, uint8_t msgID, int16_t x, int16_
 	{
 		return FALSE;
 	}
-	hMsg = xMalloc(sizeof(msg_t));
+	hMsg = XMalloc(sizeof(msg_t));
 	if (hMsg == NULL)
 	{
 		return FALSE;
@@ -236,7 +236,7 @@ next:
 }
 void GUIDelMoveMsg(p_msg_t hMsg)
 {
-	xFree(hMsg);
+	XFree(hMsg);
 }
 int8_t GUISendWINDelMsg(void *msgSrc, void *delItem)
 {
@@ -245,7 +245,7 @@ int8_t GUISendWINDelMsg(void *msgSrc, void *delItem)
 	{
 		return FALSE;
 	}
-	hMsg = xMalloc(sizeof(msg_t));
+	hMsg = XMalloc(sizeof(msg_t));
 	if (hMsg == NULL)
 	{
 		return FALSE;
@@ -271,7 +271,7 @@ p_msg_t GUIGetWINDelMsg(void)
 }
 void GUIDelWinDelMsg(p_msg_t hMsg)
 {
-	xFree(hMsg);
+	XFree(hMsg);
 }
 
 int8_t GUISendCursorMsg(uint16_t ID, int16_t x, int16_t y)
@@ -281,7 +281,7 @@ int8_t GUISendCursorMsg(uint16_t ID, int16_t x, int16_t y)
 	{
 		return FALSE;
 	}
-	hMsg = xMalloc(sizeof(msg_t));
+	hMsg = XMalloc(sizeof(msg_t));
 	if (hMsg == NULL)
 	{
 		return FALSE;
@@ -300,7 +300,7 @@ int8_t GUISendCursorMsg(uint16_t ID, int16_t x, int16_t y)
 }
 void GUIDelCursorMsg(p_msg_t hMsg)
 {
-	xFree(hMsg);
+	XFree(hMsg);
 }
 /*获取消息*/
 p_msg_t GUIGetCursorMsg(void)

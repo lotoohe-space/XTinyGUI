@@ -7,15 +7,16 @@
 /*创建一个存储设备*/
 p_mem_dev_t MemDevCreate(int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t colorDepth)
 {
-	p_mem_dev_t hMemDev = xMalloc(sizeof(mem_dev_t));
+	p_mem_dev_t hMemDev = XMalloc(sizeof(mem_dev_t));
+
 	if (hMemDev == NULL)
 	{
 		return NULL;
 	}
-	hMemDev->mem = (uint8_t *)xMalloc(w * h * (colorDepth / 8));
+	hMemDev->mem = (uint8_t *)XMalloc(w * h * (colorDepth / 8));
 	if (hMemDev->mem == NULL)
 	{
-		xFree(hMemDev);
+		XFree(hMemDev);
 	}
 	hMemDev->rect.x = x;
 	hMemDev->rect.y = y;
@@ -33,10 +34,7 @@ p_mem_dev_t MemDevCreate(int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t c
 /*重新设置MemDev的大小，*/
 uint8_t MemDevReset(p_mem_dev_t hMemDev, int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
-	if (hMemDev == NULL)
-	{
-		return FALSE;
-	}
+	assert(hMemDev);
 	if (w == 0 || h == 0)
 	{
 		return FALSE;
@@ -55,10 +53,7 @@ uint8_t MemDevReset(p_mem_dev_t hMemDev, int16_t x, int16_t y, uint16_t w, uint1
 }
 void MemDevClear(p_mem_dev_t hMemDev, uintColor color)
 {
-	if (hMemDev == NULL)
-	{
-		return;
-	}
+	assert(hMemDev);
 	int16_t i, j;
 	for (j = hMemDev->rect.y; j < hMemDev->rect.y + hMemDev->rect.h; j++)
 	{
@@ -70,26 +65,17 @@ void MemDevClear(p_mem_dev_t hMemDev, uintColor color)
 }
 void MemDevDrawPT(p_mem_dev_t hMemDev, int16_t x, int16_t y, uintColor color)
 {
-	if (hMemDev == NULL)
-	{
-		return;
-	}
+	assert(hMemDev);
 	((uint16_t *)(hMemDev->mem))[x + y * hMemDev->rect.w] = (uint16_t)color;
 }
 uintColor MemDevReadPT(p_mem_dev_t hMemDev, int16_t x, int16_t y)
 {
-	if (hMemDev == NULL)
-	{
-		return 0x0000;
-	}
+	assert(hMemDev);
 	return ((uint16_t *)(hMemDev->mem))[x + y * hMemDev->rect.w];
 }
 
 void MemDevCopyToLCD(p_mem_dev_t hMemDev)
 {
-	if (hMemDev == NULL)
-	{
-		return;
-	}
+	assert(hMemDev);
 	GUIDrawBitmap(hMemDev->rect.x, hMemDev->rect.y, hMemDev->rect.w, hMemDev->rect.h, hMemDev->mem);
 }

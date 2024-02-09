@@ -5,6 +5,7 @@
 #include "paint_cut.h"
 #include "paint.h"
 #include "gui.h"
+#include <assert.h>
 
 static void *WindowsGetWidgeEx(p_win_t hWin, uint16_t index);
 static void WindowsHeadBtnCallBack(void *Object, void *arg, uint8_t status);
@@ -21,8 +22,9 @@ static void WindowsHeadBtnCallBack(void *Object, void *arg, uint8_t status);
  */
 p_win_t WindowsCreate(char *title, int16_t x, int16_t y, int16_t w, int16_t h)
 {
+	assert(title);
 	/*alloc memory for window.*/
-	p_win_t hWin = (p_win_t)(xMalloc(sizeof(win_t)));
+	p_win_t hWin = (p_win_t)(XMalloc(sizeof(win_t)));
 	if (hWin == NULL)
 	{
 		return NULL;
@@ -36,7 +38,7 @@ p_win_t WindowsCreate(char *title, int16_t x, int16_t y, int16_t w, int16_t h)
 	if (hWin->hWinHead == NULL)
 	{
 		_PToHGroupWidgeType(hWin)->widgeBase.widgeCloseFun(_PToHGroupWidgeType(hWin));
-		xFree(hWin);
+		XFree(hWin);
 		return NULL;
 	}
 	WidgetInit((p_widget_base_t)hWin, x, y, w, h);
@@ -50,7 +52,7 @@ p_win_t WindowsCreate(char *title, int16_t x, int16_t y, int16_t w, int16_t h)
 
 	_PToHWidgeBaseType(hWin)->pencil.DrawColor = RGB565_BLACK;
 	_PToHWidgeBaseType(hWin)->pencil.DrawFrColor = _DefaultFrColor;
-	_PToHWidgeBaseType(hWin)->pencil.DrawBkColor = rgb565_t(230, 235, 230);
+	_PToHWidgeBaseType(hWin)->pencil.DrawBkColor = RGB565_GEN(230, 235, 230);
 
 	hWin->lastRect.x = x;
 	hWin->lastRect.y = y;
@@ -81,23 +83,23 @@ p_win_t WindowsCreate(char *title, int16_t x, int16_t y, int16_t w, int16_t h)
 	{
 		p_widget_base_t widgeTemp;
 		widgeTemp = WidgetCreate(0, 0, 1, WIDGE_H(hWin));
-		widgeTemp->pencil.DrawBkColor = rgb565_t(150, 150, 150);
+		widgeTemp->pencil.DrawBkColor = RGB565_GEN(150, 150, 150);
 		/*添加边框，边框也是控件*/
 		WindowsAdd(hWin, widgeTemp);
 
 		widgeTemp = WidgetCreate(0 + WIDGE_W(hWin) - 1, 0, 1, WIDGE_H(hWin));
-		widgeTemp->pencil.DrawBkColor = rgb565_t(150, 150, 150);
+		widgeTemp->pencil.DrawBkColor = RGB565_GEN(150, 150, 150);
 		WindowsAdd(hWin, widgeTemp);
 
 		widgeTemp = WidgetCreate(0,
 								 0 + WIDGE_H(hWin) - 1,
 								 WIDGE_W(hWin->hWinHead), 1);
-		widgeTemp->pencil.DrawBkColor = rgb565_t(150, 150, 150);
+		widgeTemp->pencil.DrawBkColor = RGB565_GEN(150, 150, 150);
 		WindowsAdd(hWin, widgeTemp);
 
 		widgeTemp = WidgetCreate(0, 0,
 								 WIDGE_W(hWin->hWinHead), 1);
-		widgeTemp->pencil.DrawBkColor = rgb565_t(150, 150, 150);
+		widgeTemp->pencil.DrawBkColor = RGB565_GEN(150, 150, 150);
 		WindowsAdd(hWin, widgeTemp);
 	}
 
@@ -115,7 +117,9 @@ p_win_t WindowsCreate(char *title, int16_t x, int16_t y, int16_t w, int16_t h)
  */
 static void WindowsHeadBtnCallBack(void *Object, void *arg, uint8_t status)
 {
+	assert(Object);
 	p_win_t CentWIN = (p_win_t)arg;
+
 	if (CentWIN == NULL)
 	{
 		return;
@@ -146,10 +150,7 @@ static void WindowsHeadBtnCallBack(void *Object, void *arg, uint8_t status)
  */
 void WindowsSetProcessCallBack(p_win_t hObject, WinProcessCallBack winProcessFun)
 {
-	if (hObject == NULL)
-	{
-		return;
-	}
+	assert(hObject);
 	hObject->winProcessFun = winProcessFun;
 }
 /**
@@ -159,10 +160,7 @@ void WindowsSetProcessCallBack(p_win_t hObject, WinProcessCallBack winProcessFun
  */
 void WindowsSetMin(p_win_t hObject)
 {
-	if (!hObject)
-	{
-		return;
-	}
+	assert(hObject);
 	/*处于最大化时不能够最小化*/
 	if (_IsMaxWIN(hObject))
 	{
@@ -200,10 +198,7 @@ void WindowsSetMin(p_win_t hObject)
  */
 void WindowsSetMax(p_win_t hObject)
 {
-	if (!hObject)
-	{
-		return;
-	}
+	assert(hObject);
 
 	/*最小化时不能够最大化*/
 	if (_IsMinWIN(hObject))
@@ -245,14 +240,11 @@ void WindowsSetMax(p_win_t hObject)
  */
 void WindowsResize(p_win_t hObject, int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
+	assert(hObject);
 	p_widget_base_t hWidgeBase;
 	p_widget_base_t hWidgeBaseHead;
-	if (!hObject)
-	{
-		return;
-	}
-
 	int16_t dx, dy;
+
 	/*窗口位置改变的偏移*/
 	dx = x - ((p_xrect_t)hObject)->x;
 	dy = y - ((p_xrect_t)hObject)->y;
@@ -321,10 +313,7 @@ void WindowsResize(p_win_t hObject, int16_t x, int16_t y, uint16_t w, uint16_t h
  */
 p_widget_base_t WindowsGetWidge(p_win_t hObject, uint16_t index)
 {
-	if (!hObject)
-	{
-		return NULL;
-	}
+	assert(hObject);
 	p_rlist_t hlist = ListGet(_PToHGroupWidgeType(hObject)->widgetList, index);
 	if (hlist != NULL)
 	{
@@ -344,10 +333,7 @@ p_widget_base_t WindowsGetWidge(p_win_t hObject, uint16_t index)
  */
 static void *WindowsGetWidgeEx(p_win_t hWin, uint16_t index)
 {
-	if (!hWin)
-	{
-		return NULL;
-	}
+	assert(hWin);
 	p_rlist_t hlist = ListGet(_PToHGroupWidgeType(hWin)->widgetList, index);
 	return hlist;
 }
@@ -360,10 +346,9 @@ static void *WindowsGetWidgeEx(p_win_t hWin, uint16_t index)
  */
 int8_t WindowsAdd(p_win_t hWin, void *widge)
 {
-	if (!hWin || !widge)
-	{
-		return -1;
-	}
+	assert(hWin);
+	assert(widge);
+
 	p_rlist_t addItem = ListNew();
 	if (!addItem)
 	{
@@ -384,8 +369,11 @@ int8_t WindowsAdd(p_win_t hWin, void *widge)
 	/*设置父窗口*/
 	WidgetSetParentWin(hWidge, hWin);
 
-	/* 设置更新窗口区域 */
-	WindowsInvaildRect((p_widget_base_t)(WIDGE_PARENT(hWin)), (p_xrect_t)(hWin));
+	if (WIDGE_PARENT(hWin))
+	{
+		/* 设置更新窗口区域 */
+		WindowsInvaildRect((p_widget_base_t)(WIDGE_PARENT(hWin)), (p_xrect_t)(hWin));
+	}
 	return 0;
 }
 /**
@@ -397,6 +385,7 @@ int8_t WindowsAdd(p_win_t hWin, void *widge)
 void WindowsInvaildRect(p_widget_base_t hWidgeBase, p_xrect_t hXRect)
 {
 	p_widget_base_t srcWidge;
+
 	if (!hWidgeBase)
 	{
 		return;
@@ -425,10 +414,7 @@ void WindowsInvaildRect(p_widget_base_t hWidgeBase, p_xrect_t hXRect)
  */
 void WindowsClose(p_win_t hWin)
 {
-	if (!hWin)
-	{
-		return;
-	}
+	assert(hWin);
 	/*在这里释放窗口中的内存*/
 
 	/*处理该类需要释放的内存*/
@@ -446,14 +432,12 @@ void WindowsClose(p_win_t hWin)
  */
 void WindowsMoveTo(p_win_t hWin, int16_t x, int16_t y)
 {
+	assert(hWin);
 	int16_t dx;
 	int16_t dy;
 	xrect_t lastRect;
 	xrect_t updateRect;
-	if (!hWin)
-	{
-		return;
-	}
+
 	/*新位置相对于上一次移动的偏移量*/
 	dx = x - WIDGE_X(hWin);
 	dy = y - WIDGE_Y(hWin);
@@ -505,10 +489,7 @@ void WindowsMoveTo(p_win_t hWin, int16_t x, int16_t y)
  */
 void WindowsSetColor(p_win_t hWin, uintColor color)
 {
-	if (!hWin)
-	{
-		return;
-	}
+	assert(hWin);
 	_PToHWidgeBaseType(hWin)->pencil.DrawBkColor = color;
 
 	/* 更新窗口 */
@@ -523,12 +504,10 @@ void WindowsSetColor(p_win_t hWin, uintColor color)
  */
 void WindowsSetVisable(void *hObject, int8_t isVisable)
 {
+	assert(hObject);
 	p_win_t hWin;
+
 	hWin = hObject;
-	if (!hWin)
-	{
-		return;
-	}
 	WidgetSetVisable((p_widget_base_t)hWin, isVisable);
 }
 /**
@@ -538,14 +517,11 @@ void WindowsSetVisable(void *hObject, int8_t isVisable)
  */
 void WindowsPaint(void *hObject)
 {
+	assert(hObject);
 	p_rlist_t cutPostionList;
 	p_win_t hWin;
-	hWin = hObject;
-	if (!hWin)
-	{
-		return;
-	}
 
+	hWin = hObject;
 	if (_IsDrawAllLag(hWin))
 	{
 		/*首次的创建事件*/
@@ -625,6 +601,8 @@ void WindowsPaint(void *hObject)
  */
 void WindowsSetDrawHead(p_win_t hWin, int8_t isEnable)
 {
+	assert(hWin);
+
 	uint8_t i = 0;
 
 	if (isEnable)
@@ -665,11 +643,11 @@ void WindowsSetDrawHead(p_win_t hWin, int8_t isEnable)
  */
 int8_t WindowsCallBack(void *hObject, p_msg_t hMsg)
 {
+	assert(hObject);
+	assert(hMsg);
+
 	p_win_t hWin = hObject;
-	if (!hWin || !hMsg)
-	{
-		return RES_ASSERT_ERR;
-	}
+
 	if (!_GetVisable(hWin))
 	{
 		return RES_ASSERT_ERR;

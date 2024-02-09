@@ -278,7 +278,7 @@ p_xdesktop_t GUIInit(void)
 	GUIMsgEventInit(); /*事件初始化*/
 
 	/*创建一个桌面*/
-	hXDesktop = (p_xdesktop_t)xMalloc(sizeof(xdesktop_t));
+	hXDesktop = (p_xdesktop_t)XMalloc(sizeof(xdesktop_t));
 	if (hXDesktop == NULL)
 	{
 		return NULL;
@@ -286,7 +286,7 @@ p_xdesktop_t GUIInit(void)
 	hXDesktop->desktopWin = WindowsCreate("", 0, 0, LCD_SCREEN_W, LCD_SCREEN_H);
 	if (hXDesktop->desktopWin == NULL)
 	{
-		xFree(hXDesktop);
+		XFree(hXDesktop);
 		return NULL;
 	}
 	_SET_FIRST_RUN(hXDesktop);
@@ -300,7 +300,7 @@ p_xdesktop_t GUIInit(void)
 #endif /*USE_CURSOR*/
 
 	/*设置桌面默认颜色*/
-	WindowsSetColor(hXDesktop->desktopWin, rgb565_t(0, 128, 230));
+	WindowsSetColor(hXDesktop->desktopWin, RGB565_GEN(0, 128, 230));
 	/*设置桌面不显示头部以及边框*/
 	WindowsSetDrawHead(hXDesktop->desktopWin, FALSE);
 
@@ -308,7 +308,7 @@ p_xdesktop_t GUIInit(void)
 	if (!RectCutInit())
 	{
 		WindowsClose(hXDesktop->desktopWin);
-		xFree(hXDesktop);
+		XFree(hXDesktop);
 		return NULL;
 	}
 	return hXDesktop;

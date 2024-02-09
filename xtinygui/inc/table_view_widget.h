@@ -1,7 +1,7 @@
 #ifndef _TABLE_VIEW_WIDGET_H__
 #define _TABLE_VIEW_WIDGET_H__
 
-#include "type.h"
+#include "x_types.h"
 #include "group_widge.h"
 
 #define TABLE_WIDGE_MARK_HEAD(a) TableWidge##a

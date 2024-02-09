@@ -2,7 +2,7 @@
 
 #ifndef _SQQUEUE_H__
 #define _SQQUEUE_H__
-#include "type.h"
+#include "x_types.h"
 
 typedef void *QueueDateType;
 

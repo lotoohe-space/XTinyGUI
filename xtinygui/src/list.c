@@ -7,7 +7,7 @@
 p_rlist_t ListNew(void)
 {
 	p_rlist_t temp_lm;
-	temp_lm = xMalloc(sizeof(LIST_TYPE));
+	temp_lm = XMalloc(sizeof(LIST_TYPE));
 	if (temp_lm == 0x00)
 	{
 		return 0x00;
@@ -25,7 +25,7 @@ int ListDel(p_rlist_t list_m)
 		return 0;
 	}
 	// if(list_m->next){return -1;}
-	xFree(list_m);
+	XFree(list_m);
 	return 0;
 }
 // 在list头部添加元素
@@ -121,7 +121,7 @@ void ListDelInx(p_rlist_t list_m, int index)
 			p_rlist_t cur_lm;
 			cur_lm = temp_lm;			   // 保存当前元素
 			back_lm->next = temp_lm->next; // 接起来
-			xFree(cur_lm);				   // 删除
+			XFree(cur_lm);				   // 删除
 		}
 		len++;
 		back_lm = temp_lm;
@@ -146,7 +146,7 @@ int ListDelByVal(p_rlist_t hList, void *val)
 		{
 			/*找到了这个元素，删除它*/
 			back_lm->next = temp_lm->next;
-			xFree(temp_lm);
+			XFree(temp_lm);
 			return TRUE;
 		}
 		back_lm = temp_lm;
@@ -170,7 +170,7 @@ void ListClear(p_rlist_t list_m)
 			temp_lm = temp_lm->next;
 		}
 		temp_back->next = 0x00;
-		xFree(temp_lm);
+		XFree(temp_lm);
 	}
 	return;
 }

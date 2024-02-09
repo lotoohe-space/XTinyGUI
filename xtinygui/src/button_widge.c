@@ -7,7 +7,7 @@
 /*创建一个button*/
 PUBLIC p_xbutton_t BUTTON_MARK_HEAD(Create)(const char *text, int16_t x, int16_t y, int16_t w, int16_t h)
 {
-	p_xbutton_t hXButton = xMalloc(sizeof(xbutton_t));
+	p_xbutton_t hXButton = XMalloc(sizeof(xbutton_t));
 	if (hXButton == NULL)
 	{
 		return NULL;

@@ -2,7 +2,7 @@
 #ifndef _GUI_H__
 #define _GUI_H__
 #include "xwindows.h"
-#include "type.h"
+#include "x_types.h"
 #include "paint.h"
 #include "mem_dev.h"
 

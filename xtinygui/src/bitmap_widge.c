@@ -7,7 +7,7 @@
 
 PUBLIC p_bitmap_widget_t BITMAP_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, p_xbitmap_t hXBitmap)
 {
-	p_bitmap_widget_t hBitmapWidge = (p_bitmap_widget_t)(xMalloc(sizeof(bitmap_widget_t)));
+	p_bitmap_widget_t hBitmapWidge = (p_bitmap_widget_t)(XMalloc(sizeof(bitmap_widget_t)));
 	if (hBitmapWidge == NULL)
 	{
 		return NULL;

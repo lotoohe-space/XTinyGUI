@@ -29,7 +29,7 @@ const uint8_t checkBoxDefuImg0[] = {
 /*´´½¨º¯Êý*/
 PUBLIC p_checkbox_widget_t CHECKBOX_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, const char *text)
 {
-	p_checkbox_widget_t hWidge = (p_checkbox_widget_t)(xMalloc(sizeof(checkbox_widget_t)));
+	p_checkbox_widget_t hWidge = (p_checkbox_widget_t)(XMalloc(sizeof(checkbox_widget_t)));
 	if (hWidge == NULL)
 	{
 		return NULL;

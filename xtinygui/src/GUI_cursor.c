@@ -34,7 +34,7 @@ gui_cursor_t GUICursor = {
 /*GUI游标初始化*/
 uint8_t GUICursorInit(void)
 {
-	GUICursor.GUICursorMem = xMalloc(
+	GUICursor.GUICursorMem = XMalloc(
 		GUICursor.GUICursorPTBitmap.w * GUICursor.GUICursorPTBitmap.h * (GUI_COLOR_DEEP / 8));
 	if (GUICursor.GUICursorMem == NULL)
 	{
@@ -42,13 +42,13 @@ uint8_t GUICursorInit(void)
 		_SET_CURSOR_CLOSE(&GUICursor);
 		return FALSE;
 	}
-	GUICursor.GUICursorLastPOIMem = xMalloc(
+	GUICursor.GUICursorLastPOIMem = XMalloc(
 		GUICursor.GUICursorPTBitmap.w * GUICursor.GUICursorPTBitmap.h * (GUI_COLOR_DEEP / 8));
 	if (GUICursor.GUICursorMem == NULL)
 	{
 		_SET_CURSOR_HIDE(&GUICursor);
 		_SET_CURSOR_CLOSE(&GUICursor);
-		xFree(GUICursor.GUICursorMem);
+		XFree(GUICursor.GUICursorMem);
 		return FALSE;
 	}
 	GUICursor.lastCursorPOI.x = 0;
@@ -189,5 +189,5 @@ void GUICursorHide(void)
 void GUICursorClose(void)
 {
 	_SET_CURSOR_CLOSE(&GUICursor);
-	xFree(GUICursor.GUICursorMem);
+	XFree(GUICursor.GUICursorMem);
 }

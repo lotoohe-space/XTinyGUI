@@ -13,25 +13,25 @@ PUBLIC p_win_head_t WindowsHeadWidgeCreate(char *title, int16_t x, int16_t y, in
 	p_win_head_t hWinHead;
 	p_text_widget_t hTextWidge;
 
-	hWinHead = (p_win_head_t)(xMalloc(sizeof(win_head_t)));
+	hWinHead = (p_win_head_t)(XMalloc(sizeof(win_head_t)));
 	if (hWinHead == NULL)
 	{
 		return NULL;
 	}
-	hTextWidge = TextWidgeCreate(title ? title : _DefaultWinHeadName, 0, 0, w, h);
+	hTextWidge = TextWidgetCreate(title ? title : _DefaultWinHeadName, 0, 0, w, h);
 	if (hTextWidge == NULL)
 	{
-		xFree(hWinHead);
+		XFree(hWinHead);
 		return NULL;
 	}
-	hTextWidge->baseWidge.pencil.DrawBkColor = rgb565_t(255, 255, 255);
+	hTextWidge->baseWidge.pencil.DrawBkColor = RGB565_GEN(255, 255, 255);
 
 	hWinHead->hXButtonMin = BUTTON_MARK_HEAD(Create)("-",
 													 w - h, 0, h, h);
 
 	if (hWinHead->hXButtonMin == NULL)
 	{
-		xFree(hWinHead);
+		XFree(hWinHead);
 		_PToHWidgeBaseType(hTextWidge)->widgeCloseFun(hTextWidge);
 		return NULL;
 	}
@@ -41,7 +41,7 @@ PUBLIC p_win_head_t WindowsHeadWidgeCreate(char *title, int16_t x, int16_t y, in
 													 w - 2 * h, 0, h, h);
 	if (hWinHead->hXButtonMax == NULL)
 	{
-		xFree(hWinHead);
+		XFree(hWinHead);
 		_PToHWidgeBaseType(hTextWidge)->widgeCloseFun(hTextWidge);
 		_PToHWidgeBaseType(hWinHead->hXButtonMin)->widgeCloseFun(hTextWidge);
 		return NULL;
@@ -52,7 +52,7 @@ PUBLIC p_win_head_t WindowsHeadWidgeCreate(char *title, int16_t x, int16_t y, in
 													   w - 3 * h, 0, h, h);
 	if (hWinHead->hXButtonClose == NULL)
 	{
-		xFree(hWinHead);
+		XFree(hWinHead);
 		_PToHWidgeBaseType(hTextWidge)->widgeCloseFun(hTextWidge);
 		_PToHWidgeBaseType(hWinHead->hXButtonMin)->widgeCloseFun(hTextWidge);
 		_PToHWidgeBaseType(hWinHead->hXButtonMax)->widgeCloseFun(hTextWidge);
@@ -64,7 +64,7 @@ PUBLIC p_win_head_t WindowsHeadWidgeCreate(char *title, int16_t x, int16_t y, in
 	_PToHGroupWidgeType(hWinHead)->widgetList = ListNew();
 	if (_PToHGroupWidgeType(hWinHead)->widgetList == NULL)
 	{
-		xFree(hWinHead);
+		XFree(hWinHead);
 	}
 	WidgetInit((p_widget_base_t)hWinHead, x, y, w, h);
 
@@ -75,7 +75,7 @@ PUBLIC p_win_head_t WindowsHeadWidgeCreate(char *title, int16_t x, int16_t y, in
 
 	_PToHGroupWidgeType(hWinHead)->widgeBase.pencil.DrawColor = RGB565_BLACK;
 	_PToHGroupWidgeType(hWinHead)->widgeBase.pencil.DrawFrColor = _DefaultFrColor;
-	_PToHGroupWidgeType(hWinHead)->widgeBase.pencil.DrawBkColor = rgb565_t(255, 255, 255);
+	_PToHGroupWidgeType(hWinHead)->widgeBase.pencil.DrawBkColor = RGB565_GEN(255, 255, 255);
 
 	/*添加头标题*/
 	WindowsHeadWidgeAdd(hWinHead, hTextWidge);

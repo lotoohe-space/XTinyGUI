@@ -11,7 +11,7 @@ uint8_t InitQueue(xqueue_t *q, uint16_t size)
 	{
 		return FALSE;
 	}
-	data = xMalloc(sizeof(QueueDateType) * size);
+	data = XMalloc(sizeof(QueueDateType) * size);
 	if (data == NULL)
 	{
 		return FALSE;
@@ -36,7 +36,7 @@ void DestroyQueue(xqueue_t *q)
 	{
 		return;
 	}
-	xFree(q->data);
+	XFree(q->data);
 }
 uint8_t QueueEmpty(xqueue_t *q)
 {

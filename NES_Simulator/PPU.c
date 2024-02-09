@@ -716,7 +716,7 @@ void NES_LCD_DisplayLine(int y_axes, uint16_t *Disaplyline_buffer)
 		FPGCount++;
 		if (FPGCount >= 30) {
 			sprintf(FPSData, "%dfps", (uint32_t)(1000 / ((GetCurrentTimeMsec() - lastFPS)/30)));
-			TextWidgeSetText(fpsTextWidge, FPSData);
+			TextWidgetSetText(fpsTextWidge, FPSData);
 
 			lastFPS = GetCurrentTimeMsec();
 			FPGCount = 0;

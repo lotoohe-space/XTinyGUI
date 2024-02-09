@@ -6,7 +6,7 @@
 
 PUBLIC p_slide_widget_t SLIDE_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h)
 {
-	p_slide_widget_t hWidgeBase = (p_slide_widget_t)(xMalloc(sizeof(slide_widget_t)));
+	p_slide_widget_t hWidgeBase = (p_slide_widget_t)(XMalloc(sizeof(slide_widget_t)));
 	if (hWidgeBase == NULL)
 	{
 		return NULL;
@@ -22,7 +22,7 @@ PUBLIC p_slide_widget_t SLIDE_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w,
 
 	hWidgeBase->baseWidge.pencil.DrawColor = RGB565_BLACK;
 	hWidgeBase->baseWidge.pencil.DrawFrColor = _DefaultFrColor;
-	hWidgeBase->baseWidge.pencil.DrawBkColor = rgb565_t(230, 235, 230);
+	hWidgeBase->baseWidge.pencil.DrawBkColor = RGB565_GEN(230, 235, 230);
 
 	hWidgeBase->maxVal = SLIDE_DEFAULT_MAX_VAL;
 	hWidgeBase->currentVal = 50;

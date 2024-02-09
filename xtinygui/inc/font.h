@@ -1,6 +1,6 @@
 #ifndef _FONT_H__
 #define _FONT_H__
-#include "type.h"
+#include "x_types.h"
 
 typedef struct
 {

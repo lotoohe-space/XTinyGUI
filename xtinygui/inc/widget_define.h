@@ -35,9 +35,9 @@ typedef struct
 /*横线*/
 typedef struct
 {
-	int16_t x0;
-	int16_t y;
-	int16_t x1;
+	int16_t x0; //!< x开始位置
+	int16_t y;	//!< y位置
+	int16_t x1; //!< x结束位置
 } *p_xhline_t, xhline_t;
 
 /*变量强转为矩形*/

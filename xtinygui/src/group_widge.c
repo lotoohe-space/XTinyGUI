@@ -7,7 +7,7 @@ PUBLIC p_group_widget_t GROUP_MARK_HEAD(Create)(int16_t x, int16_t y, uint16_t w
 {
 	p_group_widget_t hObject;
 
-	hObject = (p_group_widget_t)(xMalloc(sizeof(group_widget_t)));
+	hObject = (p_group_widget_t)(XMalloc(sizeof(group_widget_t)));
 	if (hObject == NULL)
 	{
 		return NULL;

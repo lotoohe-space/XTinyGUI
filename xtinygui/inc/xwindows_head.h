@@ -1,11 +1,11 @@
 
 #ifndef _WINDOWS_HEAD_H__
 #define _WINDOWS_HEAD_H__
-#include "type.h"
-#include "widge_define.h"
+#include "x_types.h"
+#include "widget_define.h"
 #include "list.h"
 #include "font.h"
-#include "widge.h"
+#include "x_widget.h"
 #include "button_widge.h"
 #include "group_widge.h"
 

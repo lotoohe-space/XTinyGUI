@@ -16,7 +16,7 @@
 #define _NES_DATATYPE_H_
 
 /* ---------------------------------------------------------------------------*/
-#include <type.h>
+#include <x_types.h>
 
 /* assumes WORD = 16bit, BYTE = 8bit!! */
 typedef unsigned short WORD;

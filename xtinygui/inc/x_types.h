@@ -34,13 +34,13 @@ typedef struct
 #if GUI_COLOR_DEEP <= 8
 typedef uint8_t uintColor;
 #elif GUI_COLOR_DEEP > 8 && GUI_COLOR_DEEP <= 16
-typedef uint32_t uintColor; /*Argb rgbΪ16bit*/
+typedef uint32_t uintColor; /*Argb rgb 16bit*/
 #elif GUI_COLOR_DEEP >= 24
 typedef uint32_t uintColor;
 #endif
 
 #ifndef NULL
-#define NULL 0L
+#define NULL ((void *)0)
 #endif
 
 #ifndef TRUE

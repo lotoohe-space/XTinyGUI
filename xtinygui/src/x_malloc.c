@@ -2,12 +2,12 @@
 #include "x_malloc.h"
 #include <stdlib.h>
 
-void *xMalloc(uint32_t size)
+void *XMalloc(uint32_t size)
 {
 	return malloc(size);
 }
 
-void xFree(void *mem)
+void XFree(void *mem)
 {
 	free(mem);
 }

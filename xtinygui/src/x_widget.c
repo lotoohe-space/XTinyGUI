@@ -1,12 +1,22 @@
 #include "paint.h"
-#include "widge.h"
+#include "x_widget.h"
 #include "x_malloc.h"
 #include "gui.h"
 #include "paint_cut.h"
-
+#include <assert.h>
+/**
+ * @brief 创建一个组件
+ *
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ * @return PUBLIC
+ */
 PUBLIC p_widget_base_t WidgetCreate(int16_t x, int16_t y, int16_t w, int16_t h)
 {
-	p_widget_base_t hWidgeBase = (p_widget_base_t)(xMalloc(sizeof(widget_base_t)));
+	p_widget_base_t hWidgeBase = (p_widget_base_t)(XMalloc(sizeof(widget_base_t)));
+
 	if (hWidgeBase == NULL)
 	{
 		return NULL;
@@ -14,20 +24,30 @@ PUBLIC p_widget_base_t WidgetCreate(int16_t x, int16_t y, int16_t w, int16_t h)
 	WidgetInit(hWidgeBase, x, y, w, h);
 	return hWidgeBase;
 }
+/**
+ * @brief 创建一个组件
+ *
+ * @param hXRect
+ * @return PUBLIC
+ */
 PUBLIC p_widget_base_t WidgetCreateEx(p_xrect_t hXRect)
 {
-	if (hXRect == NULL)
-	{
-		return NULL;
-	}
+	assert(hXRect);
 	return WidgetCreate(hXRect->x, hXRect->y, hXRect->w, hXRect->h);
 }
+/**
+ * @brief 初始化一个小组件
+ *
+ * @param hWidgeBase
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ * @return PUBLIC
+ */
 PUBLIC void WidgetInit(p_widget_base_t hWidgeBase, int16_t x, int16_t y, int16_t w, int16_t h)
 {
-	if (hWidgeBase == NULL)
-	{
-		return;
-	}
+	assert(hWidgeBase);
 	/*控件大小*/
 	hWidgeBase->rect.x = x;
 	hWidgeBase->rect.y = y;
@@ -65,30 +85,41 @@ PUBLIC void WidgetInit(p_widget_base_t hWidgeBase, int16_t x, int16_t y, int16_t
 	/*默认不透明处理*/
 	_CLR_IS_DPY(hWidgeBase);
 }
+/**
+ * @brief 关闭一个小组件
+ *
+ * @param hObject
+ * @return PUBLIC
+ */
 PUBLIC void WidgetClose(p_widget_base_t hObject)
 {
-	if (hObject == NULL)
-	{
-		return;
-	}
-	xFree(hObject);
+	assert(hObject);
+	XFree(hObject);
 }
+/**
+ * @brief 设置回调函数
+ *
+ * @param hObject
+ * @param arg
+ * @param viewClickCallBack
+ * @return PUBLIC
+ */
 PUBLIC void WidgetSetClickBack(p_widget_base_t hObject, void *arg, ViewClickCallBack viewClickCallBack)
 {
-	if (!hObject)
-	{
-		return;
-	}
+	assert(hObject);
 	hObject->arg = arg;
 	hObject->viewClickCallBack = viewClickCallBack;
 }
-/*设置是否可见*/
+/**
+ * @brief 设置是否可见
+ *
+ * @param hObject
+ * @param isVisable
+ * @return PUBLIC
+ */
 PUBLIC void WidgetSetVisable(p_widget_base_t hObject, uint8_t isVisable)
 {
-	if (!hObject)
-	{
-		return;
-	}
+	assert(hObject);
 	if (isVisable)
 	{
 		_SetVisable(hObject);
@@ -99,59 +130,80 @@ PUBLIC void WidgetSetVisable(p_widget_base_t hObject, uint8_t isVisable)
 	}
 	WindowsInvaildRect(hObject->parentHWIN, (p_xrect_t)hObject);
 }
-/*重新设置大小*/
+/**
+ * @brief 重新设置大小
+ *
+ * @param hObject
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ * @return PUBLIC
+ */
 PUBLIC void WidgetResize(p_widget_base_t hObject, int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
-	if (!hObject)
-	{
-		return;
-	}
+	assert(hObject);
 	hObject->rect.x = x;
 	hObject->rect.y = y;
 	hObject->rect.w = w;
 	hObject->rect.h = h;
 	// WindowsInvaildRect(((p_widget_base_t)hObject)->parentHWIN, NULL);
 }
-/*设置父控件*/
+/**
+ * @brief 设置父控件
+ *
+ * @param hObject
+ * @param hWIN
+ * @return PUBLIC
+ */
 PUBLIC void WidgetSetParentWin(p_widget_base_t hObject, void *hWIN)
 {
-	if (!hObject)
-	{
-		return;
-	}
+	assert(hObject);
 	hObject->parentHWIN = hWIN;
 }
-/*设置前景色*/
+/**
+ * @brief 设置前景色
+ *
+ * @param hObject
+ * @param color
+ * @return PUBLIC
+ */
 PUBLIC void WidgetSetColor(p_widget_base_t hObject, uintColor color)
 {
-	if (!hObject)
-	{
-		return;
-	}
+	assert(hObject);
 	hObject->pencil.DrawColor = color;
 	WindowsInvaildRect(hObject->parentHWIN, (p_xrect_t)hObject);
 }
-/*移动控件*/
+/**
+ * @brief 移动控件
+ *
+ * @param hObject
+ * @param x
+ * @param y
+ * @return PUBLIC
+ */
 PUBLIC void WidgetMoveTo(p_widget_base_t hObject, int16_t x, int16_t y)
 {
-	if (!hObject)
-	{
-		return;
-	}
+	assert(hObject);
 	hObject->rect.x = x;
 	hObject->rect.y = y;
 	// WindowsInvaildRect(hObject->parentHWIN, (p_xrect_t)hObject);
 }
-/*重绘函数*/
+/**
+ * @brief 重绘函数
+ *
+ * @param hObject
+ * @return PRIVATE
+ */
 PRIVATE void WidgetPaint(void *hObject)
 {
+	assert(hObject);
+
 	p_xrect_t nextCutRect = NULL;
 	p_widget_base_t hWidgeBase;
+
 	hWidgeBase = hObject;
-	if (!hObject)
-	{
-		return;
-	}
+
 	if (!_GetVisable(hWidgeBase))
 	{
 		return;
@@ -172,14 +224,19 @@ PRIVATE void WidgetPaint(void *hObject)
 	/*恢复绘图区域*/
 	DrawResetArea(hWidgeBase);
 }
-/*事件回调函数*/
+/**
+ * @brief 事件回调函数
+ *
+ * @param hObject
+ * @param hMsg
+ * @return PUBLIC
+ */
 PUBLIC int8_t WidgetCallBack(void *hObject, p_msg_t hMsg)
 {
+	assert(hObject);
+	assert(hMsg);
 	p_widget_base_t hWidgeBase = hObject;
-	if (!hWidgeBase || !hMsg)
-	{
-		return RES_ASSERT_ERR;
-	}
+
 	if (!_GetVisable(hWidgeBase))
 	{
 		return RES_ASSERT_ERR;

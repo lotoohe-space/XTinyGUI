@@ -1,7 +1,7 @@
 #ifndef _MSG_H__
 #define _MSG_H__
 
-#include "type.h"
+#include "x_types.h"
 
 /*****************消息类型************************/
 #define MSG_TOUCH 0

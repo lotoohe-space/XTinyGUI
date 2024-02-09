@@ -5,18 +5,17 @@
 #include "gui.h"
 #include "paint_cut.h"
 
-PUBLIC p_text_widget_t TEXT_MARK_HEAD(Create)(const char *text, int16_t x, int16_t y, uint16_t w, uint16_t h)
+PUBLIC p_text_widget_t TextWidgetCreate(const char *text, int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
-	p_text_widget_t hObject = (p_text_widget_t)(xMalloc(sizeof(text_widget_t)));
+	p_text_widget_t hObject = (p_text_widget_t)(XMalloc(sizeof(text_widget_t)));
 	if (hObject == NULL)
 	{
 		return NULL;
 	}
-	TEXT_MARK_HEAD(Init)
-	(hObject, text, x, y, w, h);
+	TextWidgetInit(hObject, text, x, y, w, h);
 	return hObject;
 }
-PUBLIC void TEXT_MARK_HEAD(Init)(p_text_widget_t hObject, const char *text, int16_t x, int16_t y, uint16_t w, uint16_t h)
+PUBLIC void TextWidgetInit(p_text_widget_t hObject, const char *text, int16_t x, int16_t y, uint16_t w, uint16_t h)
 {
 	if (hObject == NULL)
 	{
@@ -24,15 +23,15 @@ PUBLIC void TEXT_MARK_HEAD(Init)(p_text_widget_t hObject, const char *text, int1
 	}
 	WidgetInit((p_widget_base_t)hObject, x, y, w, h);
 
-	hObject->baseWidge.paintFun = TEXT_MARK_HEAD(Paint);
-	hObject->baseWidge.moveToFun = TEXT_MARK_HEAD(MoveTo);
-	hObject->baseWidge.widgeCallBackFun = TEXT_MARK_HEAD(CallBack);
+	hObject->baseWidge.paintFun = TextWidgetPaint;
+	hObject->baseWidge.moveToFun = TextWidgetMoveTo;
+	hObject->baseWidge.widgeCallBackFun = TextWidgetCallBack;
 
 	hObject->hFont = (p_font_t)&fontASCII16_16;
 	hObject->text = text ? text : "None";
 	hObject->textMode = TEXT_CENTER_ALIGN;
 }
-PUBLIC void TEXT_MARK_HEAD(SetTextMode)(p_text_widget_t hOjbect, uint8_t textMode)
+PUBLIC void TextWidgetSetTextMode(p_text_widget_t hOjbect, TextMode textMode)
 {
 	if (hOjbect == NULL)
 	{
@@ -41,7 +40,7 @@ PUBLIC void TEXT_MARK_HEAD(SetTextMode)(p_text_widget_t hOjbect, uint8_t textMod
 	hOjbect->textMode = textMode;
 	WindowsInvaildRect((p_widget_base_t)hOjbect, NULL);
 }
-PUBLIC void TEXT_MARK_HEAD(SetFont)(p_text_widget_t hObject, p_font_t hFont)
+PUBLIC void TextWidgetSetFont(p_text_widget_t hObject, p_font_t hFont)
 {
 	if (hObject == NULL)
 	{
@@ -50,7 +49,7 @@ PUBLIC void TEXT_MARK_HEAD(SetFont)(p_text_widget_t hObject, p_font_t hFont)
 	hObject->hFont = hFont;
 	WindowsInvaildRect((p_widget_base_t)hObject, NULL);
 }
-PUBLIC void TEXT_MARK_HEAD(SetText)(p_text_widget_t hObject, const char *text)
+PUBLIC void TextWidgetSetText(p_text_widget_t hObject, const char *text)
 {
 	if (hObject == NULL)
 	{
@@ -59,7 +58,7 @@ PUBLIC void TEXT_MARK_HEAD(SetText)(p_text_widget_t hObject, const char *text)
 	hObject->text = text;
 	WindowsInvaildRect((p_widget_base_t)hObject, NULL);
 }
-PUBLIC void TEXT_MARK_HEAD(MoveTo)(p_text_widget_t hObject, int16_t x, int16_t y)
+PUBLIC void TextWidgetMoveTo(p_text_widget_t hObject, int16_t x, int16_t y)
 {
 	if (!hObject)
 	{
@@ -68,8 +67,14 @@ PUBLIC void TEXT_MARK_HEAD(MoveTo)(p_text_widget_t hObject, int16_t x, int16_t y
 	hObject->baseWidge.rect.x = x;
 	hObject->baseWidge.rect.y = y;
 }
-/*根据模式得到文字绘制的起始位置*/
-PUBLIC p_xpoint_t TEXT_MARK_HEAD(GetPOIByTextMode)(p_text_widget_t hTextWidge, p_xpoint_t startPoint)
+/**
+ * @brief 根据模式得到文字绘制的起始位置
+ * 
+ * @param hTextWidge 
+ * @param startPoint 
+ * @return PUBLIC 
+ */
+PUBLIC p_xpoint_t TextWidgetGetPOIByTextMode(p_text_widget_t hTextWidge, p_xpoint_t startPoint)
 {
 	uint16_t textW = 0;
 	uint16_t textH = 0;
@@ -144,7 +149,7 @@ PUBLIC p_xpoint_t TEXT_MARK_HEAD(GetPOIByTextMode)(p_text_widget_t hTextWidge, p
 
 	return startPoint;
 }
-PUBLIC void TEXT_MARK_HEAD(Paint)(void *hObject)
+PUBLIC void TextWidgetPaint(void *hObject)
 {
 	xpoint_t startPoint;
 	p_text_widget_t hTextWidge;
@@ -163,8 +168,7 @@ PUBLIC void TEXT_MARK_HEAD(Paint)(void *hObject)
 	{
 		return;
 	}
-	TEXT_MARK_HEAD(GetPOIByTextMode)
-	(hTextWidge, &startPoint);
+	TextWidgetGetPOIByTextMode(hTextWidge, &startPoint);
 	/*绘制剪裁字符串*/
 	DrawCutString(hTextWidge, hTextWidge->hFont,
 				  &(hTextWidge->baseWidge.rect),
@@ -174,7 +178,7 @@ PUBLIC void TEXT_MARK_HEAD(Paint)(void *hObject)
 	/*恢复绘图区域*/
 	DrawResetArea((p_widget_base_t)hTextWidge);
 }
-PUBLIC int8_t TEXT_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg)
+PUBLIC int8_t TextWidgetCallBack(void *hObject, p_msg_t hMsg)
 {
 	p_text_widget_t hTextWidge = hObject;
 	if (!hTextWidge || !hMsg)

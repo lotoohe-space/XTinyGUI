@@ -9,7 +9,7 @@
 /*创建函数*/
 PUBLIC p_progress_widget_t PROGRESS_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t maxVal)
 {
-	p_progress_widget_t hWidge = (p_progress_widget_t)(xMalloc(sizeof(progress_widget_t)));
+	p_progress_widget_t hWidge = (p_progress_widget_t)(XMalloc(sizeof(progress_widget_t)));
 	if (hWidge == NULL)
 	{
 		return NULL;

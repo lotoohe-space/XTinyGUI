@@ -1,8 +1,8 @@
 #ifndef _MEM_DEV_H__
 #define _MEM_DEV_H__
 
-#include "type.h"
-#include "widge_define.h"
+#include "x_types.h"
+#include "widget_define.h"
 
 typedef struct
 {

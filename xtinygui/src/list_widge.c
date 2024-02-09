@@ -8,7 +8,7 @@ PUBLIC p_xlist_widget_t LIST_WIDGE_MARK_HEAD(Create)(int16_t x, int16_t y, uint1
 {
 	p_xlist_widget_t hObject;
 
-	hObject = (p_xlist_widget_t)(xMalloc(sizeof(xlist_widget_t)));
+	hObject = (p_xlist_widget_t)(XMalloc(sizeof(xlist_widget_t)));
 	if (hObject == NULL)
 	{
 		return NULL;

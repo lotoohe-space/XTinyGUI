@@ -3,9 +3,9 @@
 #ifndef _X_MALLOC_H__
 #define _X_MALLOC_H__
 
-#include "type.h"
+#include "x_types.h"
 
-void *xMalloc(uint32_t size);
-void xFree(void *mem);
+void *XMalloc(uint32_t size);
+void XFree(void *mem);
 
 #endif

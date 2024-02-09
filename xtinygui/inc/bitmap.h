@@ -1,7 +1,7 @@
 #pragma once
 #ifndef _BITMAP_H__
 #define _BITMAP_H__
-#include "type.h"
+#include "x_types.h"
 
 /*Bitmap*/
 typedef struct

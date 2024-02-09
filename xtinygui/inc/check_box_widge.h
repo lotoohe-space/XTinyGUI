@@ -9,9 +9,8 @@
 typedef struct
 {
 	text_widget_t textWidge;
-	uint8_t flag;			  /*0，1bit：当前状态*/
 	xbitmap_t checkedImg; /*选中后的图片*/
-
+	uint8_t flag;		  /*0，1bit：当前状态*/
 } *p_checkbox_widget_t, checkbox_widget_t;
 
 PUBLIC p_checkbox_widget_t CHECKBOX_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, const char *text);

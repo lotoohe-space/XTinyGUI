@@ -1,12 +1,12 @@
 #ifndef _XWINDOWS_H__
 #define _XWINDOWS_H__
-#include "type.h"
+#include "x_types.h"
 #include "paint.h"
 #include "x_tool.h"
 #include "color.h"
 #include "list.h"
-#include "widge.h"
-#include "widge_define.h"
+#include "x_widget.h"
+#include "widget_define.h"
 #include "xwindows_head.h"
 
 #define WINDOWS_MARK_HEAD(a) Windows##a

@@ -1,7 +1,7 @@
 #pragma once
 #ifndef _PROGRESS_WIDGE_H__
 #define _PROGRESS_WIDGE_H__
-#include "widge.h"
+#include "x_widget.h"
 #include "bitmap.h"
 #include "xwindows.h"
 #define PROGRESS_MARK_HEAD(a) ProgressWidge##a

@@ -2,7 +2,7 @@
 
 #ifndef _BITMAP_WIDGE_H__
 #define _BITMAP_WIDGE_H__
-#include "widge.h"
+#include "x_widget.h"
 #include "bitmap.h"
 #include "xwindows.h"
 #define BITMAP_MARK_HEAD(a) BitmapWidge##a

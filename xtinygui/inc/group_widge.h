@@ -1,7 +1,7 @@
 #ifndef _GROUP_WIDGE_H__
 #define _GROUP_WIDGE_H__
 
-#include "widge.h"
+#include "x_widget.h"
 #include "list.h"
 
 #define GROUP_MARK_HEAD(a) GroupWidge##a

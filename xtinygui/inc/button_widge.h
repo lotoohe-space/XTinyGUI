@@ -1,7 +1,7 @@
 #ifndef _BUTTON_WIDGE_H__
 #define _BUTTON_WIDGE_H__
-#include "type.h"
-#include "widge_define.h"
+#include "x_types.h"
+#include "widget_define.h"
 #include "font.h"
 #include "text_widge.h"
 
@@ -28,8 +28,8 @@ typedef struct
 #define _GetBtnMode(a) (_GET_BIT(((p_xbutton_t)(a))->flag, 0))
 
 /*按下与松开颜色*/
-#define _DefaultButtonDownColor rgb565_t(0xff, 0xff, 0xff)
-#define _DefaultButtonUpColor rgb565_t(200, 200, 200)
+#define _DefaultButtonDownColor RGB565_GEN(0xff, 0xff, 0xff)
+#define _DefaultButtonUpColor RGB565_GEN(200, 200, 200)
 /*字体颜色*/
 #define _DefaultButtonFontColor 0x0000
 

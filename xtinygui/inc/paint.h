@@ -1,8 +1,8 @@
 #ifndef _XPAINT_H__
 #define _XPAINT_H__
 
-#include "type.h"
-#include "widge_define.h"
+#include "x_types.h"
+#include "widget_define.h"
 #include "font.h"
 #include "bitmap.h"
 

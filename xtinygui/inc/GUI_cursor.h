@@ -1,9 +1,9 @@
 #ifndef _GUI_CURSOR_H__
 #define _GUI_CURSOR_H__
-#include "type.h"
+#include "x_types.h"
 #include "bitmap.h"
 #include "x_tool.h"
-#include "widge_define.h"
+#include "widget_define.h"
 
 typedef struct
 {

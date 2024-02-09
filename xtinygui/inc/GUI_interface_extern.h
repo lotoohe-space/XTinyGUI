@@ -1,6 +1,6 @@
 #ifndef _GUI_INTERFACE_EXTERN_H__
 #define _GUI_INTERFACE_EXTERN_H__
-#include "type.h"
+#include "x_types.h"
 
 uint32_t GUIGetTick(void);
 void GUIDrawPixel(int16_t x, int16_t y, uintColor color);

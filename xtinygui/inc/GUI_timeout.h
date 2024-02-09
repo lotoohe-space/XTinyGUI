@@ -1,7 +1,7 @@
 #ifndef _GUI_TIMEOUT_H__
 #define _GUI_TIMEOUT_H__
 
-#include "type.h"
+#include "x_types.h"
 #include "x_tool.h"
 typedef void (*GUITimeoutCallback)(void *arg);
 
