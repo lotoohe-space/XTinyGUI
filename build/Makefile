@@ -392,30 +392,6 @@ xtinygui/src/GUI_timeout.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/GUI_timeout.c.s
 .PHONY : xtinygui/src/GUI_timeout.c.s
 
-xtinygui/src/SqQueue.obj: xtinygui/src/SqQueue.c.obj
-.PHONY : xtinygui/src/SqQueue.obj
-
-# target to build an object file
-xtinygui/src/SqQueue.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/SqQueue.c.obj
-.PHONY : xtinygui/src/SqQueue.c.obj
-
-xtinygui/src/SqQueue.i: xtinygui/src/SqQueue.c.i
-.PHONY : xtinygui/src/SqQueue.i
-
-# target to preprocess a source file
-xtinygui/src/SqQueue.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/SqQueue.c.i
-.PHONY : xtinygui/src/SqQueue.c.i
-
-xtinygui/src/SqQueue.s: xtinygui/src/SqQueue.c.s
-.PHONY : xtinygui/src/SqQueue.s
-
-# target to generate assembly for a file
-xtinygui/src/SqQueue.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/SqQueue.c.s
-.PHONY : xtinygui/src/SqQueue.c.s
-
 xtinygui/src/bitmap.obj: xtinygui/src/bitmap.c.obj
 .PHONY : xtinygui/src/bitmap.obj
 
@@ -872,30 +848,6 @@ xtinygui/src/text_widge.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/text_widge.c.s
 .PHONY : xtinygui/src/text_widge.c.s
 
-xtinygui/src/tool.obj: xtinygui/src/tool.c.obj
-.PHONY : xtinygui/src/tool.obj
-
-# target to build an object file
-xtinygui/src/tool.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/tool.c.obj
-.PHONY : xtinygui/src/tool.c.obj
-
-xtinygui/src/tool.i: xtinygui/src/tool.c.i
-.PHONY : xtinygui/src/tool.i
-
-# target to preprocess a source file
-xtinygui/src/tool.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/tool.c.i
-.PHONY : xtinygui/src/tool.c.i
-
-xtinygui/src/tool.s: xtinygui/src/tool.c.s
-.PHONY : xtinygui/src/tool.s
-
-# target to generate assembly for a file
-xtinygui/src/tool.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/tool.c.s
-.PHONY : xtinygui/src/tool.c.s
-
 xtinygui/src/widge.obj: xtinygui/src/widge.c.obj
 .PHONY : xtinygui/src/widge.obj
 
@@ -943,6 +895,54 @@ xtinygui/src/x_malloc.s: xtinygui/src/x_malloc.c.s
 xtinygui/src/x_malloc.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/x_malloc.c.s
 .PHONY : xtinygui/src/x_malloc.c.s
+
+xtinygui/src/x_queue.obj: xtinygui/src/x_queue.c.obj
+.PHONY : xtinygui/src/x_queue.obj
+
+# target to build an object file
+xtinygui/src/x_queue.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/x_queue.c.obj
+.PHONY : xtinygui/src/x_queue.c.obj
+
+xtinygui/src/x_queue.i: xtinygui/src/x_queue.c.i
+.PHONY : xtinygui/src/x_queue.i
+
+# target to preprocess a source file
+xtinygui/src/x_queue.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/x_queue.c.i
+.PHONY : xtinygui/src/x_queue.c.i
+
+xtinygui/src/x_queue.s: xtinygui/src/x_queue.c.s
+.PHONY : xtinygui/src/x_queue.s
+
+# target to generate assembly for a file
+xtinygui/src/x_queue.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/x_queue.c.s
+.PHONY : xtinygui/src/x_queue.c.s
+
+xtinygui/src/x_tool.obj: xtinygui/src/x_tool.c.obj
+.PHONY : xtinygui/src/x_tool.obj
+
+# target to build an object file
+xtinygui/src/x_tool.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/x_tool.c.obj
+.PHONY : xtinygui/src/x_tool.c.obj
+
+xtinygui/src/x_tool.i: xtinygui/src/x_tool.c.i
+.PHONY : xtinygui/src/x_tool.i
+
+# target to preprocess a source file
+xtinygui/src/x_tool.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/x_tool.c.i
+.PHONY : xtinygui/src/x_tool.c.i
+
+xtinygui/src/x_tool.s: xtinygui/src/x_tool.c.s
+.PHONY : xtinygui/src/x_tool.s
+
+# target to generate assembly for a file
+xtinygui/src/x_tool.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xtinygui.dir\build.make CMakeFiles/xtinygui.dir/xtinygui/src/x_tool.c.s
+.PHONY : xtinygui/src/x_tool.c.s
 
 xtinygui/src/xwindows.obj: xtinygui/src/xwindows.c.obj
 .PHONY : xtinygui/src/xwindows.obj
@@ -1034,9 +1034,6 @@ help:
 	@echo ... xtinygui/src/GUI_timeout.obj
 	@echo ... xtinygui/src/GUI_timeout.i
 	@echo ... xtinygui/src/GUI_timeout.s
-	@echo ... xtinygui/src/SqQueue.obj
-	@echo ... xtinygui/src/SqQueue.i
-	@echo ... xtinygui/src/SqQueue.s
 	@echo ... xtinygui/src/bitmap.obj
 	@echo ... xtinygui/src/bitmap.i
 	@echo ... xtinygui/src/bitmap.s
@@ -1094,15 +1091,18 @@ help:
 	@echo ... xtinygui/src/text_widge.obj
 	@echo ... xtinygui/src/text_widge.i
 	@echo ... xtinygui/src/text_widge.s
-	@echo ... xtinygui/src/tool.obj
-	@echo ... xtinygui/src/tool.i
-	@echo ... xtinygui/src/tool.s
 	@echo ... xtinygui/src/widge.obj
 	@echo ... xtinygui/src/widge.i
 	@echo ... xtinygui/src/widge.s
 	@echo ... xtinygui/src/x_malloc.obj
 	@echo ... xtinygui/src/x_malloc.i
 	@echo ... xtinygui/src/x_malloc.s
+	@echo ... xtinygui/src/x_queue.obj
+	@echo ... xtinygui/src/x_queue.i
+	@echo ... xtinygui/src/x_queue.s
+	@echo ... xtinygui/src/x_tool.obj
+	@echo ... xtinygui/src/x_tool.i
+	@echo ... xtinygui/src/x_tool.s
 	@echo ... xtinygui/src/xwindows.obj
 	@echo ... xtinygui/src/xwindows.i
 	@echo ... xtinygui/src/xwindows.s
