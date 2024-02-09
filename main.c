@@ -14,6 +14,7 @@
 #include "list_widge.h"
 #include "slide_widge.h"
 #include <stdio.h>
+#include <stdlib.h>
 extern void NesFrameCycle(void);
 
 // Screen dimension constants
@@ -38,17 +39,17 @@ unsigned int g_pix(int x, int y)
 	// if (x < 0 || x >= LCD_SCREEN_W || y < 0 || y >= LCD_SCREEN_H) { return 0x0000; }
 	return displayMem[y * LCD_SCREEN_W + x];
 }
-void SDL2_GUIDrawBitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t *bitmap)
-{
-	SDL_UpdateTexture(scr_text, &(SDL_Rect){.x = x, .y = y, .w = w, .h = h},
-					  bitmap,
-					  w * 2);
-	SDL_RenderCopy(renderer, scr_text, &(SDL_Rect){.x = x, .y = y, .w = w, .h = h},
-				   &(SDL_Rect){.x = x, .y = y, .w = w, .h = h});
-	SDL_RenderPresent(renderer);
-}
-#if 0
-void timer_draw_screen(void *p) // 回调函数
+// void SDL2_GUIDrawBitmap(int16_t x, int16_t y, uint16_t w, uint16_t h, uint8_t *bitmap)
+// {
+// 	SDL_UpdateTexture(scr_text, &(SDL_Rect){.x = x, .y = y, .w = w, .h = h},
+// 					  bitmap,
+// 					  w * 2);
+// 	SDL_RenderCopy(renderer, scr_text, &(SDL_Rect){.x = x, .y = y, .w = w, .h = h},
+// 				   &(SDL_Rect){.x = x, .y = y, .w = w, .h = h});
+// 	SDL_RenderPresent(renderer);
+// }
+#if 1
+int timer_draw_screen(void *p) // 回调函数
 {
 	while (1)
 	{
@@ -65,9 +66,10 @@ void timer_draw_screen(void *p) // 回调函数
 			SDL_Delay((1000 / 60) - (en_tick - st_tick));
 		}
 	}
+	return 0;
 }
 #endif
-void timer_event_screen(void *p) // 回调函数
+int timer_event_screen(void *p) // 回调函数
 {
 	while (1)
 	{
@@ -82,13 +84,18 @@ void timer_event_screen(void *p) // 回调函数
 			SDL_Delay((1000 / 60) - (en_tick - st_tick));
 		}
 	}
+	return 0;
 }
 uint32_t GetCurrentTimeMsec(void)
 {
 	return SDL_GetTicks();
 }
 extern void gui_init(void);
+#if WIN32
 int WinMain(int argc, char *argv[])
+#elif TARGET_OS_MAC
+int main(int argc, char *argv[])
+#endif
 {
 	printf("gui init .\n");
 	gui_init();
@@ -98,17 +105,21 @@ int WinMain(int argc, char *argv[])
 	// Initialize SDL
 	SDL_Init(SDL_INIT_VIDEO);
 	// Create window
-	window = SDL_CreateWindow("xTinyGUI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-							  SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("xTinyGUI",
+							  SDL_WINDOWPOS_UNDEFINED,
+							  SDL_WINDOWPOS_UNDEFINED,
+							  SCREEN_WIDTH, SCREEN_HEIGHT,
+							  SDL_WINDOW_SHOWN);
 	if (window == NULL)
 	{
 		SDL_Log("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 		exit(-1);
 	}
 	/* We must call SDL_CreateRenderer in order for draw calls to affect this window. */
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	renderer = SDL_CreateRenderer(window, -1, 0);
 	scr_text = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB565,
-								 SDL_TEXTUREACCESS_STREAMING, LCD_SCREEN_W, LCD_SCREEN_H);
+								 SDL_TEXTUREACCESS_STREAMING,
+								 LCD_SCREEN_W, LCD_SCREEN_H);
 
 	/* Select the color for drawing. It is set to red here. */
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -119,7 +130,7 @@ int WinMain(int argc, char *argv[])
 	/* Up until now everything was drawn behind the scenes.
 	   This will show the new, red contents of the window. */
 	SDL_RenderPresent(renderer);
-	// SDL_CreateThread(timer_draw_screen, "timer draw screen thread", NULL);
+	SDL_CreateThread(timer_draw_screen, "timer draw screen thread", NULL);
 	SDL_CreateThread(timer_event_screen, "timer event screen thread", NULL);
 
 	// Hack to get window to stay up

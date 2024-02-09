@@ -1,140 +1,141 @@
 /**
-  ******************************************************************************
-  * @file    
-  * @author  
-  * @version 
-  * @date    
-  * @brief  
-  ******************************************************************************
-  * @attention
-  *
-  * 
-  ******************************************************************************
-  */  
+ ******************************************************************************
+ * @file
+ * @author
+ * @version
+ * @date
+ * @brief
+ ******************************************************************************
+ * @attention
+ *
+ *
+ ******************************************************************************
+ */
 
-/* Includes ------------------------------------------------------------------*/ 
+/* Includes ------------------------------------------------------------------*/
 #include "nes_main.h"
-//#include "LCD.h"
+// #include "LCD.h"
 
-/*±äÁ¿ÉùÃ÷ ------------------------------------------------------------------*/
-/*´æ´¢Æ÷Ïà¹Ø*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ------------------------------------------------------------------*/
+/*ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½*/
 uint8_t NameTable[2048];
 
 PPU_RegType PPU_Reg;
 PPU_MemType PPU_Mem;
 
-Spr_MemType	Spr_Mem;
-SpriteType  * const sprite = (SpriteType  *)&Spr_Mem.spr_ram[0]; //Ö¸ÏòµÚÒ»¸ösprite 0 µÄÎ»ÖÃ
+Spr_MemType Spr_Mem;
+SpriteType *const sprite = (SpriteType *)&Spr_Mem.spr_ram[0]; // Ö¸ï¿½ï¿½ï¿½Ò»ï¿½ï¿½sprite 0 ï¿½ï¿½Î»ï¿½ï¿½
 
-/*ÏÔÊ¾Ïà¹Ø*/
-uint8_t 	SpriteHitFlag, PPU_Latch_Flag; //sprite #0 ÏÔÊ¾Åö×²µãËùÔÚÉ¨ÃèÐÐºÅ, ±³¾°Î»ÒÆ£¤2005Ð´Èë±êÖ¾ 
-int 	PPU_scanline;  					//µ±Ç°É¨ÃèÐÐ
-uint16_t	Buffer_scanline[8 + 256 + 8];	//ÐÐÏÔÊ¾»º´æ,ÉÏÏÂ±êÔ½½ç×î´óÎª7£¬ÏÔÊ¾Çø 7 ~ 263  0~7 263~270 Îª·ÀÖ¹Òç³öÇø
+/*ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½*/
+uint8_t SpriteHitFlag, PPU_Latch_Flag; // sprite #0 ï¿½ï¿½Ê¾ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¨ï¿½ï¿½ï¿½Ðºï¿½, ï¿½ï¿½ï¿½ï¿½Î»ï¿½Æ£ï¿½2005Ð´ï¿½ï¿½ï¿½Ö¾
+int PPU_scanline;					   // ï¿½ï¿½Ç°É¨ï¿½ï¿½ï¿½ï¿½
+uint16_t Buffer_scanline[8 + 256 + 8]; // ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Â±ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½Îª7ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ 7 ~ 263  0~7 263~270 Îªï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½
 
 uint8_t PPU_BG_VScrlOrg, PPU_BG_HScrlOrg;
-//uint8_t PPU_BG_VScrlOrg_Pre, PPU_BG_HScrlOrg_Pre;
-//uint8_t PPU_BG_NameTableNum;			//µ±Ç°±³¾°ÃüÃû±íºÅ
-//uint16_t PPU_AddrTemp;
+// uint8_t PPU_BG_VScrlOrg_Pre, PPU_BG_HScrlOrg_Pre;
+// uint8_t PPU_BG_NameTableNum;			//ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// uint16_t PPU_AddrTemp;
 /********************************************************************************
- **NES µ÷É«°å ÑÕÉ«±í£¨RGB565£© 64
+ **NES ï¿½ï¿½É«ï¿½ï¿½ ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½RGB565ï¿½ï¿½ 64
  */
-const uint16_t NES_Color_Palette[64] ={
-/*ÑÕÉ«Ë÷ÒýµØÖ·->RGBÖµ -> RGB565(16bit)*/
-/*	0x00 -> 0x75, 0x75, 0x75 */	0x73AE, 
-/*	0x01 -> 0x27, 0x1B, 0x8F */	0x20D1,
-/*	0x02 -> 0x00, 0x00, 0xAB */	0x0015,
-/*	0x03 -> 0x47, 0x00, 0x9F */	0x4013,
-/*	0x04 -> 0x8F, 0x00, 0x77 */	0x880E,
-/*	0x05 -> 0xAB, 0x00, 0x13 */	0xA802,
-/*	0x06 -> 0xA7, 0x00, 0x00 */	0xA000,
-/*	0x07 -> 0x7F, 0x0B, 0x00 */	0x7840,
-/*	0x08 -> 0x43, 0x2F, 0x00 */	0x4160,
-/*	0x09 -> 0x00, 0x47, 0x00 */	0x0220,
-/*	0x0A -> 0x00, 0x51, 0x00 */	0x0280,
-/*	0x0B -> 0x00, 0x3F, 0x17 */	0x01E2,
-/*	0x0C -> 0x1B, 0x3F, 0x5F */	0x19EB,
-/*	0x0D -> 0x00, 0x00, 0x00 */	0x0000,
-/*	0x0E -> 0x00, 0x00, 0x00 */	0x0000,
-/*	0x0F -> 0x00, 0x00, 0x00 */	0x0000,
+const uint16_t NES_Color_Palette[64] = {
+	/*ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·->RGBÖµ -> RGB565(16bit)*/
+	/*	0x00 -> 0x75, 0x75, 0x75 */ 0x73AE,
+	/*	0x01 -> 0x27, 0x1B, 0x8F */ 0x20D1,
+	/*	0x02 -> 0x00, 0x00, 0xAB */ 0x0015,
+	/*	0x03 -> 0x47, 0x00, 0x9F */ 0x4013,
+	/*	0x04 -> 0x8F, 0x00, 0x77 */ 0x880E,
+	/*	0x05 -> 0xAB, 0x00, 0x13 */ 0xA802,
+	/*	0x06 -> 0xA7, 0x00, 0x00 */ 0xA000,
+	/*	0x07 -> 0x7F, 0x0B, 0x00 */ 0x7840,
+	/*	0x08 -> 0x43, 0x2F, 0x00 */ 0x4160,
+	/*	0x09 -> 0x00, 0x47, 0x00 */ 0x0220,
+	/*	0x0A -> 0x00, 0x51, 0x00 */ 0x0280,
+	/*	0x0B -> 0x00, 0x3F, 0x17 */ 0x01E2,
+	/*	0x0C -> 0x1B, 0x3F, 0x5F */ 0x19EB,
+	/*	0x0D -> 0x00, 0x00, 0x00 */ 0x0000,
+	/*	0x0E -> 0x00, 0x00, 0x00 */ 0x0000,
+	/*	0x0F -> 0x00, 0x00, 0x00 */ 0x0000,
 
-/*	0x10 -> 0xBC, 0xBC, 0xBC */	0xBDF7,
-/*	0x11 -> 0x00, 0x73, 0xEF */	0x039D,
-/*	0x12 -> 0x23, 0x3B, 0xEF */	0x21DD,
-/*	0x13 -> 0x83, 0x00, 0xF3 */	0x801E,
-/*	0x14 -> 0xBF, 0x00, 0xBF */	0xB817,
-/*	0x15 -> 0xE7, 0x00, 0x5B */	0xE00B,
-/*	0x16 -> 0xDB, 0x2B, 0x00 */	0xD940,
-/*	0x17 -> 0xCB, 0x4F, 0x0F */	0xCA61,
-/*	0x18 -> 0x8B, 0x73, 0x00 */	0x8B80,
-/*	0x19 -> 0x00, 0x97, 0x00 */	0x04A0,
-/*	0x1A -> 0x00, 0xAB, 0x00 */	0x0540,
-/*	0x1B -> 0x00, 0x93, 0x3B */	0x0487,
-/*	0x1C -> 0x00, 0x83, 0x8B */	0x0411,
-/*	0x1D -> 0x00, 0x00, 0x00 */	0x0000,
-/*	0x1E -> 0x00, 0x00, 0x00 */	0x0000,
-/*	0x1F -> 0x00, 0x00, 00x0 */	0x0000,
+	/*	0x10 -> 0xBC, 0xBC, 0xBC */ 0xBDF7,
+	/*	0x11 -> 0x00, 0x73, 0xEF */ 0x039D,
+	/*	0x12 -> 0x23, 0x3B, 0xEF */ 0x21DD,
+	/*	0x13 -> 0x83, 0x00, 0xF3 */ 0x801E,
+	/*	0x14 -> 0xBF, 0x00, 0xBF */ 0xB817,
+	/*	0x15 -> 0xE7, 0x00, 0x5B */ 0xE00B,
+	/*	0x16 -> 0xDB, 0x2B, 0x00 */ 0xD940,
+	/*	0x17 -> 0xCB, 0x4F, 0x0F */ 0xCA61,
+	/*	0x18 -> 0x8B, 0x73, 0x00 */ 0x8B80,
+	/*	0x19 -> 0x00, 0x97, 0x00 */ 0x04A0,
+	/*	0x1A -> 0x00, 0xAB, 0x00 */ 0x0540,
+	/*	0x1B -> 0x00, 0x93, 0x3B */ 0x0487,
+	/*	0x1C -> 0x00, 0x83, 0x8B */ 0x0411,
+	/*	0x1D -> 0x00, 0x00, 0x00 */ 0x0000,
+	/*	0x1E -> 0x00, 0x00, 0x00 */ 0x0000,
+	/*	0x1F -> 0x00, 0x00, 00x0 */ 0x0000,
 
-/*	0x20 -> 0xFF, 0xFF, 0xFF */	0xFFFF,
-/*	0x21 -> 0x3F, 0xBF, 0xFF */	0x3DFF,
-/*	0x22 -> 0x5F, 0x97, 0xFF */	0x5CBF,
-/*	0x23 -> 0xA7, 0x8B, 0xFD */	0xA45F,
-/*	0x24 -> 0xF7, 0x7B, 0xFF */	0xF3DF,
-/*	0x25 -> 0xFF, 0x77, 0xB7 */	0xFBB6,
-/*	0x26 -> 0xFF, 0x77, 0x63 */	0xFBAC,
-/*	0x27 -> 0xFF, 0x9B, 0x3B */	0xFCC7,
-/*	0x28 -> 0xF3, 0xBF, 0x3F */	0xF5E7,
-/*	0x29 -> 0x83, 0xD3, 0x13 */	0x8682,
-/*	0x2A -> 0x4F, 0xDF, 0x4B */	0x4EE9,
-/*	0x2B -> 0x58, 0xF8, 0x98 */	0x5FD3,
-/*	0x2C -> 0x00, 0xEB, 0xDB */	0x075B,
-/*	0x2D -> 0x00, 0x00, 0x00 */	0x0000,
-/*	0x2E -> 0x00, 0x00, 0x00 */	0x0000,
-/*	0x2F -> 0x00, 0x00, 0x00 */	0x0000,
+	/*	0x20 -> 0xFF, 0xFF, 0xFF */ 0xFFFF,
+	/*	0x21 -> 0x3F, 0xBF, 0xFF */ 0x3DFF,
+	/*	0x22 -> 0x5F, 0x97, 0xFF */ 0x5CBF,
+	/*	0x23 -> 0xA7, 0x8B, 0xFD */ 0xA45F,
+	/*	0x24 -> 0xF7, 0x7B, 0xFF */ 0xF3DF,
+	/*	0x25 -> 0xFF, 0x77, 0xB7 */ 0xFBB6,
+	/*	0x26 -> 0xFF, 0x77, 0x63 */ 0xFBAC,
+	/*	0x27 -> 0xFF, 0x9B, 0x3B */ 0xFCC7,
+	/*	0x28 -> 0xF3, 0xBF, 0x3F */ 0xF5E7,
+	/*	0x29 -> 0x83, 0xD3, 0x13 */ 0x8682,
+	/*	0x2A -> 0x4F, 0xDF, 0x4B */ 0x4EE9,
+	/*	0x2B -> 0x58, 0xF8, 0x98 */ 0x5FD3,
+	/*	0x2C -> 0x00, 0xEB, 0xDB */ 0x075B,
+	/*	0x2D -> 0x00, 0x00, 0x00 */ 0x0000,
+	/*	0x2E -> 0x00, 0x00, 0x00 */ 0x0000,
+	/*	0x2F -> 0x00, 0x00, 0x00 */ 0x0000,
 
-/*	0x30 -> 0xFF, 0xFF, 0xFF */	0xFFFF,
-/*	0x31 -> 0xAB, 0xE7, 0xFF */	0xAF3F,
-/*	0x32 -> 0xC7, 0xD7, 0xFF */	0xC6BF,
-/*	0x33 -> 0xD7, 0xCB, 0xFF */	0xD65F,
-/*	0x34 -> 0xFF, 0xC7, 0xFF */	0xFE3F,
-/*	0x35 -> 0xFF, 0xC7, 0xDB */	0xFE3B,
-/*	0x36 -> 0xFF, 0xBF, 0xB3 */	0xFDF6,
-/*	0x37 -> 0xFF, 0xDB, 0xAB */	0xFED5,
-/*	0x38 -> 0xFF, 0xE7, 0xA3 */	0xFF34,
-/*	0x39 -> 0xE3, 0xFF, 0xA3 */	0xE7F4,
-/*	0x3A -> 0xAB, 0xF3, 0xBF */	0xAF97,
-/*	0x3B -> 0xB3, 0xFF, 0xCF */	0xB7F9,
-/*	0x3C -> 0x9F, 0xFF, 0xF3 */	0x9FFE,
-/*	0x3D -> 0x00, 0x00, 0x00 */	0x0000,
-/*	0x3E -> 0x00, 0x00,0x 00 */	0x0000,
-/*	0x3F -> 0x00, 0x00, 0x00 */	0x0000
-};
+	/*	0x30 -> 0xFF, 0xFF, 0xFF */ 0xFFFF,
+	/*	0x31 -> 0xAB, 0xE7, 0xFF */ 0xAF3F,
+	/*	0x32 -> 0xC7, 0xD7, 0xFF */ 0xC6BF,
+	/*	0x33 -> 0xD7, 0xCB, 0xFF */ 0xD65F,
+	/*	0x34 -> 0xFF, 0xC7, 0xFF */ 0xFE3F,
+	/*	0x35 -> 0xFF, 0xC7, 0xDB */ 0xFE3B,
+	/*	0x36 -> 0xFF, 0xBF, 0xB3 */ 0xFDF6,
+	/*	0x37 -> 0xFF, 0xDB, 0xAB */ 0xFED5,
+	/*	0x38 -> 0xFF, 0xE7, 0xA3 */ 0xFF34,
+	/*	0x39 -> 0xE3, 0xFF, 0xA3 */ 0xE7F4,
+	/*	0x3A -> 0xAB, 0xF3, 0xBF */ 0xAF97,
+	/*	0x3B -> 0xB3, 0xFF, 0xCF */ 0xB7F9,
+	/*	0x3C -> 0x9F, 0xFF, 0xF3 */ 0x9FFE,
+	/*	0x3D -> 0x00, 0x00, 0x00 */ 0x0000,
+	/*	0x3E -> 0x00, 0x00,0x 00 */ 0x0000,
+	/*	0x3F -> 0x00, 0x00, 0x00 */ 0x0000};
 /*
  **
  *********************************************************************************/
 
-
-/*º¯Êý¶¨Òå ----------------------------------------------------------------------*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ----------------------------------------------------------------------*/
 
 /*
- * PPU ³õÊ¼»¯
+ * PPU ï¿½ï¿½Ê¼ï¿½ï¿½
  */
-void PPU_Init(	uint8_t* patterntableptr,	/* Pattern table µØÖ·*/
-				uint8_t  ScreenMirrorType	/* ÆÁÄ»¾µÏñÀàÐÍ*/
-				)
+void PPU_Init(uint8_t *patterntableptr, /* Pattern table ï¿½ï¿½Ö·*/
+			  uint8_t ScreenMirrorType	/* ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+)
 {
-	memset(&PPU_Mem, 0, sizeof(PPU_Mem));//ÇåÁã´æ´¢Æ÷
+	memset(&PPU_Mem, 0, sizeof(PPU_Mem)); // ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½
 	memset(&Spr_Mem, 0, sizeof(Spr_Mem));
 	memset(&PPU_Reg, 0, sizeof(PPU_Reg));
 
-	PPU_Mem.patterntable0 =	 patterntableptr;
-	PPU_Mem.patterntable1 =  patterntableptr + 0x1000;
-	
-	if(ScreenMirrorType == 0){  //Ë®Æ½¾µÏñ
+	PPU_Mem.patterntable0 = patterntableptr;
+	PPU_Mem.patterntable1 = patterntableptr + 0x1000;
+
+	if (ScreenMirrorType == 0)
+	{ // Ë®Æ½ï¿½ï¿½ï¿½ï¿½
 		PPU_Mem.name_table[0] = &NameTable[0];
 		PPU_Mem.name_table[1] = &NameTable[0];
 		PPU_Mem.name_table[2] = &NameTable[1024];
 		PPU_Mem.name_table[3] = &NameTable[1024];
-	}else{						//´¹Ö±¾µÏñ
+	}
+	else
+	{ // ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½
 		PPU_Mem.name_table[0] = &NameTable[0];
 		PPU_Mem.name_table[1] = &NameTable[1024];
 		PPU_Mem.name_table[2] = &NameTable[0];
@@ -142,253 +143,286 @@ void PPU_Init(	uint8_t* patterntableptr,	/* Pattern table µØÖ·*/
 	}
 
 	SpriteHitFlag = PPU_Latch_Flag = FALSE;
-//	PPU_BG_VScrlOrg = PPU_BG_VScrlOrg_Pre = 0;
-//	PPU_BG_HScrlOrg = PPU_BG_HScrlOrg_Pre = 0;
+	//	PPU_BG_VScrlOrg = PPU_BG_VScrlOrg_Pre = 0;
+	//	PPU_BG_HScrlOrg = PPU_BG_HScrlOrg_Pre = 0;
 	PPU_BG_VScrlOrg = 0;
 	PPU_BG_HScrlOrg = 0;
-//	PPU_BG_NameTableNum = 0;
-//	PPU_AddrTemp = 0;
+	//	PPU_BG_NameTableNum = 0;
+	//	PPU_AddrTemp = 0;
 	PPU_scanline = 0;
-
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- *  PPU ´æ´¢Æ÷Óë¼Ä´æÆ÷º¯Êý×é 
+ *  PPU ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 
 /*
- * ¶ÁPPU name table Êý¾Ý
+ * ï¿½ï¿½PPU name table ï¿½ï¿½ï¿½ï¿½
  */
 uint8_t PPU_NameTablesRead(void)
 {
 	uint16_t addrtemp = PPU_Mem.PPU_addrcnt & 0xFFF;
 
-	if(addrtemp > 0xC00){
-		return 	PPU_Mem.name_table[3][addrtemp - 0xC00];		//nametable3
+	if (addrtemp > 0xC00)
+	{
+		return PPU_Mem.name_table[3][addrtemp - 0xC00]; // nametable3
 	}
-	if(addrtemp > 0x800){
-	  	return 	PPU_Mem.name_table[2][addrtemp - 0x800];		//nametable2
+	if (addrtemp > 0x800)
+	{
+		return PPU_Mem.name_table[2][addrtemp - 0x800]; // nametable2
 	}
-	if(addrtemp > 0x400){
-	  	return 	PPU_Mem.name_table[1][addrtemp - 0x400];		//nametable1
-	}else{
-	  	return 	PPU_Mem.name_table[0][addrtemp];				//nametable0
+	if (addrtemp > 0x400)
+	{
+		return PPU_Mem.name_table[1][addrtemp - 0x400]; // nametable1
+	}
+	else
+	{
+		return PPU_Mem.name_table[0][addrtemp]; // nametable0
 	}
 }
 
 /*
- * Ð´PPU name table Êý¾Ý
+ * Ð´PPU name table ï¿½ï¿½ï¿½ï¿½
  */
 void PPU_NameTablesWrite(uint8_t value)
 {
 	uint16_t addrtemp = PPU_Mem.PPU_addrcnt & 0xFFF;
 
-	if(addrtemp > 0xC00){
-		PPU_Mem.name_table[3][addrtemp - 0xC00] = value;		//nametable3
+	if (addrtemp > 0xC00)
+	{
+		PPU_Mem.name_table[3][addrtemp - 0xC00] = value; // nametable3
 		return;
 	}
-	if(addrtemp > 0x800){
-	  	PPU_Mem.name_table[2][addrtemp - 0x800] = value;		//nametable2
+	if (addrtemp > 0x800)
+	{
+		PPU_Mem.name_table[2][addrtemp - 0x800] = value; // nametable2
 		return;
 	}
-	if(addrtemp > 0x400){
-	  	PPU_Mem.name_table[1][addrtemp - 0x400] = value;		//nametable1
+	if (addrtemp > 0x400)
+	{
+		PPU_Mem.name_table[1][addrtemp - 0x400] = value; // nametable1
 		return;
-	}else{
-	  	PPU_Mem.name_table[0][addrtemp] = value;				//nametable0
+	}
+	else
+	{
+		PPU_Mem.name_table[0][addrtemp] = value; // nametable0
 		return;
 	}
 }
 
 /*
- * Ð´PPU´æ´¢Æ÷
+ * Ð´PPUï¿½æ´¢ï¿½ï¿½
  */
 void PPU_MemWrite(uint8_t value)
 {
-	switch(PPU_Mem.PPU_addrcnt & 0xF000){
-	case 0x0000: //$0000 ~ $0FFF  Ö»¶Á - Óë¿¨´øÓÐ¹Ø
-//		 PPU_Mem.patterntable0[PPU_Mem.PPU_addrcnt] = value;
-		 break;
-	case 0x1000: //$1000 ~ $1FFF  Ö»¶Á - Óë¿¨´øÓÐ¹Ø
-//		 PPU_Mem.patterntable1[PPU_Mem.PPU_addrcnt & 0x0FFF] = value;
-		 break;
+	switch (PPU_Mem.PPU_addrcnt & 0xF000)
+	{
+	case 0x0000: //$0000 ~ $0FFF  Ö»ï¿½ï¿½ - ï¿½ë¿¨ï¿½ï¿½ï¿½Ð¹ï¿½
+				 //		 PPU_Mem.patterntable0[PPU_Mem.PPU_addrcnt] = value;
+		break;
+	case 0x1000: //$1000 ~ $1FFF  Ö»ï¿½ï¿½ - ï¿½ë¿¨ï¿½ï¿½ï¿½Ð¹ï¿½
+				 //		 PPU_Mem.patterntable1[PPU_Mem.PPU_addrcnt & 0x0FFF] = value;
+		break;
 	case 0x2000: //$2000 ~ $2FFF
-		 PPU_NameTablesWrite(value);
-		 break;
-	case 0x3000: 
-		 //$3000 ~ $3EFF	-- $2000 ~ $2EFFµÄ¾µÏñ
-		 //$3F00 ~ $3F0F 	image  palette
-		 //$3F10 ~ $3F1F	sprite palette
-		 if((PPU_Mem.PPU_addrcnt & 0x1F) > 0x0F){
-			PPU_Mem.sprite_palette[(PPU_Mem.PPU_addrcnt & 0xF)] = value;	//¾«ÁéÑÕÉ«Ë÷ÒýÖµ±í
-			if((PPU_Mem.PPU_addrcnt & 3) == 0){							//¶ÔÓ¦Î»ÖÃÎªÍ¸Ã÷É«µÄ¾°Ïó
+		PPU_NameTablesWrite(value);
+		break;
+	case 0x3000:
+		//$3000 ~ $3EFF	-- $2000 ~ $2EFFï¿½Ä¾ï¿½ï¿½ï¿½
+		//$3F00 ~ $3F0F 	image  palette
+		//$3F10 ~ $3F1F	sprite palette
+		if ((PPU_Mem.PPU_addrcnt & 0x1F) > 0x0F)
+		{
+			PPU_Mem.sprite_palette[(PPU_Mem.PPU_addrcnt & 0xF)] = value; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½
+			if ((PPU_Mem.PPU_addrcnt & 3) == 0)
+			{ // ï¿½ï¿½Ó¦Î»ï¿½ï¿½ÎªÍ¸ï¿½ï¿½É«ï¿½Ä¾ï¿½ï¿½ï¿½
 				PPU_Mem.sprite_palette[0] = PPU_Mem.image_palette[0] = value;
 				PPU_Mem.sprite_palette[4] = PPU_Mem.image_palette[4] = value;
 				PPU_Mem.sprite_palette[8] = PPU_Mem.image_palette[8] = value;
-				PPU_Mem.sprite_palette[12] =PPU_Mem.image_palette[12]= value;
-		 	}	
-		 }else{
-			PPU_Mem.image_palette[(PPU_Mem.PPU_addrcnt & 0xF)] = value; 	//±³¾°ÑÕÉ«Ë÷ÒýÖµ±í
-		 }
-//			PPU_NameTablesWrite(value);//name table¾µÏñ,Ò»°ã²»Ö´ÐÐµ½´Ë´¦
-		 break;
-	default: printf("Ð´ÈëPPUµØÖ·´óÓÚ$4000 %X", PPU_Mem.PPU_addrcnt);//»òPPU_Mem.PPU_addrcnt & 0x3FFF
+				PPU_Mem.sprite_palette[12] = PPU_Mem.image_palette[12] = value;
+			}
+		}
+		else
+		{
+			PPU_Mem.image_palette[(PPU_Mem.PPU_addrcnt & 0xF)] = value; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½
+		}
+		//			PPU_NameTablesWrite(value);//name tableï¿½ï¿½ï¿½ï¿½,Ò»ï¿½ã²»Ö´ï¿½Ðµï¿½ï¿½Ë´ï¿½
+		break;
+	default:
+		printf("Ð´ï¿½ï¿½PPUï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½$4000 %X", PPU_Mem.PPU_addrcnt); // ï¿½ï¿½PPU_Mem.PPU_addrcnt & 0x3FFF
 	}
-	//¶ÁÐ´ºó£¬µØÖ·¼ÆÊýÆ÷Ôö¼Ó£¬¸ù¾Ý$2002 [bit2] 0£º+1  1£º +32¡£
-	PPU_Reg.R0 & PPU_ADDRINCR ? PPU_Mem.PPU_addrcnt += 32 : PPU_Mem.PPU_addrcnt++ ;
+	// ï¿½ï¿½Ð´ï¿½ó£¬µï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½$2002 [bit2] 0ï¿½ï¿½+1  1ï¿½ï¿½ +32ï¿½ï¿½
+	PPU_Reg.R0 &PPU_ADDRINCR ? PPU_Mem.PPU_addrcnt += 32 : PPU_Mem.PPU_addrcnt++;
 }
 
 /*
- * ¶ÁPPU´æ´¢Æ÷
+ * ï¿½ï¿½PPUï¿½æ´¢ï¿½ï¿½
  */
 uint8_t PPU_MemRead(void)
 {
-	//ÓÉÓÚÓ²¼þÔ­Òò£¬NES PPUÃ¿´Î¶ÁÈ¡·µ»ØµÄÊÇ»º³åÖµ£¬ÎªÊ±»ú¶ÁÈ¡µØÖ·¼õ1£»
+	// ï¿½ï¿½ï¿½ï¿½Ó²ï¿½ï¿½Ô­ï¿½ï¿½NES PPUÃ¿ï¿½Î¶ï¿½È¡ï¿½ï¿½ï¿½Øµï¿½ï¿½Ç»ï¿½ï¿½ï¿½Öµï¿½ï¿½ÎªÊ±ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Ö·ï¿½ï¿½1ï¿½ï¿½
 	uint8_t temp;
 
-	temp = PPU_Mem.PPU_readtemp; //±£´æ»º³åÖµ£¬×÷Îª·µ»ØÖµ
-		
-	switch(PPU_Mem.PPU_addrcnt & 0xF000){
-	case 0x0000: //$0000 ~ $0FFF
-		 PPU_Mem.PPU_readtemp = PPU_Mem.patterntable0[PPU_Mem.PPU_addrcnt];			 //¶ÁÈ¡µØÖ·Ö¸¶¨Öµµ½»º³å
-		 break;
-	case 0x1000: //$1000 ~ $1FFF
-		 PPU_Mem.PPU_readtemp = PPU_Mem.patterntable1[PPU_Mem.PPU_addrcnt & 0x0FFF]; //¶ÁÈ¡µØÖ·Ö¸¶¨Öµµ½»º³å
-		 break;
-	case 0x2000: //$2000 ~ $2FFF
-		 PPU_Mem.PPU_readtemp = PPU_NameTablesRead();								 //¶ÁÈ¡µØÖ·Ö¸¶¨Öµµ½»º³å
-		 break;
-	case 0x3000: 
-		 //$3000 ~ $3EFF	-- $2000 ~ $2EFFµÄ¾µÏñ
-		 //$3F00 ~ $3F0F image  palette
-		 //$3F10 ~ $3F1F	sprite palette
-		 if(PPU_Mem.PPU_addrcnt >= 0x3F10){
-		 	temp =  PPU_Mem.sprite_palette[(PPU_Mem.PPU_addrcnt & 0xF)];	//PPU ¶ÁÈ¡»º³å²»ÊÊÓÃ palette µ÷É«°å,Ö±½Ó·µ»Ø
-		 	break; 	
-	 	 }
-		 if(PPU_Mem.PPU_addrcnt >= 0x3F00){
-		 		temp = PPU_Mem.image_palette[(PPU_Mem.PPU_addrcnt & 0xF)];	//PPU ¶ÁÈ¡»º³å²»ÊÊÓÃ palette µ÷É«°å,Ö±½Ó·µ»Ø
-		 		break;
-		 }
-//			temp = PPU_NameTablesRead();//name tables ¾µÏñ,Ò»°ã²»Ö´ÐÐµ½´Ë´¦
-		 break;
-	default: temp = 0; 
-		 printf("¶ÁÈ¡PPUµØÖ·´óÓÚ$4000 %X", PPU_Mem.PPU_addrcnt);
+	temp = PPU_Mem.PPU_readtemp; // ï¿½ï¿½ï¿½æ»ºï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Öµ
+
+	switch (PPU_Mem.PPU_addrcnt & 0xF000)
+	{
+	case 0x0000:														   //$0000 ~ $0FFF
+		PPU_Mem.PPU_readtemp = PPU_Mem.patterntable0[PPU_Mem.PPU_addrcnt]; // ï¿½ï¿½È¡ï¿½ï¿½Ö·Ö¸ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		break;
+	case 0x1000:																	//$1000 ~ $1FFF
+		PPU_Mem.PPU_readtemp = PPU_Mem.patterntable1[PPU_Mem.PPU_addrcnt & 0x0FFF]; // ï¿½ï¿½È¡ï¿½ï¿½Ö·Ö¸ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		break;
+	case 0x2000:									 //$2000 ~ $2FFF
+		PPU_Mem.PPU_readtemp = PPU_NameTablesRead(); // ï¿½ï¿½È¡ï¿½ï¿½Ö·Ö¸ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		break;
+	case 0x3000:
+		//$3000 ~ $3EFF	-- $2000 ~ $2EFFï¿½Ä¾ï¿½ï¿½ï¿½
+		//$3F00 ~ $3F0F image  palette
+		//$3F10 ~ $3F1F	sprite palette
+		if (PPU_Mem.PPU_addrcnt >= 0x3F10)
+		{
+			temp = PPU_Mem.sprite_palette[(PPU_Mem.PPU_addrcnt & 0xF)]; // PPU ï¿½ï¿½È¡ï¿½ï¿½ï¿½å²»ï¿½ï¿½ï¿½ï¿½ palette ï¿½ï¿½É«ï¿½ï¿½,Ö±ï¿½Ó·ï¿½ï¿½ï¿½
+			break;
+		}
+		if (PPU_Mem.PPU_addrcnt >= 0x3F00)
+		{
+			temp = PPU_Mem.image_palette[(PPU_Mem.PPU_addrcnt & 0xF)]; // PPU ï¿½ï¿½È¡ï¿½ï¿½ï¿½å²»ï¿½ï¿½ï¿½ï¿½ palette ï¿½ï¿½É«ï¿½ï¿½,Ö±ï¿½Ó·ï¿½ï¿½ï¿½
+			break;
+		}
+		//			temp = PPU_NameTablesRead();//name tables ï¿½ï¿½ï¿½ï¿½,Ò»ï¿½ã²»Ö´ï¿½Ðµï¿½ï¿½Ë´ï¿½
+		break;
+	default:
+		temp = 0;
+		printf("ï¿½ï¿½È¡PPUï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½$4000 %X", PPU_Mem.PPU_addrcnt);
 	}
-	//¶ÁÐ´ºó£¬µØÖ·¼ÆÊýÆ÷Ôö¼Ó£¬¸ù¾Ý$2002 [bit2] 0£º+1  1£º +32¡£
-	PPU_Reg.R0 & PPU_ADDRINCR ? PPU_Mem.PPU_addrcnt += 32 : PPU_Mem.PPU_addrcnt++ ;
+	// ï¿½ï¿½Ð´ï¿½ó£¬µï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½$2002 [bit2] 0ï¿½ï¿½+1  1ï¿½ï¿½ +32ï¿½ï¿½
+	PPU_Reg.R0 &PPU_ADDRINCR ? PPU_Mem.PPU_addrcnt += 32 : PPU_Mem.PPU_addrcnt++;
 	return temp;
 }
 
 /*
- * Ð´PPU¼Ä´æÆ÷
+ * Ð´PPUï¿½Ä´ï¿½ï¿½ï¿½
  */
 void PPU_RegWrite(uint16_t RX, uint8_t value)
 {
-//#ifdef _NES_DEBUG_
-//	printf("\r\nPPU Ð´¼Ä´æÆ÷ %d %x", RX, value);
-//#endif
-	switch(RX){
-/*$2000*/
-	case 0:	PPU_Reg.R0 = value;
-//			printf("\r\n PPU r0: %x", value);
-   			// Account for Loopy's scrolling discoveries  ²Î¿¼InfoNes
-//		    PPU_AddrTemp = ( PPU_AddrTemp & 0xF3FF ) | ( ( ( (uint16_t)value ) & 0x0003 ) << 10 );
-//			PPU_BG_NameTableNum = PPU_Reg.R0 & R0_NAME_TABLE;	
-/*$2001*/	break;
-	case 1:	PPU_Reg.R1 = value;	 
-/*$2003*/	break;
- 	case 3: //Sprite Memory Address£¬ 8Î»µØÖ·¼ÆÊýÆ÷
-			Spr_Mem.spr_addrcnt = value;
-/*$2004*/	break;
-	case 4: //Sprite Memory Data ,Ã¿´Î´æÈ¡ sprite ram µØÖ·¼ÆÊýÆ÷spr_addrcnt×Ô¶¯¼Ó1
-			Spr_Mem.spr_ram[Spr_Mem.spr_addrcnt++] = value;
-/*$2005*/	break;
-	case 5:	//PPU_Reg.R5 = value;
-			if(PPU_Latch_Flag){   //Õæ1£º´¹Ö±scrollÊý¾Ý
-				PPU_BG_VScrlOrg	= (value > 239) ? 0 : value;
-				//µØÖ·»º³åÖµ±ä»¯£¬²Î¿¼infones
-//				PPU_AddrTemp = ( PPU_AddrTemp & 0xFC1F ) | ((((uint16_t)value) & 0xF8 ) << 2);
-//			    PPU_AddrTemp = ( PPU_AddrTemp & 0x8FFF ) | ((((uint16_t)value) & 0x07 ) << 12);
-			}else{				  //¼Ù0£ºË®Æ½scrollÊý¾Ý
-				PPU_BG_HScrlOrg = value;
-			    // Added : more Loopy Stuff	 ²Î¿¼Infones
-//			    PPU_AddrTemp = ( PPU_AddrTemp & 0xFFE0 ) | ((((uint16_t)value) & 0xF8 ) >> 3 );
-			}					 
-			PPU_Latch_Flag ^= 1;
-/*$2006*/	break;
-	case 6:	
-//			if(PPU_Latch_Flag){		//1
-////				PPU_Mem.PPU_addrcnt = (PPU_Mem.PPU_addrcnt << 8) + value; //PPU ´æ´¢Æ÷µØÖ·¼ÆÊýÆ÷£¬ÏÈÐ´¸ß8Î»£¬ºóÐ´µÍ8Î»
-//			    /* Low */
-//            	PPU_AddrTemp = ( PPU_AddrTemp & 0xFF00 ) | (((uint16_t)value ) & 0x00FF);
-//			    PPU_Mem.PPU_addrcnt = PPU_AddrTemp;
-//            	PPU_BG_VScrlOrg = (uint8_t)(PPU_Mem.PPU_addrcnt & 0x001F );
-//				PPU_BG_HScrlOrg = (uint8_t)((PPU_Mem.PPU_addrcnt& 0x03E0 ) >> 5 ); 
-//			}else{				   //0
-//			   	/* High */
-//            	PPU_AddrTemp = (PPU_AddrTemp & 0x00FF)|((((uint8_t)value) & 0x003F ) << 8 ); 
-//			}
-//			PPU_Latch_Flag ^= 1;
+	// #ifdef _NES_DEBUG_
+	//	printf("\r\nPPU Ð´ï¿½Ä´ï¿½ï¿½ï¿½ %d %x", RX, value);
+	// #endif
+	switch (RX)
+	{
+		/*$2000*/
+	case 0:
+		PPU_Reg.R0 = value;
+		//			printf("\r\n PPU r0: %x", value);
+		// Account for Loopy's scrolling discoveries  ï¿½Î¿ï¿½InfoNes
+		//		    PPU_AddrTemp = ( PPU_AddrTemp & 0xF3FF ) | ( ( ( (uint16_t)value ) & 0x0003 ) << 10 );
+		//			PPU_BG_NameTableNum = PPU_Reg.R0 & R0_NAME_TABLE;
+		/*$2001*/ break;
+	case 1:
+		PPU_Reg.R1 = value;
+		/*$2003*/ break;
+	case 3: // Sprite Memory Addressï¿½ï¿½ 8Î»ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		Spr_Mem.spr_addrcnt = value;
+		/*$2004*/ break;
+	case 4: // Sprite Memory Data ,Ã¿ï¿½Î´ï¿½È¡ sprite ram ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½spr_addrcntï¿½Ô¶ï¿½ï¿½ï¿½1
+		Spr_Mem.spr_ram[Spr_Mem.spr_addrcnt++] = value;
+		/*$2005*/ break;
+	case 5: // PPU_Reg.R5 = value;
+		if (PPU_Latch_Flag)
+		{ // ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Ö±scrollï¿½ï¿½ï¿½ï¿½
+			PPU_BG_VScrlOrg = (value > 239) ? 0 : value;
+			// ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Öµï¿½ä»¯ï¿½ï¿½ï¿½Î¿ï¿½infones
+			//				PPU_AddrTemp = ( PPU_AddrTemp & 0xFC1F ) | ((((uint16_t)value) & 0xF8 ) << 2);
+			//			    PPU_AddrTemp = ( PPU_AddrTemp & 0x8FFF ) | ((((uint16_t)value) & 0x07 ) << 12);
+		}
+		else
+		{ // ï¿½ï¿½0ï¿½ï¿½Ë®Æ½scrollï¿½ï¿½ï¿½ï¿½
+			PPU_BG_HScrlOrg = value;
+			// Added : more Loopy Stuff	 ï¿½Î¿ï¿½Infones
+			//			    PPU_AddrTemp = ( PPU_AddrTemp & 0xFFE0 ) | ((((uint16_t)value) & 0xF8 ) >> 3 );
+		}
+		PPU_Latch_Flag ^= 1;
+		/*$2006*/ break;
+	case 6:
+		//			if(PPU_Latch_Flag){		//1
+		////				PPU_Mem.PPU_addrcnt = (PPU_Mem.PPU_addrcnt << 8) + value; //PPU ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½8Î»ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½8Î»
+		//			    /* Low */
+		//            	PPU_AddrTemp = ( PPU_AddrTemp & 0xFF00 ) | (((uint16_t)value ) & 0x00FF);
+		//			    PPU_Mem.PPU_addrcnt = PPU_AddrTemp;
+		//            	PPU_BG_VScrlOrg = (uint8_t)(PPU_Mem.PPU_addrcnt & 0x001F );
+		//				PPU_BG_HScrlOrg = (uint8_t)((PPU_Mem.PPU_addrcnt& 0x03E0 ) >> 5 );
+		//			}else{				   //0
+		//			   	/* High */
+		//            	PPU_AddrTemp = (PPU_AddrTemp & 0x00FF)|((((uint8_t)value) & 0x003F ) << 8 );
+		//			}
+		//			PPU_Latch_Flag ^= 1;
 
-			PPU_Mem.PPU_addrcnt = (PPU_Mem.PPU_addrcnt << 8) + value; //PPU ´æ´¢Æ÷µØÖ·¼ÆÊýÆ÷£¬ÏÈÐ´¸ß8Î»£¬ºóÐ´µÍ8Î»
-			PPU_Latch_Flag ^= 1;
-/*$2007*/	break; 
-	case 7:	/*Ð´ PPU Memory Data*/
-			PPU_MemWrite(value);
-			break;
-	default : printf("\r\nPPU Ð´ÈëµØÖ·´íÎó %d", RX);
+		PPU_Mem.PPU_addrcnt = (PPU_Mem.PPU_addrcnt << 8) + value; // PPU ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½8Î»ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½8Î»
+		PPU_Latch_Flag ^= 1;
+		/*$2007*/ break;
+	case 7: /*Ð´ PPU Memory Data*/
+		PPU_MemWrite(value);
+		break;
+	default:
+		printf("\r\nPPU Ð´ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ %d", RX);
 	}
 }
 
 /*
- * ¶ÁPPU¼Ä´æÆ÷
+ * ï¿½ï¿½PPUï¿½Ä´ï¿½ï¿½ï¿½
  */
 uint8_t PPU_RegRead(uint16_t RX)
 {
 	uint8_t temp;
 
-	switch(RX){
-	case 0: temp = PPU_Reg.R0;	//$2000 RW
-			break;
-	case 1: temp = PPU_Reg.R1;	//$2001 RW
-			break;
-	case 2: temp = PPU_Reg.R2;
-			PPU_Reg.R2 &= ~(R0_VB_NMI_EN);
-			//¶ÁÈ¡$2002£¬»¹Ô­PPUµØÖ·¼ÆÊýÆ÷Ð´ÈëÊ±±êÖ¾
-			//Í¬Ñù¶ÔÓÚ$2005 $2006Ð´Èë×´Ì¬¿ØÖÆ±êÖ¾
-			PPU_Latch_Flag = 0;
-		 	// Make a Nametable 0 in V-Blank
-		    if ((PPU_scanline > 20 && PPU_scanline < 262) && !(PPU_Reg.R0 & R0_VB_NMI_EN)){
-		      	PPU_Reg.R0 &= ~R0_NAME_TABLE;	 			//Ñ¡Ôñ name table #0
-//		      	PPU_BG_NameTableNum = 0;					//name table ºÅ #0 
-		    }
-			break;;	//$2002 R
-	case 4:	/*¶Á Sprite Memory Data*/
-			temp = Spr_Mem.spr_ram[Spr_Mem.spr_addrcnt++];
-			break;
-	case 7:	/*¶Á PPU Memory Data*/
-			temp = PPU_MemRead();
-			break;
-	default : printf("\r\nPPU ¶ÁÈ¡µØÖ·´íÎó %d", RX);
-			return RX;
+	switch (RX)
+	{
+	case 0:
+		temp = PPU_Reg.R0; //$2000 RW
+		break;
+	case 1:
+		temp = PPU_Reg.R1; //$2001 RW
+		break;
+	case 2:
+		temp = PPU_Reg.R2;
+		PPU_Reg.R2 &= ~(R0_VB_NMI_EN);
+		// ï¿½ï¿½È¡$2002ï¿½ï¿½ï¿½ï¿½Ô­PPUï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½Ê±ï¿½ï¿½Ö¾
+		// Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½$2005 $2006Ð´ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½Æ±ï¿½Ö¾
+		PPU_Latch_Flag = 0;
+		// Make a Nametable 0 in V-Blank
+		if ((PPU_scanline > 20 && PPU_scanline < 262) && !(PPU_Reg.R0 & R0_VB_NMI_EN))
+		{
+			PPU_Reg.R0 &= ~R0_NAME_TABLE; // Ñ¡ï¿½ï¿½ name table #0
+			//		      	PPU_BG_NameTableNum = 0;					//name table ï¿½ï¿½ #0
+		}
+		break;
+		;	//$2002 R
+	case 4: /*ï¿½ï¿½ Sprite Memory Data*/
+		temp = Spr_Mem.spr_ram[Spr_Mem.spr_addrcnt++];
+		break;
+	case 7: /*ï¿½ï¿½ PPU Memory Data*/
+		temp = PPU_MemRead();
+		break;
+	default:
+		printf("\r\nPPU ï¿½ï¿½È¡ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ %d", RX);
+		return RX;
 	}
-//#ifdef _NES_DEBUG_
-//	printf("\r\nPPU ¶Á¼Ä´æÆ÷ %d %x", RX, temp);
-//#endif
-	return temp;	
+	// #ifdef _NES_DEBUG_
+	//	printf("\r\nPPU ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ %d %x", RX, temp);
+	// #endif
+	return temp;
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- *  PPU ÏÔÊ¾º¯Êý×é 
+ *  PPU ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 
 /*
- * ²éÕÒsprite #0Åö×²±êÖ¾
+ * ï¿½ï¿½ï¿½ï¿½sprite #0ï¿½ï¿½×²ï¿½ï¿½Ö¾
  */
 void NES_GetSpr0HitFlag(int y_axes)
 {
-	int   i,y_scroll, dy_axes, dx_axes;
+	int i, y_scroll, dy_axes, dx_axes;
 	uint8_t y_TitleLine, x_TitleLine;
 	uint8_t spr_size, Spr0_Data, temp;
 	uint8_t nNameTable, BG_TitlePatNum;
@@ -397,137 +431,155 @@ void NES_GetSpr0HitFlag(int y_axes)
 	uint8_t *BG_Patterntable;
 	uint8_t *Spr_Patterntable;
 
-	/*ÅÐ¶Ïsprite #0 ÏÔÊ¾ÇøÓòÊÇ·ñÔÚµ±Ç°ÐÐ*/
-	spr_size = PPU_Reg.R0 & R0_SPR_SIZE	? 0x0F : 0x07;		//spr_size 8£º0~7£¬16: 0~15
-	dy_axes = y_axes - (uint8_t)(sprite[0].y + 1);			//ÅÐ¶Ïsprite#0 ÊÇ·ñÔÚµ±Ç°ÐÐÏÔÊ¾·¶Î§ÄÚ,0×ø±êÊµ¼ÊÖµÎªFF
-	if(dy_axes != (dy_axes & spr_size))			
+	/*ï¿½Ð¶ï¿½sprite #0 ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Úµï¿½Ç°ï¿½ï¿½*/
+	spr_size = PPU_Reg.R0 & R0_SPR_SIZE ? 0x0F : 0x07; // spr_size 8ï¿½ï¿½0~7ï¿½ï¿½16: 0~15
+	dy_axes = y_axes - (uint8_t)(sprite[0].y + 1);	   // ï¿½Ð¶ï¿½sprite#0 ï¿½Ç·ï¿½ï¿½Úµï¿½Ç°ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Î§ï¿½ï¿½,0ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ÖµÎªFF
+	if (dy_axes != (dy_axes & spr_size))
 		return;
 
-	/*È¡µÃspriteÏÔÊ¾Î»ÖÃµÄ±³¾°ÏÔÊ¾Êý¾Ý*/
-//	nNameTable = PPU_BG_NameTableNum;	 		//È¡µÃµ±Ç°ÆÁÄ»µÄname table ºÅ
+	/*È¡ï¿½ï¿½spriteï¿½ï¿½Ê¾Î»ï¿½ÃµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½*/
+	//	nNameTable = PPU_BG_NameTableNum;	 		//È¡ï¿½Ãµï¿½Ç°ï¿½ï¿½Ä»ï¿½ï¿½name table ï¿½ï¿½
 	nNameTable = PPU_Reg.R0 & R0_NAME_TABLE;
-	BG_Patterntable = PPU_Reg.R0 & BG_PATTERN_ADDR ? PPU_Mem.patterntable1 : PPU_Mem.patterntable0;//±³¾°patternÊ×µØÖ·
-	y_scroll = y_axes + PPU_BG_VScrlOrg;  	//Scorll Î»ÒÆºó±³¾°ÏÔÊ¾ÐÐµÄY×ø±ê£¬ËÄÆÁ[00]¡¢[01]¡¢[10]¡¢[11]£¬Ã¿ÆÁÏÔÊ¾(0+x_scroll_org,y_scroll_org)
-	if(y_scroll > 239){
+	BG_Patterntable = PPU_Reg.R0 & BG_PATTERN_ADDR ? PPU_Mem.patterntable1 : PPU_Mem.patterntable0; // ï¿½ï¿½ï¿½ï¿½patternï¿½×µï¿½Ö·
+	y_scroll = y_axes + PPU_BG_VScrlOrg;															// Scorll Î»ï¿½Æºó±³¾ï¿½ï¿½ï¿½Ê¾ï¿½Ðµï¿½Yï¿½ï¿½ï¿½ê£¬ï¿½ï¿½ï¿½ï¿½[00]ï¿½ï¿½[01]ï¿½ï¿½[10]ï¿½ï¿½[11]ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½Ê¾(0+x_scroll_org,y_scroll_org)
+	if (y_scroll > 239)
+	{
 		y_scroll -= 240;
-		nNameTable ^= NAME_TABLE_V_MASK; 		//´¹Ö±³¬³öÆÁÄ»£¬ÇÐ»»name table±í
+		nNameTable ^= NAME_TABLE_V_MASK; // ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ð»ï¿½name tableï¿½ï¿½
 	}
-    y_TitleLine = y_scroll >> 3; 				//title ÐÐºÅ 0~29£¨yÖá×ø±ê³ý8£©
-	x_TitleLine = (PPU_BG_HScrlOrg + sprite[0].x) >> 3;//title ÁÐºÅ 0~31£¨yÖá×ø±ê³ý8£© 
-	dy_axes = y_scroll & 0x07;					//titleÏÔÊ¾yÖáÆ«ÒÆÏñËØ ³ý8µÄÓàÊý
-	dx_axes = PPU_BG_HScrlOrg & 0x07;		//titleÏÔÊ¾xÖáÆ«ÒÆÏñËØ ³ý8µÄÓàÊý
-	if(x_TitleLine > 31)					    //xÖá¿çÆÁÏÔÊ¾
+	y_TitleLine = y_scroll >> 3;						// title ï¿½Ðºï¿½ 0~29ï¿½ï¿½yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½8ï¿½ï¿½
+	x_TitleLine = (PPU_BG_HScrlOrg + sprite[0].x) >> 3; // title ï¿½Ðºï¿½ 0~31ï¿½ï¿½yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½8ï¿½ï¿½
+	dy_axes = y_scroll & 0x07;							// titleï¿½ï¿½Ê¾yï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½8ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	dx_axes = PPU_BG_HScrlOrg & 0x07;					// titleï¿½ï¿½Ê¾xï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½8ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	if (x_TitleLine > 31)								// xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 		nNameTable ^= NAME_TABLE_H_MASK;
-	BG_TitlePatNum = PPU_Mem.name_table[nNameTable][(y_TitleLine << 5) + x_TitleLine]; 	//y_TitleLine * 32 +¡¡x_TitleLine,´Óname±íÖÐÈ¡µÃspriteÏÔÊ¾Î»ÖÃµÄ±³¾°µÄtitleºÅµÄ 
-	BG_Data0  = BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes];						//±³¾°ÏÔÊ¾Êý¾Ý0
+	BG_TitlePatNum = PPU_Mem.name_table[nNameTable][(y_TitleLine << 5) + x_TitleLine]; // y_TitleLine * 32 +ï¿½ï¿½x_TitleLine,ï¿½ï¿½nameï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½spriteï¿½ï¿½Ê¾Î»ï¿½ÃµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½titleï¿½Åµï¿½
+	BG_Data0 = BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes];					   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½0
 	BG_Data0 |= BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes + 8];
-	if((x_TitleLine + 1) > 31)					//xÖá¿çÆÁÏÔÊ¾
+	if ((x_TitleLine + 1) > 31) // xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
 		nNameTable ^= NAME_TABLE_H_MASK;
-	BG_TitlePatNum = PPU_Mem.name_table[nNameTable][(y_TitleLine << 5) + x_TitleLine + 1]; //´Óname±íÖÐÏÂÒ»¸ö±³¾°ÏÔÊ¾µÄtitleºÅµÄ
-	BG_Data1  = BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes];						//±³¾°ÏÔÊ¾Êý¾Ý1
+	BG_TitlePatNum = PPU_Mem.name_table[nNameTable][(y_TitleLine << 5) + x_TitleLine + 1]; // ï¿½ï¿½nameï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½titleï¿½Åµï¿½
+	BG_Data1 = BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes];						   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½1
 	BG_Data1 |= BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes + 8];
-	BG_Data = (BG_Data0 << dx_axes) | (BG_Data1 >> dx_axes);							//±³¾°ÓëSprite #0 Î»ÖÃÏàÍ¬µÄµ±Ç°ÏÔÊ¾ÐÐµÄÏÔÊ¾Êý¾Ý
-	
-	/*È¡µÃsprite #0 ÏÔÊ¾Êý¾Ý*/
-	if(sprite[0].attr & SPR_VFLIP)							//Èô´¹Ö±·­×ª
-	 	dy_axes = spr_size - dy_axes; 						
-	if(PPU_Reg.R2 & R0_SPR_SIZE){//8*16						//ÈôÎªÕæ£¬spriteµÄ´óÐ¡8*16
-		/*È¡µÃËùÔÚtitle PatternÊ×µØÖ·*/
+	BG_Data = (BG_Data0 << dx_axes) | (BG_Data1 >> dx_axes); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Sprite #0 Î»ï¿½ï¿½ï¿½ï¿½Í¬ï¿½Äµï¿½Ç°ï¿½ï¿½Ê¾ï¿½Ðµï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+
+	/*È¡ï¿½ï¿½sprite #0 ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½*/
+	if (sprite[0].attr & SPR_VFLIP) // ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½×ª
+		dy_axes = spr_size - dy_axes;
+	if (PPU_Reg.R2 & R0_SPR_SIZE)
+	{ // 8*16						//ï¿½ï¿½Îªï¿½æ£¬spriteï¿½Ä´ï¿½Ð¡8*16
+		/*È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½title Patternï¿½×µï¿½Ö·*/
 		Spr_Patterntable = (sprite[0].t_num & 0x01) ? PPU_Mem.patterntable1 : PPU_Mem.patterntable0;
-		title_addr = (sprite[0].t_num & 0XFE) << 4;		//*16,Ô­µØÖ·ÒÑ*2
-		Spr0_Data  = Spr_Patterntable[title_addr + dy_axes];
+		title_addr = (sprite[0].t_num & 0XFE) << 4; //*16,Ô­ï¿½ï¿½Ö·ï¿½ï¿½*2
+		Spr0_Data = Spr_Patterntable[title_addr + dy_axes];
 		Spr0_Data |= Spr_Patterntable[title_addr + dy_axes + 8];
-	}else{						//8*8
-		/*È¡µÃsprite #0 ËùÔÚtitle PatternÊ×µØÖ·*/
-		Spr_Patterntable = (PPU_Reg.R0 & SPR_PATTERN_ADDR)	? PPU_Mem.patterntable1 : PPU_Mem.patterntable0;
-		title_addr = sprite[0].t_num  << 4;				//*16
-		Spr0_Data  = Spr_Patterntable[title_addr + dy_axes];
+	}
+	else
+	{ // 8*8
+		/*È¡ï¿½ï¿½sprite #0 ï¿½ï¿½ï¿½ï¿½title Patternï¿½×µï¿½Ö·*/
+		Spr_Patterntable = (PPU_Reg.R0 & SPR_PATTERN_ADDR) ? PPU_Mem.patterntable1 : PPU_Mem.patterntable0;
+		title_addr = sprite[0].t_num << 4; //*16
+		Spr0_Data = Spr_Patterntable[title_addr + dy_axes];
 		Spr0_Data |= Spr_Patterntable[title_addr + dy_axes + 8];
 	}
 
-	if(sprite[0].attr & SPR_HFLIP){				/*ÈôË®Æ½·­×ª, ·­×ª¸ßµÍÎ»Êý¾Ý*/
+	if (sprite[0].attr & SPR_HFLIP)
+	{ /*ï¿½ï¿½Ë®Æ½ï¿½ï¿½×ª, ï¿½ï¿½×ªï¿½ßµï¿½Î»ï¿½ï¿½ï¿½ï¿½*/
 		temp = 0;
-	   	for(i=0; i<8; i++){
-	   		temp |= (Spr0_Data >> i) & 1;
+		for (i = 0; i < 8; i++)
+		{
+			temp |= (Spr0_Data >> i) & 1;
 			temp <<= i;
-	   	}
+		}
 		Spr0_Data = temp;
 	}
-	if(Spr0_Data & BG_Data){
-//		printf("\r\nSprite #0 Hit!");
+	if (Spr0_Data & BG_Data)
+	{
+		//		printf("\r\nSprite #0 Hit!");
 		SpriteHitFlag = TRUE;
-	} 
+	}
 }
 
 /*
- * ÏÔÊ¾Ò»ÐÐ±³¾°£¬ÈôÓëspriteÅö×²£¬ÉèÖÃÅö×²±êÖ¾
+ * ï¿½ï¿½Ê¾Ò»ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½spriteï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½Ö¾
  */
 void NES_RenderBGLine(int y_axes)
 {
-	int 	i,y_scroll, /*x_scroll,*/ dy_axes, dx_axes;
-	int    	Buffer_LineCnt, y_TitleLine, x_TitleLine;
-	uint8_t 	H_byte, L_byte, BG_color_num, BG_attr_value;
-	uint8_t 	nNameTable, BG_TitlePatNum;
-	uint8_t  *BG_Patterntable;
+	int i, y_scroll, /*x_scroll,*/ dy_axes, dx_axes;
+	int Buffer_LineCnt, y_TitleLine, x_TitleLine;
+	uint8_t H_byte, L_byte, BG_color_num, BG_attr_value;
+	uint8_t nNameTable, BG_TitlePatNum;
+	uint8_t *BG_Patterntable;
 
-//	nNameTable = PPU_BG_NameTableNum;	 		//È¡µÃµ±Ç°ÆÁÄ»µÄname table ºÅ
+	//	nNameTable = PPU_BG_NameTableNum;	 		//È¡ï¿½Ãµï¿½Ç°ï¿½ï¿½Ä»ï¿½ï¿½name table ï¿½ï¿½
 	nNameTable = PPU_Reg.R0 & R0_NAME_TABLE;
-//	printf("\r\n name table num: %x", nNameTable);
-	BG_Patterntable = PPU_Reg.R0 & BG_PATTERN_ADDR ? PPU_Mem.patterntable1 : PPU_Mem.patterntable0;//±³¾°patternÊ×µØÖ·
-	y_scroll = y_axes + PPU_BG_VScrlOrg;  	//Scorll Î»ÒÆºóÏÔÊ¾ÐÐµÄY×ø±ê
-	if(y_scroll > 239){
+	//	printf("\r\n name table num: %x", nNameTable);
+	BG_Patterntable = PPU_Reg.R0 & BG_PATTERN_ADDR ? PPU_Mem.patterntable1 : PPU_Mem.patterntable0; // ï¿½ï¿½ï¿½ï¿½patternï¿½×µï¿½Ö·
+	y_scroll = y_axes + PPU_BG_VScrlOrg;															// Scorll Î»ï¿½Æºï¿½ï¿½ï¿½Ê¾ï¿½Ðµï¿½Yï¿½ï¿½ï¿½ï¿½
+	if (y_scroll > 239)
+	{
 		y_scroll -= 240;
-		nNameTable ^= NAME_TABLE_V_MASK; 		//´¹Ö±³¬³öÆÁÄ»£¬ÇÐ»»name table±í
+		nNameTable ^= NAME_TABLE_V_MASK; // ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ð»ï¿½name tableï¿½ï¿½
 	}
-    y_TitleLine = y_scroll >> 3; 				//title ÐÐºÅ 0~29£¨yÖá×ø±ê³ý8£©
-	dy_axes = y_scroll & 0x07;					//³ý8µÄÓàÊý
-//	x_scroll = 	PPU_BG_HScrlOrg_Pre;		
-	dx_axes = PPU_BG_HScrlOrg & 0x07;			//xÖáÆ«ÒÆÏñËØ
-	
-	/*ÏÈÏÔÊ¾Ò»ÐÐµÄ×ó±ß²¿·Ö,´ÓµÚÒ»¸öÏñËØ¿ªÊ¼É¨Ãè*/
-	Buffer_LineCnt = 8 - dx_axes;				//»º´æÐ´ÈëÎ»ÖÃ(0~ 255)£¬8ÊÇÏÔÊ¾ÆðÊ¼µã
-	/*x_TitleLine ~ 31 ÁÐÏñËØÏÔÊ¾£¨8bitÒ»ÁÐ£©*/
-	for(x_TitleLine = PPU_BG_HScrlOrg >> 3; x_TitleLine < 32; x_TitleLine++){		   //´Ó×óÊýµÚÒ»¸öÏÔÊ¾titleµ¥Ôª¿ªÊ¼
-//		printf("\r\n%d %d %d",y_axes, y_TitleLine, x_TitleLine);
-		BG_TitlePatNum = PPU_Mem.name_table[nNameTable][(y_TitleLine << 5) + x_TitleLine]; 	//y_TitleLine * 32,µ±Ç°ÏÔÊ¾µÄtitleºÅµÄ 
-		L_byte = BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes];							//BG_TitlePatNum * 16 + dy_xaes
+	y_TitleLine = y_scroll >> 3; // title ï¿½Ðºï¿½ 0~29ï¿½ï¿½yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½8ï¿½ï¿½
+	dy_axes = y_scroll & 0x07;	 // ï¿½ï¿½8ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//	x_scroll = 	PPU_BG_HScrlOrg_Pre;
+	dx_axes = PPU_BG_HScrlOrg & 0x07; // xï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+	/*ï¿½ï¿½ï¿½ï¿½Ê¾Ò»ï¿½Ðµï¿½ï¿½ï¿½ß²ï¿½ï¿½ï¿½,ï¿½Óµï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ø¿ï¿½Ê¼É¨ï¿½ï¿½*/
+	Buffer_LineCnt = 8 - dx_axes; // ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½Î»ï¿½ï¿½(0~ 255)ï¿½ï¿½8ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ê¼ï¿½ï¿½
+	/*x_TitleLine ~ 31 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½8bitÒ»ï¿½Ð£ï¿½*/
+	for (x_TitleLine = PPU_BG_HScrlOrg >> 3; x_TitleLine < 32; x_TitleLine++)
+	{ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê¾titleï¿½ï¿½Ôªï¿½ï¿½Ê¼
+		//		printf("\r\n%d %d %d",y_axes, y_TitleLine, x_TitleLine);
+		BG_TitlePatNum = PPU_Mem.name_table[nNameTable][(y_TitleLine << 5) + x_TitleLine]; // y_TitleLine * 32,ï¿½ï¿½Ç°ï¿½ï¿½Ê¾ï¿½ï¿½titleï¿½Åµï¿½
+		L_byte = BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes];						   // BG_TitlePatNum * 16 + dy_xaes
 		H_byte = BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes + 8];
-		//ÊôÐÔ±í ÖÐ²éÕÒ ¸ßÁ½Î»ÑÕÉ«Ë÷ÒýÖµ						³ý4È¥ÓàÊýÔÙ³Ë8				³ý4			
-		BG_attr_value = PPU_Mem.name_table[nNameTable][960 + ((y_TitleLine >> 2) << 3) + (x_TitleLine >> 2)];//title¶ÔÓ¦µÄÊôÐÔ±í8bitÖµ
-		 //£¨title¶ÔÓ¦µÄ¸ßÁ½Î»£©£¨y title bit2  ÓÒÒÆ 1Î»£©(ÔËËã)»ò £¨x title bit2£©ËùµÃÖµ [000][010][100][110] 0 2 4 6Îª¶ÔÓ¦µÄattr 8bit[0:1][2:3][4:5][6:7] ÖÐµÄ¸ßÁ½Î»ÑÕÉ«Öµ
-		BG_attr_value = ((BG_attr_value >> (((y_TitleLine & 2) << 1) | (x_TitleLine & 2))) & 3) << 2; 		
-		/*xÁÐÃ¿´ÎÉ¨Ãè8ÏñËØÏÔÊ¾*/
-		for(i=7; i>=0; i--){							   //ÏÈÐ´×ó±ßÏñËØµÄÑÕÉ«
-			//[1:0]µÍÁ½Î»ÑÕÉ«Ë÷ÒýÖµ
+		// ï¿½ï¿½ï¿½Ô±ï¿½ ï¿½Ð²ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Öµ						ï¿½ï¿½4È¥ï¿½ï¿½ï¿½ï¿½ï¿½Ù³ï¿½8				ï¿½ï¿½4
+		BG_attr_value = PPU_Mem.name_table[nNameTable][960 + ((y_TitleLine >> 2) << 3) + (x_TitleLine >> 2)]; // titleï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½8bitÖµ
+																											  // ï¿½ï¿½titleï¿½ï¿½Ó¦ï¿½Ä¸ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½y title bit2  ï¿½ï¿½ï¿½ï¿½ 1Î»ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½x title bit2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ [000][010][100][110] 0 2 4 6Îªï¿½ï¿½Ó¦ï¿½ï¿½attr 8bit[0:1][2:3][4:5][6:7] ï¿½ÐµÄ¸ï¿½ï¿½ï¿½Î»ï¿½ï¿½É«Öµ
+		BG_attr_value = ((BG_attr_value >> (((y_TitleLine & 2) << 1) | (x_TitleLine & 2))) & 3) << 2;
+		/*xï¿½ï¿½Ã¿ï¿½ï¿½É¨ï¿½ï¿½8ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾*/
+		for (i = 7; i >= 0; i--)
+		{ // ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½É«
+			//[1:0]ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Öµ
 			BG_color_num = BG_attr_value;
-			BG_color_num |=(L_byte >> i) & 1;				
-			BG_color_num |=((H_byte >> i) & 1) << 1;
-			if(BG_color_num & 3){			  //Èç¹ûµÍÁ½Î»Îª0£¬ÔòÎªÍ¸Ã÷É«,²»Ð´Èë
-				Buffer_scanline[Buffer_LineCnt] =  NES_Color_Palette[PPU_Mem.image_palette[BG_color_num]];
+			BG_color_num |= (L_byte >> i) & 1;
+			BG_color_num |= ((H_byte >> i) & 1) << 1;
+			if (BG_color_num & 3)
+			{ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»Îª0ï¿½ï¿½ï¿½ï¿½ÎªÍ¸ï¿½ï¿½É«,ï¿½ï¿½Ð´ï¿½ï¿½
+				Buffer_scanline[Buffer_LineCnt] = NES_Color_Palette[PPU_Mem.image_palette[BG_color_num]];
 				Buffer_LineCnt++;
-			}else{
+			}
+			else
+			{
 				Buffer_LineCnt++;
 			}
 		}
 	}
-	/*ÏÔÊ¾Ò»ÐÐÓÒ±ß²¿·Ö, ÇÐ»»name table±í*/
+	/*ï¿½ï¿½Ê¾Ò»ï¿½ï¿½ï¿½Ò±ß²ï¿½ï¿½ï¿½, ï¿½Ð»ï¿½name tableï¿½ï¿½*/
 	nNameTable ^= NAME_TABLE_H_MASK;
-//	Buffer_LineCnt -= dx_axes;
-   	/*ÓÒ±ß0 ~ PPU_BG_HScrlOrg_Pre >> 3*/
-	for (x_TitleLine = 0; x_TitleLine <= (PPU_BG_HScrlOrg >> 3); x_TitleLine++ ){
-		BG_TitlePatNum = PPU_Mem.name_table[nNameTable][(y_TitleLine << 5) + x_TitleLine]; //y_TitleLine * 32,µ±Ç°ÏÔÊ¾µÄtitleºÅµÄ 
-		L_byte = BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes];				
+	//	Buffer_LineCnt -= dx_axes;
+	/*ï¿½Ò±ï¿½0 ~ PPU_BG_HScrlOrg_Pre >> 3*/
+	for (x_TitleLine = 0; x_TitleLine <= (PPU_BG_HScrlOrg >> 3); x_TitleLine++)
+	{
+		BG_TitlePatNum = PPU_Mem.name_table[nNameTable][(y_TitleLine << 5) + x_TitleLine]; // y_TitleLine * 32,ï¿½ï¿½Ç°ï¿½ï¿½Ê¾ï¿½ï¿½titleï¿½Åµï¿½
+		L_byte = BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes];
 		H_byte = BG_Patterntable[(BG_TitlePatNum << 4) + dy_axes + 8];
-		BG_attr_value = PPU_Mem.name_table[nNameTable][960 + ((y_TitleLine >> 2) << 3) + (x_TitleLine >> 2)];//title¶ÔÓ¦µÄÊôÐÔ±í8bitÖµ
-		BG_attr_value = ((BG_attr_value >> (((y_TitleLine & 2) << 1) | (x_TitleLine & 2))) & 3) << 2; 		  //Ë÷ÒýÑÕÉ«[4:3]
-		for(i=7; i>=0; i--){
-			BG_color_num = BG_attr_value;							   
-			BG_color_num |=(L_byte >> i) & 1;				
-			BG_color_num |=((H_byte >> i) & 1) << 1;
-			if(BG_color_num & 3){			 
+		BG_attr_value = PPU_Mem.name_table[nNameTable][960 + ((y_TitleLine >> 2) << 3) + (x_TitleLine >> 2)]; // titleï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½8bitÖµ
+		BG_attr_value = ((BG_attr_value >> (((y_TitleLine & 2) << 1) | (x_TitleLine & 2))) & 3) << 2;		  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«[4:3]
+		for (i = 7; i >= 0; i--)
+		{
+			BG_color_num = BG_attr_value;
+			BG_color_num |= (L_byte >> i) & 1;
+			BG_color_num |= ((H_byte >> i) & 1) << 1;
+			if (BG_color_num & 3)
+			{
 				Buffer_scanline[Buffer_LineCnt] = NES_Color_Palette[PPU_Mem.image_palette[BG_color_num]];
 				Buffer_LineCnt++;
-			}else{
+			}
+			else
+			{
 				Buffer_LineCnt++;
 			}
 		}
@@ -535,162 +587,199 @@ void NES_RenderBGLine(int y_axes)
 }
 
 /*
- * ÏÔÊ¾Ò»¸öspriteµÄtitle 88
+ * ï¿½ï¿½Ê¾Ò»ï¿½ï¿½spriteï¿½ï¿½title 88
  */
 void NES_RenderSprPattern(SpriteType *sprptr, uint8_t *Spr_Patterntable, uint16_t title_addr, uint8_t dy_axes)
 {
-	int	  i, dx_axes;
+	int i, dx_axes;
 	uint8_t Spr_color_num, H_byte, L_byte;
-	
-	if((PPU_Reg.R1 & R1_SPR_LEFT8 == 0) && sprptr -> x < 8){		   //½ûÖ¹×ó8ÁÐÏñËØÏÔÊ¾
-		dx_axes =  8 - sprptr -> x;
-		if(dx_axes == 0)	return;		
-	}else{
+
+	if ((PPU_Reg.R1 & R1_SPR_LEFT8 == 0) && sprptr->x < 8)
+	{ // ï¿½ï¿½Ö¹ï¿½ï¿½8ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
+		dx_axes = 8 - sprptr->x;
+		if (dx_axes == 0)
+			return;
+	}
+	else
+	{
 		dx_axes = 0;
 	}
-	if(sprptr -> attr & SPR_VFLIP){		//Èô´¹Ö±·­×ª
-	 	dy_axes = 7 - dy_axes; 			//sprite 8*8ÏÔÊ¾dy_axesÐÐ
+	if (sprptr->attr & SPR_VFLIP)
+	{						   // ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½×ª
+		dy_axes = 7 - dy_axes; // sprite 8*8ï¿½ï¿½Ê¾dy_axesï¿½ï¿½
 	}
 	L_byte = Spr_Patterntable[title_addr + dy_axes];
 	H_byte = Spr_Patterntable[title_addr + dy_axes + 8];
-	if(sprptr -> attr & SPR_HFLIP){	    							//ÈôË®Æ½·­×ª
-		for(i=7; i>=dx_axes; i--){									//ÏÈÐ´ÓÒ±ß ÑÕÉ«Êý¾Ý
-			Spr_color_num  = (L_byte >> i) & 1;						//bit0
-			Spr_color_num |= ((H_byte >> i) & 1) << 1;				//bit1
-			if(Spr_color_num == 0)	continue;
-			Spr_color_num |= (sprptr -> attr & 0x03) << 2;			//bit23
-			Buffer_scanline[sprptr -> x + i + 8] =  NES_Color_Palette[PPU_Mem.sprite_palette[Spr_color_num]]; //Æ«ÒÆ8
-//			if(Spr_color_num & 0x03 && (PPU_Reg.R1 & R1_SPR_LEFT8 || (sprptr -> x + 8 - i) > 8)){ 			//ÑÕÉ«Ë÷Òý×îµÍ2Î»Îª0±íÊ¾Í¸Ã÷,ÏÔÊ¾µ×±³¾°£¨$3F00£©&&  ¾«ÁéÑÚÂë£¬0:²»ÔÚ×ó8ÁÐÏÔÊ¾¾«Áé					
-//				Buffer_scanline[sprptr -> x + 8 - i] =  NES_Color_Palette[PPU_Mem.sprite_palette[Spr_color_num]];//Ð´ÈëÑÕÉ«Öµµ½»º´æ
-//			}
-//			else{
-//				Buffer_scanline[sprptr -> x + 8 - i] =  NES_Color_Palette[PPU_Mem.sprite_palette[0]];	
-//			}
+	if (sprptr->attr & SPR_HFLIP)
+	{ // ï¿½ï¿½Ë®Æ½ï¿½ï¿½×ª
+		for (i = 7; i >= dx_axes; i--)
+		{											   // ï¿½ï¿½Ð´ï¿½Ò±ï¿½ ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
+			Spr_color_num = (L_byte >> i) & 1;		   // bit0
+			Spr_color_num |= ((H_byte >> i) & 1) << 1; // bit1
+			if (Spr_color_num == 0)
+				continue;
+			Spr_color_num |= (sprptr->attr & 0x03) << 2;												   // bit23
+			Buffer_scanline[sprptr->x + i + 8] = NES_Color_Palette[PPU_Mem.sprite_palette[Spr_color_num]]; // Æ«ï¿½ï¿½8
+			//			if(Spr_color_num & 0x03 && (PPU_Reg.R1 & R1_SPR_LEFT8 || (sprptr -> x + 8 - i) > 8)){ 			//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2Î»Îª0ï¿½ï¿½Ê¾Í¸ï¿½ï¿½,ï¿½ï¿½Ê¾ï¿½×±ï¿½ï¿½ï¿½ï¿½ï¿½$3F00ï¿½ï¿½&&  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë£¬0:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½8ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+			//				Buffer_scanline[sprptr -> x + 8 - i] =  NES_Color_Palette[PPU_Mem.sprite_palette[Spr_color_num]];//Ð´ï¿½ï¿½ï¿½ï¿½É«Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//			}
+			//			else{
+			//				Buffer_scanline[sprptr -> x + 8 - i] =  NES_Color_Palette[PPU_Mem.sprite_palette[0]];
+			//			}
 		}
-	}else{
-		for(i=7; i>=dx_axes; i--){								//ÏÈÐ´ÓÒ±ß ÑÕÉ«Êý¾Ý
-			Spr_color_num  = (L_byte >> (7-i)) & 1;				//bit0
-			Spr_color_num |= ((H_byte >> (7-i)) & 1) << 1;		//bit1
-			if(Spr_color_num == 0)	continue;
-			Spr_color_num |= (sprptr -> attr & 0x03) << 2;			//bit23
-			Buffer_scanline[sprptr -> x + i + 8] =  NES_Color_Palette[PPU_Mem.sprite_palette[Spr_color_num]];//Ð´ÈëÑÕÉ«Öµµ½»º´æ
-//			if(Spr_color_num & 0x03 && (PPU_Reg.R1 & R1_SPR_LEFT8 || (sprptr -> x + 8 - i) > 8)){ 			//ÑÕÉ«Ë÷Òý×îµÍ2Î»Îª0±íÊ¾Í¸Ã÷,ÏÔÊ¾µ×±³¾°£¨$3F00£©&&  ¾«ÁéÑÚÂë£¬0:²»ÔÚ×ó8ÁÐÏÔÊ¾¾«Áé					
-//				Buffer_scanline[sprptr -> x + 8 - i] =  NES_Color_Palette[PPU_Mem.sprite_palette[Spr_color_num]];//Ð´ÈëÑÕÉ«Öµµ½»º´æ
-//			}
-//			else{
-//				Buffer_scanline[sprptr -> x + 8 - i] =  NES_Color_Palette[PPU_Mem.sprite_palette[0]];	
-//			}	
-		} 
+	}
+	else
+	{
+		for (i = 7; i >= dx_axes; i--)
+		{													 // ï¿½ï¿½Ð´ï¿½Ò±ï¿½ ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
+			Spr_color_num = (L_byte >> (7 - i)) & 1;		 // bit0
+			Spr_color_num |= ((H_byte >> (7 - i)) & 1) << 1; // bit1
+			if (Spr_color_num == 0)
+				continue;
+			Spr_color_num |= (sprptr->attr & 0x03) << 2;												   // bit23
+			Buffer_scanline[sprptr->x + i + 8] = NES_Color_Palette[PPU_Mem.sprite_palette[Spr_color_num]]; // Ð´ï¿½ï¿½ï¿½ï¿½É«Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//			if(Spr_color_num & 0x03 && (PPU_Reg.R1 & R1_SPR_LEFT8 || (sprptr -> x + 8 - i) > 8)){ 			//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2Î»Îª0ï¿½ï¿½Ê¾Í¸ï¿½ï¿½,ï¿½ï¿½Ê¾ï¿½×±ï¿½ï¿½ï¿½ï¿½ï¿½$3F00ï¿½ï¿½&&  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë£¬0:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½8ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+			//				Buffer_scanline[sprptr -> x + 8 - i] =  NES_Color_Palette[PPU_Mem.sprite_palette[Spr_color_num]];//Ð´ï¿½ï¿½ï¿½ï¿½É«Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//			}
+			//			else{
+			//				Buffer_scanline[sprptr -> x + 8 - i] =  NES_Color_Palette[PPU_Mem.sprite_palette[0]];
+			//			}
+		}
 	}
 }
 
 /*
- * sprite 8*8 ÏÔÊ¾Êý¾ÝÉ¨Ãè
+ * sprite 8*8 ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½É¨ï¿½ï¿½
  */
 void NES_RenderSprite88(SpriteType *sprptr, int dy_axes)
 {
-	uint8_t  *Spr_Patterntable;	
-	/*È¡µÃËùÔÚtitle PatternÊ×µØÖ·*/
-	Spr_Patterntable = (PPU_Reg.R0 & SPR_PATTERN_ADDR)	? PPU_Mem.patterntable1 : PPU_Mem.patterntable0;
-	NES_RenderSprPattern(sprptr, Spr_Patterntable, sprptr -> t_num << 4, (uint8_t)dy_axes);
+	uint8_t *Spr_Patterntable;
+	/*È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½title Patternï¿½×µï¿½Ö·*/
+	Spr_Patterntable = (PPU_Reg.R0 & SPR_PATTERN_ADDR) ? PPU_Mem.patterntable1 : PPU_Mem.patterntable0;
+	NES_RenderSprPattern(sprptr, Spr_Patterntable, sprptr->t_num << 4, (uint8_t)dy_axes);
 }
 
 /*
- * sprite 8*16 ÏÔÊ¾Êý¾ÝÉ¨Ãè
- */			
+ * sprite 8*16 ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½É¨ï¿½ï¿½
+ */
 void NES_RenderSprite16(SpriteType *sprptr, int dy_axes)
 {
-	if(sprptr -> t_num & 0x01){										
-		if(dy_axes < 8)	 //sprite  title ÆæÊýºÅ
-			NES_RenderSprPattern(sprptr, PPU_Mem.patterntable1, (sprptr -> t_num & 0xFE) << 4, (uint8_t)dy_axes);	   //ÉÏ8*8
+	if (sprptr->t_num & 0x01)
+	{
+		if (dy_axes < 8)																						// sprite  title ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			NES_RenderSprPattern(sprptr, PPU_Mem.patterntable1, (sprptr->t_num & 0xFE) << 4, (uint8_t)dy_axes); // ï¿½ï¿½8*8
 		else
-			NES_RenderSprPattern(sprptr, PPU_Mem.patterntable1, sprptr -> t_num << 4, (uint8_t)dy_axes & 7);		   //ÏÂ8*8
-	}else{
-		if(dy_axes < 8)	//sprite  title Å¼ÊýºÅ
-			NES_RenderSprPattern(sprptr, PPU_Mem.patterntable0, sprptr -> t_num << 4, (uint8_t)dy_axes);			   //ÉÏ8*8
+			NES_RenderSprPattern(sprptr, PPU_Mem.patterntable1, sprptr->t_num << 4, (uint8_t)dy_axes & 7); // ï¿½ï¿½8*8
+	}
+	else
+	{
+		if (dy_axes < 8)																			   // sprite  title Å¼ï¿½ï¿½ï¿½ï¿½
+			NES_RenderSprPattern(sprptr, PPU_Mem.patterntable0, sprptr->t_num << 4, (uint8_t)dy_axes); // ï¿½ï¿½8*8
 		else
-			NES_RenderSprPattern(sprptr, PPU_Mem.patterntable0, (sprptr -> t_num | 1) << 4, (uint8_t)dy_axes & 7);   //ÏÂ8*8
+			NES_RenderSprPattern(sprptr, PPU_Mem.patterntable0, (sprptr->t_num | 1) << 4, (uint8_t)dy_axes & 7); // ï¿½ï¿½8*8
 	}
 }
 
 /*
- * PPU ÏÔÊ¾Ò»ÐÐ
+ * PPU ï¿½ï¿½Ê¾Ò»ï¿½ï¿½
  */
 void NES_RenderLine(int y_axes)
 {
-	int	i, render_spr_num, spr_size, dy_axes;
-	/* MMC5 VROM switch -- VROM´æ´¢Æ÷ÇÐ»» */
-//	MapperRenderScreen( 1 );
+	int i, render_spr_num, spr_size, dy_axes;
+	/* MMC5 VROM switch -- VROMï¿½æ´¢ï¿½ï¿½ï¿½Ð»ï¿½ */
+	//	MapperRenderScreen( 1 );
 
-	PPU_Reg.R2 &= ~R2_LOST_SPR;											//ÉèÖÃPPU×´Ì¬¼Ä´æÆ÷R2 SPR LOSTµÄ±êÖ¾Î»
-//	PPU_BG_VScrlOrg_Pre = PPU_BG_VScrlOrg;								//±³¾° ´¹Ö± scroll 
-//	PPU_BG_HScrlOrg_Pre = PPU_BG_HScrlOrg;								//±³¾° Ë®Æ½ scroll
+	PPU_Reg.R2 &= ~R2_LOST_SPR; // ï¿½ï¿½ï¿½ï¿½PPU×´Ì¬ï¿½Ä´ï¿½ï¿½ï¿½R2 SPR LOSTï¿½Ä±ï¿½Ö¾Î»
+	//	PPU_BG_VScrlOrg_Pre = PPU_BG_VScrlOrg;								//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ö± scroll
+	//	PPU_BG_HScrlOrg_Pre = PPU_BG_HScrlOrg;								//ï¿½ï¿½ï¿½ï¿½ Ë®Æ½ scroll
 
-	if(PPU_Reg.R1 & (R1_BG_VISIBLE | R1_SPR_VISIBLE)){					//ÈôÎª¼Ù£¬¹Ø±ÕÏÔÊ¾£¬Ìî0ºÚ
-		/*Çå¿ÕÏÔÊ¾»º´æ£¬ÔÚ´ËÉèÖÃµ×±³¾°É«£¨´ýÈ·¶¨£©*/
-		for(i=7; i<256 ; i++){						//ÏÔÊ¾Çø 7 ~ 263  0~7 263~270 Îª·ÀÖ¹Òç³öÇø
-			Buffer_scanline[i] =  NES_Color_Palette[PPU_Mem.image_palette[0]];
+	if (PPU_Reg.R1 & (R1_BG_VISIBLE | R1_SPR_VISIBLE))
+	{ // ï¿½ï¿½Îªï¿½Ù£ï¿½ï¿½Ø±ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½
+		/*ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½æ£¬ï¿½Ú´ï¿½ï¿½ï¿½ï¿½Ãµ×±ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½*/
+		for (i = 7; i < 256; i++)
+		{ // ï¿½ï¿½Ê¾ï¿½ï¿½ 7 ~ 263  0~7 263~270 Îªï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½
+			Buffer_scanline[i] = NES_Color_Palette[PPU_Mem.image_palette[0]];
 		}
-		spr_size = PPU_Reg.R0 & R0_SPR_SIZE	? 0x0F : 0x07;				//spr_size 8£º0~7£¬16: 0~15
-		/* É¨Ãè±³¾°sprite²¢×ª»»³ÉÏÔÊ¾Êý¾ÝÐ´Èëµ½»º´æ,Ã¿Ò»ÐÐ×î¶àÖ»ÄÜÏÔÊ¾8¸öSprite*/
-		if(PPU_Reg.R1 & R1_SPR_VISIBLE){								//Èô¿ªÆôspriteÏÔÊ¾
-			render_spr_num=0;											//ÇåÁãÏÔÊ¾¼ÆÊýÆ÷
-		 	for(i=63; i>=0; i--){										//ÈôÖØµþsprites 0 ¾ßÓÐÏÔÊ¾×î¸ßÓÅÏÈ¼¶£¬ÆäÓàÓÅÏÈ¼¶Ë³Ðò´ÎÖ®£¬ËùÒÔ×îÏÈÏÔÊ¾×îµÍÓÅÏÈ¼¶
-				/*ÅÐ¶ÏÏÔÊ¾²ã£¨·Ç£© ±³¾°*/
-				if(!(sprite[i].attr & SPR_BG_PRIO))	continue;			 //(0=Sprite In front of BG, 1=Sprite Behind BG)
-				/*ÅÐ¶ÏÏÔÊ¾Î»ÖÃ*/
-				dy_axes = y_axes - (uint8_t)(sprite[i].y + 1);			//ÅÐ¶ÏspriteÊÇ·ñÔÚµ±Ç°ÐÐÏÔÊ¾·¶Î§ÄÚ,sprite y (FF,00,01,...EE)(0~239)
-				if(dy_axes != (dy_axes & spr_size))	continue;			//Èô²»ÔÚÔò·µ»Ø¼ÌÐøÑ­»·²éÕÒÏÂÒ»¸ö
-				/*Èô´æÔÚspriteÔÚµ±Ç°ÏÔÊ¾ÐÐ,Ôò×ªÈëÏÂÃæÏÔÊ¾½×¶Î*/
-				render_spr_num++;										//ÒÑÏÔÊ¾µÄspriteµÄÊýÄ¿+1
-				if(render_spr_num > 8 ){								//Ò»ÐÐ³¬¹ý8¸öspreite£¬Ìø³öÑ­»·
-					PPU_Reg.R2 |= R2_LOST_SPR;						   	//ÉèÖÃPPU×´Ì¬¼Ä´æÆ÷R2µÄ±êÖ¾Î»
+		spr_size = PPU_Reg.R0 & R0_SPR_SIZE ? 0x0F : 0x07; // spr_size 8ï¿½ï¿½0~7ï¿½ï¿½16: 0~15
+		/* É¨ï¿½è±³ï¿½ï¿½spriteï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ëµ½ï¿½ï¿½ï¿½ï¿½,Ã¿Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ê¾8ï¿½ï¿½Sprite*/
+		if (PPU_Reg.R1 & R1_SPR_VISIBLE)
+		{						// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½spriteï¿½ï¿½Ê¾
+			render_spr_num = 0; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			for (i = 63; i >= 0; i--)
+			{ // ï¿½ï¿½ï¿½Øµï¿½sprites 0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½Ë³ï¿½ï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½
+				/*ï¿½Ð¶ï¿½ï¿½ï¿½Ê¾ï¿½ã£¨ï¿½Ç£ï¿½ ï¿½ï¿½ï¿½ï¿½*/
+				if (!(sprite[i].attr & SPR_BG_PRIO))
+					continue; //(0=Sprite In front of BG, 1=Sprite Behind BG)
+				/*ï¿½Ð¶ï¿½ï¿½ï¿½Ê¾Î»ï¿½ï¿½*/
+				dy_axes = y_axes - (uint8_t)(sprite[i].y + 1); // ï¿½Ð¶ï¿½spriteï¿½Ç·ï¿½ï¿½Úµï¿½Ç°ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Î§ï¿½ï¿½,sprite y (FF,00,01,...EE)(0~239)
+				if (dy_axes != (dy_axes & spr_size))
+					continue; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»Ø¼ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+				/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½spriteï¿½Úµï¿½Ç°ï¿½ï¿½Ê¾ï¿½ï¿½,ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½×¶ï¿½*/
+				render_spr_num++; // ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½spriteï¿½ï¿½ï¿½ï¿½Ä¿+1
+				if (render_spr_num > 8)
+				{							   // Ò»ï¿½Ð³ï¿½ï¿½ï¿½8ï¿½ï¿½spreiteï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½
+					PPU_Reg.R2 |= R2_LOST_SPR; // ï¿½ï¿½ï¿½ï¿½PPU×´Ì¬ï¿½Ä´ï¿½ï¿½ï¿½R2ï¿½Ä±ï¿½Ö¾Î»
 					break;
 				}
-				if(PPU_Reg.R0 & R0_SPR_SIZE){							//ÈôÎªÕæ£¬spriteµÄ´óÐ¡8*16
+				if (PPU_Reg.R0 & R0_SPR_SIZE)
+				{ // ï¿½ï¿½Îªï¿½æ£¬spriteï¿½Ä´ï¿½Ð¡8*16
 					NES_RenderSprite16(&sprite[i], dy_axes);
-				}else{													//ÈôÎª¼Ù£¬spriteµÄ´óÐ¡8*8
+				}
+				else
+				{ // ï¿½ï¿½Îªï¿½Ù£ï¿½spriteï¿½Ä´ï¿½Ð¡8*8
 					NES_RenderSprite88(&sprite[i], dy_axes);
 				}
-			}	
+			}
 		}
-	
-		/* É¨Ãè±³¾° background*/
-		if(PPU_Reg.R1 & R1_BG_VISIBLE){
-			NES_RenderBGLine(y_axes);									//É¨Ãè²¢ÉèÖÃSprite #0Åö×²±êÖ¾
+
+		/* É¨ï¿½è±³ï¿½ï¿½ background*/
+		if (PPU_Reg.R1 & R1_BG_VISIBLE)
+		{
+			NES_RenderBGLine(y_axes); // É¨ï¿½è²¢ï¿½ï¿½ï¿½ï¿½Sprite #0ï¿½ï¿½×²ï¿½ï¿½Ö¾
 		}
-	
-		/* É¨ÃèÇ°¾°sprite²¢×ª»»³ÉÏÔÊ¾Êý¾ÝÐ´Èëµ½»º´æ,Ã¿Ò»ÐÐ×î¶àÖ»ÄÜÏÔÊ¾8¸öSprite*/
-		if(PPU_Reg.R1 & R1_SPR_VISIBLE){								//Èô¿ªÆôspriteÏÔÊ¾
-			render_spr_num=0;											//ÇåÁãÏÔÊ¾¼ÆÊýÆ÷
-		/* ÈôÖØµþsprites 0 ¾ßÓÐÏÔÊ¾×î¸ßÓÅÏÈ¼¶£¬ÆäÓàÓÅÏÈ¼¶Ë³Ðò´ÎÖ®£¬ËùÒÔ×îÏÈÏÔÊ¾×îµÍÓÅÏÈ¼¶
-		 * ±¸×¢£ºÈôÇ°¾°sprites ÓÅÏÈ¼¶µÍÓÚ±³¾°ÓÅÏÈ¼¶£¬ÖØµþµÄÑÕÉ«£¬Ç°¾°ÓÅÏÈ¼¶µÍÓÚ±³¾°ÓÅÏÈ¼¶µÄ»°£¬Ç°¾°½«²»»áÏÔÊ¾(ÔÝÎ´´¦Àí)*/
-		 	for(i=63; i>=0; i--){										
-				/*ÅÐ¶ÏÏÔÊ¾²ã Ç°¾°*/
-				if(sprite[i].attr & SPR_BG_PRIO)	continue;			 //(0=Sprite In front of BG, 1=Sprite Behind BG)
-				/*ÅÐ¶ÏÏÔÊ¾Î»ÖÃ*/
-				dy_axes = y_axes - ((int)sprite[i].y + 1);				//ÅÐ¶ÏspriteÊÇ·ñÔÚµ±Ç°ÐÐÏÔÊ¾·¶Î§ÄÚ,sprite y (FF,00,01,...EE)(0~239)
-				if(dy_axes != (dy_axes & spr_size))	continue;			//Èô²»ÔÚÔò·µ»Ø¼ÌÐøÑ­»·²éÕÒÏÂÒ»¸ö
-				/*Èô´æÔÚspriteÔÚµ±Ç°ÏÔÊ¾ÐÐ,Ôò×ªÈëÏÂÃæÏÔÊ¾½×¶Î*/
-				render_spr_num++;										//ÒÑÏÔÊ¾µÄspriteµÄÊýÄ¿+1
-				if(render_spr_num > 8 ){								//Ò»ÐÐ³¬¹ý8¸öspreite£¬Ìø³öÑ­»·
-					PPU_Reg.R2 |= R2_LOST_SPR;						   	//ÉèÖÃPPU×´Ì¬¼Ä´æÆ÷R2µÄ±êÖ¾Î»
+
+		/* É¨ï¿½ï¿½Ç°ï¿½ï¿½spriteï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ëµ½ï¿½ï¿½ï¿½ï¿½,Ã¿Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ê¾8ï¿½ï¿½Sprite*/
+		if (PPU_Reg.R1 & R1_SPR_VISIBLE)
+		{						// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½spriteï¿½ï¿½Ê¾
+			render_spr_num = 0; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			/* ï¿½ï¿½ï¿½Øµï¿½sprites 0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½Ë³ï¿½ï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½
+			 * ï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½sprites ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾(ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½)*/
+			for (i = 63; i >= 0; i--)
+			{
+				/*ï¿½Ð¶ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ Ç°ï¿½ï¿½*/
+				if (sprite[i].attr & SPR_BG_PRIO)
+					continue; //(0=Sprite In front of BG, 1=Sprite Behind BG)
+				/*ï¿½Ð¶ï¿½ï¿½ï¿½Ê¾Î»ï¿½ï¿½*/
+				dy_axes = y_axes - ((int)sprite[i].y + 1); // ï¿½Ð¶ï¿½spriteï¿½Ç·ï¿½ï¿½Úµï¿½Ç°ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Î§ï¿½ï¿½,sprite y (FF,00,01,...EE)(0~239)
+				if (dy_axes != (dy_axes & spr_size))
+					continue; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»Ø¼ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+				/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½spriteï¿½Úµï¿½Ç°ï¿½ï¿½Ê¾ï¿½ï¿½,ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½×¶ï¿½*/
+				render_spr_num++; // ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½spriteï¿½ï¿½ï¿½ï¿½Ä¿+1
+				if (render_spr_num > 8)
+				{							   // Ò»ï¿½Ð³ï¿½ï¿½ï¿½8ï¿½ï¿½spreiteï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½
+					PPU_Reg.R2 |= R2_LOST_SPR; // ï¿½ï¿½ï¿½ï¿½PPU×´Ì¬ï¿½Ä´ï¿½ï¿½ï¿½R2ï¿½Ä±ï¿½Ö¾Î»
 					break;
 				}
-				if(PPU_Reg.R0 & R0_SPR_SIZE){							//ÈôÎªÕæ£¬spriteµÄ´óÐ¡8*16
+				if (PPU_Reg.R0 & R0_SPR_SIZE)
+				{ // ï¿½ï¿½Îªï¿½æ£¬spriteï¿½Ä´ï¿½Ð¡8*16
 					NES_RenderSprite16(&sprite[i], dy_axes);
-				}else{													//ÈôÎª¼Ù£¬spriteµÄ´óÐ¡8*8
+				}
+				else
+				{ // ï¿½ï¿½Îªï¿½Ù£ï¿½spriteï¿½Ä´ï¿½Ð¡8*8
 					NES_RenderSprite88(&sprite[i], dy_axes);
 				}
-			}	
-		}
-	}else{
-		for(i=8; i<264; i++){
-			Buffer_scanline[i] = 0x0000;									//Çå¿ÕÏÔÊ¾»º´æ,ºÚÆÁ
+			}
 		}
 	}
-	/*Íê³ÉÉ¨Ãè£¬½«ÐÐÏÔÊ¾»º´æÐ´ÈëLCD*/
-	NES_LCD_DisplayLine(y_axes, Buffer_scanline);									//Æô¶¯LCDÏÔÊ¾Ò»ÐÐ£¬²éÑ¯»òDMA´«ËÍ
+	else
+	{
+		for (i = 8; i < 264; i++)
+		{
+			Buffer_scanline[i] = 0x0000; // ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½
+		}
+	}
+	/*ï¿½ï¿½ï¿½É¨ï¿½è£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½LCD*/
+	NES_LCD_DisplayLine(y_axes, Buffer_scanline); // ï¿½ï¿½ï¿½ï¿½LCDï¿½ï¿½Ê¾Ò»ï¿½Ð£ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½DMAï¿½ï¿½ï¿½ï¿½
 }
 extern unsigned short nesImg[];
 #include "bitmap.h"
@@ -703,44 +792,48 @@ uint32_t lastFPS = 0;
 char FPSData[10];
 uint16_t FPGCount = 0;
 /*
- * PPU ½«ÐÐ»º´æ£¬Ð´ÈëLCD
+ * PPU ï¿½ï¿½ï¿½Ð»ï¿½ï¿½æ£¬Ð´ï¿½ï¿½LCD
  */
 void NES_LCD_DisplayLine(int y_axes, uint16_t *Disaplyline_buffer)
 {
 	uint32_t index;
-	if (y_axes >= 239) {
-		
-		//Ð´ÈëÁËÒ»Ö¡µÄÊý¾Ý
-		BITMAP_MARK_HEAD(SetBitmap)(hBITMAP_WIDGE1, &xGirlBitmap);
+	if (y_axes >= 239)
+	{
+
+		// Ð´ï¿½ï¿½ï¿½ï¿½Ò»Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		BITMAP_MARK_HEAD(SetBitmap)
+		(hBITMAP_WIDGE1, &xGirlBitmap);
 
 		FPGCount++;
-		if (FPGCount >= 30) {
-			sprintf(FPSData, "%dfps", (uint32_t)(1000 / ((GetCurrentTimeMsec() - lastFPS)/30)));
+		if (FPGCount >= 30)
+		{
+			extern uint32_t GetCurrentTimeMsec(void);
+			sprintf(FPSData, "%dfps", (uint32_t)(1000 / ((GetCurrentTimeMsec() - lastFPS) / 30)));
 			TextWidgetSetText(fpsTextWidge, FPSData);
 
 			lastFPS = GetCurrentTimeMsec();
 			FPGCount = 0;
 		}
 	}
-	//LCD_ConfigDispWindow(y_axes,y_axes,32,287);	
-	//LCD_SetCursor(y_axes,287);
-	//LCD_GRAM_Prepare();
-	for(index = 8; index < 264; index++){
+	// LCD_ConfigDispWindow(y_axes,y_axes,32,287);
+	// LCD_SetCursor(y_axes,287);
+	// LCD_GRAM_Prepare();
+	for (index = 8; index < 264; index++)
+	{
 		nesImg[y_axes * 256 + (index - 8)] = Buffer_scanline[index];
-	//	LCD_RAM_Addr = Buffer_scanline[index];
+		//	LCD_RAM_Addr = Buffer_scanline[index];
 	}
 }
 
 ///*
-// * PPUÏÔÊ¾¹Ø±Õ£¬½«µ×±³¾°Ð´ÈëLCD	
+// * PPUï¿½ï¿½Ê¾ï¿½Ø±Õ£ï¿½ï¿½ï¿½ï¿½×±ï¿½ï¿½ï¿½Ð´ï¿½ï¿½LCD
 // */
-//void NES_LCD_BG_DisplayLine(uint16_t color)
+// void NES_LCD_BG_DisplayLine(uint16_t color)
 //{
 //
 //}
-  /**
-  * @}
-  */
-
+/**
+ * @}
+ */
 
 /*******************************END OF FILE***********************************/

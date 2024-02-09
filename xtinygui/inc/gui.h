@@ -11,8 +11,8 @@
 #define USE_CURSOR 0  /*是否开启游标*/
 
 /*显示屏的大小*/
-#define LCD_SCREEN_W 1024
-#define LCD_SCREEN_H 748
+#define LCD_SCREEN_W 900
+#define LCD_SCREEN_H 600
 
 #define LCD_CACHE_LINE LCD_SCREEN_H /*缓冲区行数*/
 

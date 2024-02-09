@@ -1,6 +1,7 @@
 #include "bitmap.h"
 
-uint8_t InitBitmap(p_xbitmap_t hXBitmap, uint8_t *pixels, uint16_t w, uint16_t h, uint8_t colorDepth)
+uint8_t InitBitmap(p_xbitmap_t hXBitmap, uint8_t *pixels,
+				   uint16_t w, uint16_t h, uint8_t colorDepth)
 {
 	if (hXBitmap == NULL)
 	{

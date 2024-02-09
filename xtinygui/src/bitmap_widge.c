@@ -5,26 +5,26 @@
 #include "x_malloc.h"
 #include "xwindows.h"
 
-PUBLIC p_bitmap_widget_t BITMAP_MARK_HEAD(Create)(int16_t x, int16_t y, int16_t w, int16_t h, p_xbitmap_t hXBitmap)
+PUBLIC p_bitmap_widget_t BitmapWidgetCreate(int16_t x, int16_t y, int16_t w, int16_t h, p_xbitmap_t hXBitmap)
 {
-	p_bitmap_widget_t hBitmapWidge = (p_bitmap_widget_t)(XMalloc(sizeof(bitmap_widget_t)));
-	if (hBitmapWidge == NULL)
+	p_bitmap_widget_t hBitmapWidget = (p_bitmap_widget_t)(XMalloc(sizeof(bitmap_widget_t)));
+	if (hBitmapWidget == NULL)
 	{
 		return NULL;
 	}
-	WidgetInit((p_widget_base_t)hBitmapWidge, x, y, w, h);
+	WidgetInit((p_widget_base_t)hBitmapWidget, x, y, w, h);
 
 	/*设置三个回调函数*/
-	hBitmapWidge->widgeBase.paintFun = BITMAP_MARK_HEAD(Paint);
-	hBitmapWidge->widgeBase.moveToFun = BITMAP_MARK_HEAD(MoveTo);
-	hBitmapWidge->widgeBase.widgeCallBackFun = BITMAP_MARK_HEAD(CallBack);
+	hBitmapWidget->widgeBase.paintFun = BitmapWidgetPaint;
+	hBitmapWidget->widgeBase.moveToFun = BitmapWidgetMoveTo;
+	hBitmapWidget->widgeBase.widgeCallBackFun = BitmapWidgetCallBack;
 
 	/*设置显示的图片*/
-	hBitmapWidge->bitmap = hXBitmap;
+	hBitmapWidget->bitmap = hXBitmap;
 
-	return hBitmapWidge;
+	return hBitmapWidget;
 }
-PUBLIC void BITMAP_MARK_HEAD(SetBitmap)(p_bitmap_widget_t hObject, p_xbitmap_t hXBitmap)
+PUBLIC void BitmapWidgetSetBitmap(p_bitmap_widget_t hObject, p_xbitmap_t hXBitmap)
 {
 	if (!hObject)
 	{
@@ -34,7 +34,7 @@ PUBLIC void BITMAP_MARK_HEAD(SetBitmap)(p_bitmap_widget_t hObject, p_xbitmap_t h
 	hObject->bitmap = hXBitmap;
 	WindowsInvaildRect((p_widget_base_t)hObject, NULL);
 }
-PUBLIC void BITMAP_MARK_HEAD(MoveTo)(p_bitmap_widget_t hObject, int16_t x, int16_t y)
+PUBLIC void BitmapWidgetMoveTo(p_bitmap_widget_t hObject, int16_t x, int16_t y)
 {
 	WidgetMoveTo((p_widget_base_t)hObject, x, y);
 	// if (!hObject) { return; }
@@ -42,7 +42,7 @@ PUBLIC void BITMAP_MARK_HEAD(MoveTo)(p_bitmap_widget_t hObject, int16_t x, int16
 	// hObject->widgeBase.rect.y = y;
 }
 
-PUBLIC void BITMAP_MARK_HEAD(SetParentWin)(p_bitmap_widget_t hObject, p_win_t hWIN)
+PUBLIC void BitmapWidgetSetParentWin(p_bitmap_widget_t hObject, p_win_t hWIN)
 {
 	if (!hObject)
 	{
@@ -50,7 +50,7 @@ PUBLIC void BITMAP_MARK_HEAD(SetParentWin)(p_bitmap_widget_t hObject, p_win_t hW
 	}
 	hObject->widgeBase.parentHWIN = hWIN;
 }
-PUBLIC void BITMAP_MARK_HEAD(SetColor)(p_bitmap_widget_t hObject, uintColor color)
+PUBLIC void BitmapWidgetSetColor(p_bitmap_widget_t hObject, uintColor color)
 {
 	if (!hObject)
 	{
@@ -58,31 +58,31 @@ PUBLIC void BITMAP_MARK_HEAD(SetColor)(p_bitmap_widget_t hObject, uintColor colo
 	}
 	hObject->widgeBase.pencil.DrawColor = color;
 }
-PUBLIC void BITMAP_MARK_HEAD(Paint)(void *hObject)
+PUBLIC void BitmapWidgetPaint(void *hObject)
 {
-	p_bitmap_widget_t hBitmapWidge;
-	hBitmapWidge = hObject;
+	p_bitmap_widget_t hBitmapWidget;
+	hBitmapWidget = hObject;
 	if (!hObject)
 	{
 		return;
 	}
-	if (!_GetVisable(hBitmapWidge))
+	if (!_GetVisable(hBitmapWidget))
 	{
 		return;
 	}
-	// if (!IsGUINeedCut(hBitmapWidge)) { return; }
+	// if (!IsGUINeedCut(hBitmapWidget)) { return; }
 
-	if (!DrawSetArea((p_widget_base_t)hBitmapWidge))
+	if (!DrawSetArea((p_widget_base_t)hBitmapWidget))
 	{
 		return;
 	}
 
-	DrawCutBitmap(hBitmapWidge, (p_xrect_t)hBitmapWidge, hBitmapWidge->bitmap);
+	DrawCutBitmap(hBitmapWidget, (p_xrect_t)hBitmapWidget, hBitmapWidget->bitmap);
 	/*恢复绘图区域*/
-	DrawResetArea((p_widget_base_t)hBitmapWidge);
+	DrawResetArea((p_widget_base_t)hBitmapWidget);
 }
 
-int8_t BITMAP_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg)
+int8_t BitmapWidgetCallBack(void *hObject, p_msg_t hMsg)
 {
 	p_widget_base_t hWidgeBase = hObject;
 	if (!hWidgeBase || !hMsg)

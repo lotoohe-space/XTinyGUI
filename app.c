@@ -14,6 +14,7 @@
 #include "radio_button_widge.h"
 #include "list_widge.h"
 #include "slide_widge.h"
+#include "JoyPad.h"
 extern void nes_main(void);
 
 p_win_t hWin4;
@@ -140,7 +141,7 @@ uint8_t WinProcessFunction(void *Object, void *arg, p_msg_t hMsg)
 
 			LIST_WIDGE_MARK_HEAD(Add)
 			(hListWidge, TEXT_MARK_HEAD(Create)(L"test00", 0, 0, 0, 20));
-			p_bitmap_widget_t listBitmap = BitmapWidgeCreate(100, 100, 160, 120, &(xBitmap[0]));
+			p_bitmap_widget_t listBitmap = BitmapWidgetCreate(100, 100, 160, 120, &(xBitmap[0]));
 			//_SET_IS_DPY(listBitmap);
 			LIST_WIDGE_MARK_HEAD(Add)
 			(hListWidge, listBitmap);
@@ -148,7 +149,7 @@ uint8_t WinProcessFunction(void *Object, void *arg, p_msg_t hMsg)
 			(hListWidge, TEXT_MARK_HEAD(Create)(L"test10", 0, 0, 0, 20));
 			LIST_WIDGE_MARK_HEAD(Add)
 			(hListWidge, CHECKBOX_MARK_HEAD(Create)(250, 50, 140, 18, "CheckBox0"));
-			listBitmap = BitmapWidgeCreate(100, 100, 160, 120, &(xBitmap[15]));
+			listBitmap = BitmapWidgetCreate(100, 100, 160, 120, &(xBitmap[15]));
 			//_SET_IS_DPY(listBitmap);
 			LIST_WIDGE_MARK_HEAD(Add)
 			(hListWidge, listBitmap);
@@ -158,27 +159,27 @@ uint8_t WinProcessFunction(void *Object, void *arg, p_msg_t hMsg)
 			(hListWidge, TEXT_MARK_HEAD(Create)(L"test50", 0, 0, 0, 20));
 			LIST_WIDGE_MARK_HEAD(Add)
 			(hListWidge, CHECKBOX_MARK_HEAD(Create)(250, 50, 140, 18, "CheckBox1"));
-			listBitmap = BitmapWidgeCreate(100, 100, 160, 120, &(xBitmap[31]));
+			listBitmap = BitmapWidgetCreate(100, 100, 160, 120, &(xBitmap[31]));
 			//_SET_IS_DPY(listBitmap);
 			LIST_WIDGE_MARK_HEAD(Add)
 			(hListWidge, listBitmap);
 
 			LIST_WIDGE_MARK_HEAD(Add)
-			(hListWidge, BitmapWidgeCreate(0, 0, 256, 240, &xGirlBitmap));
+			(hListWidge, BitmapWidgetCreate(0, 0, 256, 240, &xGirlBitmap));
 
 			WindowsAdd(Object, hListWidge);
 
 			InitBitmap(&pngBitmap, pngImg, 160, 120, 32);
 			BitmapSetFlag(&pngBitmap, BITMAP_DRAW_ARGB8888);
-			dyBitMap = BitmapWidgeCreate(5, 240, 160, 120, &(pngBitmap));
+			dyBitMap = BitmapWidgetCreate(5, 240, 160, 120, &(pngBitmap));
 			/*多张图片动态切换显示*/
 			// InitBitmap(&(xBitmap[0]), gImage_tu001032, 240, 160, 16);
-			// dyBitMap = BitmapWidgeCreate(10, 10, 330, 230, &(xBitmap[0]));
+			// dyBitMap = BitmapWidgetCreate(10, 10, 330, 230, &(xBitmap[0]));
 			_SET_IS_DPY(dyBitMap);
 			WidgetSetColor(dyBitMap, ARGB565_GEN(255, 0xff, 0x00, 0xff));
 			WindowsAdd(Object, dyBitMap);
 
-			p_bitmap_widget_t alphaBitmap = BitmapWidgeCreate(400, 5, 400, 400, &(xBitmap[30]));
+			p_bitmap_widget_t alphaBitmap = BitmapWidgetCreate(400, 5, 400, 400, &(xBitmap[30]));
 			xBitmap[30].flag = 0x1;
 			xBitmap[30].alpha = 128;
 			_SET_IS_DPY(alphaBitmap);
@@ -219,7 +220,7 @@ uint8_t WinProcessNESFunction(void *Object, void *arg, p_msg_t hMsg)
 			InitBitmap(&xGirlBitmap, nesImg, 256, 240, 16);
 			// xGirlBitmap.flag = 0x1;
 			// xGirlBitmap.alpha = 100;
-			hBITMAP_WIDGE1 = BitmapWidgeCreate(0, 0, 256, 240, &xGirlBitmap);
+			hBITMAP_WIDGE1 = BitmapWidgetCreate(0, 0, 256, 240, &xGirlBitmap);
 			_CLR_IS_DPY(hBITMAP_WIDGE1);
 			WindowsAdd(Object, hBITMAP_WIDGE1);
 		}
@@ -417,18 +418,18 @@ uint8_t WinProcess1Function(void *Object, void *arg, p_msg_t hMsg)
 				InitBitmap(&xBitmapItem2, (uint8_t*)img_item_2, 150, 259, 32);
 				BitmapSetFlag(&xBitmapItem2, BITMAP_DRAW_ARGB8888);*/
 
-			// p_bitmap_widget_t listBitmap0 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem0);
-			// p_bitmap_widget_t listBitmap1 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem1);
-			// p_bitmap_widget_t listBitmap2 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem2);
-			// p_bitmap_widget_t listBitmap3 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem0);
-			// p_bitmap_widget_t listBitmap4 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem1);
-			// p_bitmap_widget_t listBitmap5 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem2);
-			// p_bitmap_widget_t listBitmap6 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem0);
-			// p_bitmap_widget_t listBitmap7 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem1);
-			// p_bitmap_widget_t listBitmap8 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem2);
-			// p_bitmap_widget_t listBitmap9 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem0);
-			// p_bitmap_widget_t listBitmap10 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem1);
-			// p_bitmap_widget_t listBitmap11 = BitmapWidgeCreate(0, 0, 150, 259, &xBitmapItem2);
+			// p_bitmap_widget_t listBitmap0 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem0);
+			// p_bitmap_widget_t listBitmap1 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem1);
+			// p_bitmap_widget_t listBitmap2 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem2);
+			// p_bitmap_widget_t listBitmap3 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem0);
+			// p_bitmap_widget_t listBitmap4 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem1);
+			// p_bitmap_widget_t listBitmap5 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem2);
+			// p_bitmap_widget_t listBitmap6 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem0);
+			// p_bitmap_widget_t listBitmap7 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem1);
+			// p_bitmap_widget_t listBitmap8 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem2);
+			// p_bitmap_widget_t listBitmap9 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem0);
+			// p_bitmap_widget_t listBitmap10 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem1);
+			// p_bitmap_widget_t listBitmap11 = BitmapWidgetCreate(0, 0, 150, 259, &xBitmapItem2);
 			// _SET_IS_DPY(listBitmap0);
 			// _SET_IS_DPY(listBitmap1);
 			// _SET_IS_DPY(listBitmap2);
@@ -475,8 +476,8 @@ uint8_t WinProcess1Function(void *Object, void *arg, p_msg_t hMsg)
 		{
 			/*画一个正方形*/
 			xrect_t drawRect;
-			drawRect.x = ((p_widget_base_t)(Object))->rect.x + 10;
-			drawRect.y = ((p_widget_base_t)(Object))->rect.y + 10;
+			drawRect.x = ((p_widget_base_t)(Object))->rect.x + 50;
+			drawRect.y = ((p_widget_base_t)(Object))->rect.y + 50;
 			drawRect.w = 35;
 			drawRect.h = 45;
 			uintColor temp = ((p_widget_base_t)(Object))->pencil.DrawColor;
@@ -533,7 +534,7 @@ void gui_init(void)
 
 	/*美女图,放到桌面*/
 	InitBitmap(&xGirl1Bitmap, gImage_girl, 320, 225, 16);
-	hBITMAP_WIDGE = BitmapWidgeCreate(0, 0, 320, 225, &xGirl1Bitmap);
+	hBITMAP_WIDGE = BitmapWidgetCreate(0, 0, 320, 225, &xGirl1Bitmap);
 	WinListAdd(hBITMAP_WIDGE);
 
 	hWIN = WindowsCreate("test", 5, 5,

@@ -40,6 +40,8 @@ PUBLIC void BUTTON_MARK_HEAD(SetClickBack)(p_xbutton_t hObject, void *arg, ViewC
 PUBLIC void BUTTON_MARK_HEAD(SetDownBitmap)(p_xbutton_t hObject, p_xbitmap_t hBitmap);
 PUBLIC void BUTTON_MARK_HEAD(SetUpBitmap)(p_xbutton_t hObject, p_xbitmap_t hBitmap);
 
+PUBLIC void BUTTON_MARK_HEAD(SetText)(p_xbutton_t hObject, const char *text);
+
 PRIVATE void BUTTON_MARK_HEAD(Paint)(void *hObject);
 PRIVATE int8_t BUTTON_MARK_HEAD(CallBack)(void *hObject, p_msg_t hMsg);
 
